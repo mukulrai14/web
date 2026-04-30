@@ -345,6 +345,1110 @@ export function DeployTerminal() {
 }
 
 // ---------------------------------------------------------------------------
+// WbDeployReplay — Deploy tab art
+// ---------------------------------------------------------------------------
+
+const DEPLOY_STEPS: Array<{
+  type: "cmd" | "dim" | "ok" | "url" | "done";
+  text: string;
+  delay: number;
+  stage?: string;
+}> = [
+  { type: "cmd", text: "prisma deploy", delay: 250, stage: "frame" },
+  {
+    type: "dim",
+    text: "→ detected prisma.config.ts · commit a7f3c11",
+    delay: 650,
+  },
+  {
+    type: "dim",
+    text: "→ bundling ./src · 48 modules",
+    delay: 700,
+    stage: "shell",
+  },
+  { type: "ok", text: "compiled layout.tsx", delay: 550, stage: "header" },
+  { type: "ok", text: "compiled nav.tsx", delay: 500, stage: "nav" },
+  {
+    type: "ok",
+    text: "compiled dashboard/kpis.tsx",
+    delay: 600,
+    stage: "kpis",
+  },
+  {
+    type: "ok",
+    text: "compiled dashboard/chart.tsx",
+    delay: 650,
+    stage: "chart",
+  },
+  {
+    type: "ok",
+    text: "compiled dashboard/orders.tsx",
+    delay: 600,
+    stage: "table",
+  },
+  { type: "url", text: "api → https://your-app.prisma.run", delay: 600 },
+  {
+    type: "done",
+    text: "deployed in 4.8s · app is live",
+    delay: 500,
+    stage: "live",
+  },
+];
+
+const DEPLOY_STAGES = [
+  "frame",
+  "shell",
+  "header",
+  "nav",
+  "kpis",
+  "chart",
+  "table",
+  "live",
+] as const;
+type DeployStage = (typeof DEPLOY_STAGES)[number];
+
+function WbDeployReplay() {
+  const [n, setN] = useState(0);
+  const [stage, setStage] = useState<DeployStage | null>(null);
+  const [runKey, setRunKey] = useState(0);
+
+  const has = (s: DeployStage) =>
+    stage !== null && DEPLOY_STAGES.indexOf(stage) >= DEPLOY_STAGES.indexOf(s);
+
+  useEffect(() => {
+    if (n >= DEPLOY_STEPS.length) {
+      const t = setTimeout(() => {
+        setN(0);
+        setStage(null);
+        setRunKey((k) => k + 1);
+      }, 3600);
+      return () => clearTimeout(t);
+    }
+    const step = DEPLOY_STEPS[n];
+    const t = setTimeout(() => {
+      if (step.stage) setStage(step.stage as DeployStage);
+      setN((prev) => prev + 1);
+    }, step.delay);
+    return () => clearTimeout(t);
+  }, [n, runKey]);
+
+  return (
+    <div className="flex flex-col md:flex-row gap-3 p-4 font-mono min-h-72">
+      {/* Terminal */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        <div className="rounded-lg border border-stroke-neutral overflow-hidden bg-background-default text-[11px] flex flex-col flex-1">
+          <div className="flex items-stretch border-b border-stroke-neutral bg-background-neutral-weaker shrink-0">
+            <div className="flex items-center gap-1.5 px-3 py-2 border-b-2 border-foreground-ppg bg-background-default">
+              <i className="fa-regular fa-terminal text-foreground-ppg text-[10px]" />
+              <span className="text-foreground-neutral text-[10px]">
+                ~/my-app · main
+              </span>
+            </div>
+            <div className="flex-1" />
+            <div className="flex items-center gap-3 px-3">
+              <button
+                className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wide text-foreground-neutral-weak hover:text-foreground-neutral transition-colors"
+                onClick={() => {
+                  setN(0);
+                  setStage(null);
+                  setRunKey((k) => k + 1);
+                }}
+              >
+                <i className="fa-regular fa-rotate-left text-[10px]" />
+                REPLAY
+              </button>
+              <button className="text-foreground-neutral-weak hover:text-foreground-neutral transition-colors">
+                <i className="fa-regular fa-copy text-[11px]" />
+              </button>
+            </div>
+          </div>
+          <div className="p-3 space-y-0.5 flex-1">
+            {DEPLOY_STEPS.slice(0, n).map((step, i) => (
+              <div
+                key={`${runKey}-${i}`}
+                className="flex items-start gap-1.5 leading-5"
+              >
+                <span
+                  className={cn(
+                    "shrink-0 w-3 text-center",
+                    step.type === "cmd"
+                      ? "text-foreground-ppg"
+                      : step.type === "ok"
+                        ? "text-green-400"
+                        : step.type === "done"
+                          ? "text-foreground-ppg"
+                          : "text-foreground-neutral-weaker",
+                  )}
+                >
+                  {step.type === "cmd"
+                    ? "$"
+                    : step.type === "ok"
+                      ? "✓"
+                      : step.type === "done"
+                        ? "●"
+                        : "→"}
+                </span>
+                <span
+                  className={cn(
+                    "flex-1",
+                    step.type === "cmd"
+                      ? "text-foreground-neutral"
+                      : step.type === "ok"
+                        ? "text-foreground-neutral-weak"
+                        : step.type === "done"
+                          ? "text-foreground-ppg"
+                          : step.type === "url"
+                            ? "text-foreground-neutral-weak"
+                            : "text-foreground-neutral-weaker",
+                  )}
+                >
+                  {step.type === "url" ? (
+                    <>
+                      api {"      "}→{" "}
+                      <span className="text-foreground-ppg">
+                        https://your-app.prisma.run
+                      </span>
+                    </>
+                  ) : (
+                    step.text
+                  )}
+                </span>
+              </div>
+            ))}
+            {n < DEPLOY_STEPS.length && (
+              <span className="inline-block w-1.5 h-3 bg-foreground-ppg animate-pulse" />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mock app */}
+      <div
+        className={cn(
+          "flex-1 min-w-0 rounded-lg border overflow-hidden flex flex-col transition-[border-color] duration-500",
+          has("live") ? "border-foreground-ppg/40" : "border-stroke-neutral",
+          "bg-background-neutral-weak",
+        )}
+      >
+        {/* browser chrome */}
+        <div className="flex items-center gap-1.5 px-2 py-1.5 border-b border-stroke-neutral bg-background-neutral-weaker shrink-0">
+          <div className="flex-1 flex items-center gap-1 px-1.5 py-0.5 rounded bg-background-neutral">
+            {has("shell") ? (
+              <>
+                <i className="fa-regular fa-lock text-[8px] text-foreground-neutral-weaker" />
+                <span className="font-mono text-[9px] text-foreground-neutral">
+                  your-app.prisma.run
+                </span>
+                {has("live") && (
+                  <span className="ml-auto flex items-center gap-0.5 font-mono text-[8px] text-foreground-ppg">
+                    <span className="w-1 h-1 rounded-full bg-foreground-ppg animate-pulse" />
+                    live
+                  </span>
+                )}
+              </>
+            ) : (
+              <span className="font-mono text-[9px] text-foreground-neutral-weaker">
+                connecting…
+              </span>
+            )}
+          </div>
+        </div>
+        {/* viewport */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* sidebar */}
+          <div
+            className={cn(
+              "w-10 border-r border-stroke-neutral p-1.5 flex flex-col gap-1 transition-opacity duration-500 shrink-0",
+              has("shell") ? "opacity-100" : "opacity-0",
+            )}
+          >
+            {has("header") && (
+              <div className="h-2 bg-foreground-neutral-weaker/25 rounded mb-0.5" />
+            )}
+            {has("nav") &&
+              [80, 62, 70, 58, 66].map((w, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "h-1.5 rounded",
+                    i === 0
+                      ? "bg-foreground-ppg/30"
+                      : "bg-foreground-neutral-weaker/20",
+                  )}
+                  style={{ width: `${w}%` }}
+                />
+              ))}
+          </div>
+          {/* main */}
+          <div className="flex-1 p-1.5 flex flex-col gap-1.5 overflow-hidden min-w-0">
+            {has("shell") && (
+              <div
+                className={cn(
+                  "flex items-center justify-between transition-opacity duration-300",
+                  has("header") ? "opacity-100" : "opacity-0",
+                )}
+              >
+                <div className="h-2 w-14 bg-foreground-neutral-weaker/20 rounded" />
+                <div className="flex gap-1">
+                  <div className="h-2 w-2 bg-foreground-neutral-weaker/20 rounded" />
+                  <div
+                    className={cn(
+                      "h-2 w-2 rounded-full transition-colors duration-500",
+                      has("live")
+                        ? "bg-foreground-ppg"
+                        : "bg-foreground-neutral-weaker/20",
+                    )}
+                  />
+                </div>
+              </div>
+            )}
+            {has("kpis") && (
+              <div className="grid grid-cols-3 gap-1">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="bg-background-default/60 rounded p-1 space-y-0.5"
+                  >
+                    <div className="h-1 w-6 bg-foreground-neutral-weaker/25 rounded" />
+                    <div className="h-2 w-5 bg-foreground-neutral-weaker/30 rounded" />
+                  </div>
+                ))}
+              </div>
+            )}
+            {has("chart") && (
+              <div className="bg-background-default/40 rounded p-1.5 flex-1 flex flex-col gap-1">
+                <div className="h-1 w-10 bg-foreground-neutral-weaker/20 rounded" />
+                <div className="flex items-end gap-px flex-1 min-h-0">
+                  {[45, 62, 38, 71, 55, 83, 49, 67, 58, 76, 42, 68].map(
+                    (h, i) => (
+                      <div
+                        key={i}
+                        className="flex-1 rounded-sm bg-foreground-ppg/35"
+                        style={{ height: `${h}%` }}
+                      />
+                    ),
+                  )}
+                </div>
+              </div>
+            )}
+            {has("table") && (
+              <div className="space-y-0.5">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-foreground-neutral-weaker/20 shrink-0" />
+                    <div className="flex-1 h-1.5 bg-foreground-neutral-weaker/15 rounded" />
+                    <div
+                      className={cn(
+                        "h-1.5 w-3 rounded transition-colors duration-500",
+                        has("live") && i === 0
+                          ? "bg-foreground-ppg/40"
+                          : "bg-foreground-neutral-weaker/15",
+                      )}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        {/* caption */}
+        <div className="border-t border-stroke-neutral px-2 py-1 font-mono text-[9px] text-foreground-neutral-weaker shrink-0">
+          {!stage ? (
+            "waiting for push…"
+          ) : stage === "frame" ? (
+            "provisioning host…"
+          ) : stage === "shell" ? (
+            "bundling layout"
+          ) : stage === "header" ? (
+            "compiling header"
+          ) : stage === "nav" ? (
+            "compiling nav"
+          ) : stage === "kpis" ? (
+            "rendering kpis"
+          ) : stage === "chart" ? (
+            "rendering chart"
+          ) : stage === "table" ? (
+            "rendering data"
+          ) : (
+            <>
+              <span className="text-foreground-ppg">● </span>live ·
+              your-app.prisma.run
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// WbConfigMap — Config tab art
+// ---------------------------------------------------------------------------
+
+type TokenClass = "kw" | "st" | "fn" | "";
+type TokenLine = { k: string | null; tokens: [TokenClass, string][] };
+
+const CONFIG_TOKENS: TokenLine[] = [
+  {
+    k: null,
+    tokens: [
+      ["kw", "import"],
+      ["", "  { defineConfig } "],
+      ["kw", "from"],
+      ["", " "],
+      ["st", '"prisma/config"'],
+    ],
+  },
+  { k: null, tokens: [["", ""]] },
+  {
+    k: null,
+    tokens: [
+      ["kw", "export default"],
+      ["", " "],
+      ["fn", "defineConfig"],
+      ["", "({"],
+    ],
+  },
+  { k: null, tokens: [["", "  services: {"]] },
+  {
+    k: "api",
+    tokens: [
+      ["", "    api:    { entry: "],
+      ["st", '"./src/api.ts"'],
+      ["", ", region: "],
+      ["st", '"us-east-1"'],
+      ["", " },"],
+    ],
+  },
+  {
+    k: "worker",
+    tokens: [
+      ["", "    worker: { entry: "],
+      ["st", '"./src/worker.ts"'],
+      ["", ", schedule: "],
+      ["st", '"*/5 * * * *"'],
+      ["", " },"],
+    ],
+  },
+  { k: null, tokens: [["", "  },"]] },
+  {
+    k: "db",
+    tokens: [
+      ["", "  database: { provider: "],
+      ["st", '"prisma-postgres"'],
+      ["", " },"],
+    ],
+  },
+  { k: null, tokens: [["", "})"]] },
+];
+
+const CONFIG_TOTAL_CHARS = CONFIG_TOKENS.reduce(
+  (a, l) => a + l.tokens.reduce((b, [, t]) => b + t.length, 0) + 1,
+  0,
+);
+
+const CONFIG_NODES = [
+  {
+    key: "api",
+    icon: "fa-regular fa-globe",
+    kind: "service",
+    title: "api",
+    sub: "https://api.your-app.prisma.run",
+  },
+  {
+    key: "worker",
+    icon: "fa-regular fa-clock-rotate-left",
+    kind: "scheduled",
+    title: "worker",
+    sub: "every 5 min · */5 * * * *",
+  },
+  {
+    key: "db",
+    icon: "fa-regular fa-database",
+    kind: "database",
+    title: "prisma-postgres",
+    sub: "DATABASE_URL injected",
+  },
+];
+
+function WbConfigMap() {
+  const [typed, setTyped] = useState(0);
+  const [hovering, setHovering] = useState<string | null>(null);
+  const [cycleIdx, setCycleIdx] = useState(0);
+
+  const done = typed >= CONFIG_TOTAL_CHARS;
+
+  useEffect(() => {
+    if (done) return;
+    const id = setInterval(
+      () => setTyped((t) => Math.min(CONFIG_TOTAL_CHARS, t + 8)),
+      20,
+    );
+    return () => clearInterval(id);
+  }, [done]);
+
+  useEffect(() => {
+    if (!done || hovering) return;
+    const id = setInterval(
+      () => setCycleIdx((c) => (c + 1) % CONFIG_NODES.length),
+      4000,
+    );
+    return () => clearInterval(id);
+  }, [done, hovering]);
+
+  const active = done ? (hovering ?? CONFIG_NODES[cycleIdx].key) : null;
+
+  let consumed = 0;
+  const renderedLines = CONFIG_TOKENS.map((line, li) => {
+    const lineLen = line.tokens.reduce((s, [, t]) => s + t.length, 0);
+    const lineStart = consumed;
+    const lineEnd = consumed + lineLen;
+    consumed = lineEnd + 1;
+    if (typed <= lineStart) return null;
+    const visibleChars = Math.max(0, Math.min(lineLen, typed - lineStart));
+    const isCurrentLine = !done && typed > lineStart && typed <= lineEnd;
+    let used = 0;
+    return (
+      <div
+        key={li}
+        className={cn(
+          "px-3 leading-5 rounded transition-colors duration-200",
+          active === line.k && line.k ? "bg-foreground-ppg/10" : "",
+        )}
+        onMouseEnter={line.k ? () => setHovering(line.k) : undefined}
+        onMouseLeave={line.k ? () => setHovering(null) : undefined}
+      >
+        {line.tokens.map(([cls, txt], ti) => {
+          if (used >= visibleChars) return null;
+          const take = Math.min(txt.length, visibleChars - used);
+          const slice = txt.slice(0, take);
+          used += take;
+          return (
+            <span
+              key={ti}
+              className={
+                cls === "kw"
+                  ? "text-purple-400"
+                  : cls === "st"
+                    ? "text-teal-300"
+                    : cls === "fn"
+                      ? "text-yellow-200"
+                      : "text-foreground-neutral"
+              }
+            >
+              {slice}
+            </span>
+          );
+        })}
+        {isCurrentLine && (
+          <span className="inline-block w-1.5 h-[0.85em] bg-foreground-ppg align-text-bottom animate-pulse" />
+        )}
+        {lineLen === 0 && <span>&nbsp;</span>}
+      </div>
+    );
+  });
+
+  return (
+    <div className="flex flex-col md:flex-row gap-3 p-4 font-mono text-xs min-h-72">
+      {/* Code editor */}
+      <div className="flex-1 min-w-0 rounded-lg border border-stroke-neutral overflow-hidden bg-background-default flex flex-col">
+        <div className="flex items-center gap-2 px-3 py-1.5 border-b border-stroke-neutral bg-background-neutral-weak shrink-0">
+          <i className="fa-regular fa-file-code text-foreground-ppg text-[10px]" />
+          <span className="text-foreground-neutral text-[10px]">
+            prisma.config.ts
+          </span>
+        </div>
+        <div className="py-3 flex-1 overflow-auto">{renderedLines}</div>
+      </div>
+      {/* Nodes */}
+      <div className="flex flex-col gap-2 justify-center w-full md:w-44 md:shrink-0">
+        {CONFIG_NODES.map((node) => (
+          <div
+            key={node.key}
+            className={cn(
+              "flex items-center gap-2 p-2 rounded-lg border transition-all duration-300 cursor-default",
+              active === node.key
+                ? "border-stroke-ppg bg-background-ppg/20"
+                : "border-stroke-neutral bg-background-neutral-weak",
+            )}
+            onMouseEnter={() => setHovering(node.key)}
+            onMouseLeave={() => setHovering(null)}
+          >
+            <div
+              className={cn(
+                "w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors duration-300",
+                active === node.key
+                  ? "bg-background-ppg text-foreground-ppg"
+                  : "bg-background-neutral text-foreground-neutral-weak",
+              )}
+            >
+              <i className={cn(node.icon, "text-xs")} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[9px] text-foreground-neutral-weaker uppercase tracking-wider leading-none mb-0.5">
+                {node.kind}
+              </div>
+              <div className="text-[11px] text-foreground-neutral font-medium leading-none truncate">
+                {node.title}
+              </div>
+              <div className="text-[9px] text-foreground-neutral-weaker truncate leading-tight mt-0.5">
+                {node.sub}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// WbRuntimeMonitor — Runtime tab art
+// ---------------------------------------------------------------------------
+
+const RUNTIME_TASKS = [
+  {
+    icon: "fa-regular fa-plug",
+    kind: "WebSocket",
+    code: "chat.stream",
+    tag: "384 open",
+    color: "#2DD4BF",
+    pulse: true,
+  },
+  {
+    icon: "fa-regular fa-arrows-left-right",
+    kind: "HTTP",
+    code: "POST /api/invoice",
+    tag: "42ms",
+    color: "#818cf8",
+    pulse: false,
+  },
+  {
+    icon: "fa-regular fa-list-ul",
+    kind: "Queue",
+    code: "email.send",
+    tag: "12 in flight",
+    color: "#facc15",
+    pulse: true,
+  },
+  {
+    icon: "fa-regular fa-clock-rotate-left",
+    kind: "Cron",
+    code: "nightly.report",
+    tag: "12h 08m",
+    color: "#6b7280",
+    pulse: false,
+  },
+  {
+    icon: "fa-regular fa-bolt",
+    kind: "Background",
+    code: "embed.index",
+    tag: "running",
+    color: "#a78bfa",
+    pulse: true,
+  },
+];
+
+function WbRuntimeMonitor() {
+  const [cpu, setCpu] = useState<number[]>(() =>
+    Array.from({ length: 40 }, () => 4),
+  );
+  const [mem, setMem] = useState<number[]>(() =>
+    Array.from({ length: 40 }, () => 6),
+  );
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCpu((p) => [
+        ...p.slice(1),
+        12 + Math.random() * 22 + (Math.random() < 0.12 ? 22 : 0),
+      ]);
+      setMem((p) => [
+        ...p.slice(1),
+        26 + Math.random() * 14 + (Math.random() < 0.1 ? 10 : 0),
+      ]);
+      setTick((t) => t + 1);
+    }, 700);
+    return () => clearInterval(id);
+  }, []);
+
+  const W = 200,
+    H = 42;
+  const spark = (data: number[], maxY = 60) =>
+    data
+      .map((v, i) => {
+        const x = (i / (data.length - 1)) * W;
+        const y = H - (Math.min(v, maxY) / maxY) * H;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      })
+      .join(" ");
+
+  const m = String(22 + (Math.floor(tick / 60) % 38)).padStart(2, "0");
+  const s = String(tick % 60).padStart(2, "0");
+
+  return (
+    <div className="p-5 flex flex-col gap-4 font-mono min-h-72">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-foreground-ppg animate-pulse shrink-0" />
+          <span className="text-xs text-foreground-neutral">
+            bun · pid 4f2a · api.ts
+          </span>
+        </div>
+        <span className="text-[10px] text-foreground-neutral-weaker tabular-nums">
+          UP 6d 14h {m}m {s}s
+        </span>
+      </div>
+
+      {/* Sparklines */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="rounded-lg border border-stroke-neutral bg-background-neutral-weak p-3">
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-[10px] text-foreground-neutral-weaker tracking-wider">
+              CPU
+            </span>
+            <span className="text-xs text-foreground-ppg tabular-nums">
+              {Math.round(cpu[cpu.length - 1])}%
+            </span>
+          </div>
+          <svg
+            viewBox={`0 0 ${W} ${H}`}
+            width="100%"
+            height={H}
+            preserveAspectRatio="none"
+            style={{ display: "block" }}
+          >
+            {Array.from({ length: 7 }).map((_, gi) => (
+              <line
+                key={gi}
+                x1={((gi + 1) / 8) * W}
+                y1="0"
+                x2={((gi + 1) / 8) * W}
+                y2={H}
+                stroke="rgba(148,163,184,0.12)"
+                strokeWidth="1"
+              />
+            ))}
+            <polyline
+              points={`0,${H} ${spark(cpu)} ${W},${H}`}
+              fill="rgba(45,212,191,0.08)"
+              stroke="none"
+            />
+            <polyline
+              points={spark(cpu)}
+              fill="none"
+              stroke="#2DD4BF"
+              strokeWidth="0.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <div className="rounded-lg border border-stroke-neutral bg-background-neutral-weak p-3">
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-[10px] text-foreground-neutral-weaker tracking-wider">
+              MEM
+            </span>
+            <span className="text-xs text-indigo-300 tabular-nums">
+              {Math.round(mem[mem.length - 1] * 8)}MB
+            </span>
+          </div>
+          <svg
+            viewBox={`0 0 ${W} ${H}`}
+            width="100%"
+            height={H}
+            preserveAspectRatio="none"
+            style={{ display: "block" }}
+          >
+            {Array.from({ length: 7 }).map((_, gi) => (
+              <line
+                key={gi}
+                x1={((gi + 1) / 8) * W}
+                y1="0"
+                x2={((gi + 1) / 8) * W}
+                y2={H}
+                stroke="rgba(148,163,184,0.12)"
+                strokeWidth="1"
+              />
+            ))}
+            <polyline
+              points={`0,${H} ${spark(mem)} ${W},${H}`}
+              fill="rgba(165,180,252,0.10)"
+              stroke="none"
+            />
+            <polyline
+              points={spark(mem)}
+              fill="none"
+              stroke="#a5b4fc"
+              strokeWidth="0.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div className="h-px bg-stroke-neutral shrink-0" />
+
+      {/* Tasks */}
+      <div>
+        <div className="text-[10px] text-foreground-neutral-weaker tracking-wider mb-2">
+          CONCURRENT TASKS · {RUNTIME_TASKS.length}
+        </div>
+        <div>
+          {RUNTIME_TASKS.map((task, i) => (
+            <div key={i}>
+              {i > 0 && <div className="border-t border-stroke-neutral" />}
+              <div className="flex items-center gap-2 py-2.5">
+                <i
+                  className={cn(task.icon, "text-sm shrink-0")}
+                  style={{ color: task.color }}
+                />
+                <span className="text-[11px] text-foreground-neutral-weak">
+                  {task.kind} ·
+                </span>
+                <span
+                  className="font-mono text-[9px] border px-1.5 py-0.5 rounded shrink-0"
+                  style={{ borderColor: task.color + "60", color: task.color }}
+                >
+                  {task.code}
+                </span>
+                <span className="ml-auto text-[10px] text-foreground-neutral-weaker shrink-0">
+                  {task.tag}
+                </span>
+                <span
+                  className={cn(
+                    "w-1.5 h-1.5 rounded-full shrink-0",
+                    task.pulse ? "animate-pulse" : "",
+                  )}
+                  style={{ backgroundColor: task.color }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// ZeroConfigBYO — Co-located tab art
+// ---------------------------------------------------------------------------
+
+const DB_OPTIONS = [
+  {
+    id: "ppg",
+    name: "Prisma Postgres",
+    icon: "fa-regular fa-fire",
+    host: "db.prisma-data.com",
+  },
+  {
+    id: "supabase",
+    name: "Supabase",
+    icon: "fa-regular fa-bolt",
+    host: "db.supabase.co",
+  },
+  {
+    id: "neon",
+    name: "Neon",
+    icon: "fa-regular fa-cloud-arrow-up",
+    host: "ep-calm.neon.tech",
+  },
+  {
+    id: "rds",
+    name: "Amazon RDS",
+    icon: "fa-regular fa-cloud",
+    host: "prod.rds.amazonaws.com",
+  },
+  {
+    id: "mysql",
+    name: "MySQL",
+    icon: "fa-regular fa-database",
+    host: "mysql.internal",
+  },
+  {
+    id: "self",
+    name: "Self-hosted",
+    icon: "fa-regular fa-hard-drive",
+    host: "10.0.4.12",
+  },
+];
+
+const ZC_BOOT_LINES = [
+  {
+    t: 0,
+    showAt: 200,
+    k: "boot",
+    v: "prisma runtime · bun 1.1.x",
+    tone: "dim",
+  },
+  { t: 120, showAt: 900, k: "env", v: "NODE_ENV=production", tone: "dim" },
+  { t: 240, showAt: 1600, k: "env", v: "PORT=3000", tone: "dim" },
+  { t: 360, showAt: 2500, k: "inject", v: "DATABASE_URL", tone: "hero" },
+  {
+    t: 480,
+    showAt: 3400,
+    k: "pool",
+    v: "persistent pool ready · 8 conns",
+    tone: "ok",
+  },
+  { t: 600, showAt: 4200, k: "ready", v: "listening on :3000", tone: "ok" },
+] as const;
+
+const ZC_BOOT_FINAL = 4200;
+
+function ZeroConfigBYO() {
+  const [selectedDb, setSelectedDb] = useState(0);
+  const [bootTick, setBootTick] = useState(0);
+  const [userPicked, setUserPicked] = useState(false);
+
+  const seated = DB_OPTIONS[selectedDb];
+
+  useEffect(() => {
+    if (bootTick >= ZC_BOOT_FINAL) return;
+    const id = setInterval(
+      () => setBootTick((t) => Math.min(ZC_BOOT_FINAL, t + 80)),
+      80,
+    );
+    return () => clearInterval(id);
+  }, [bootTick]);
+
+  const injected = bootTick >= 2500;
+  const ready = bootTick >= ZC_BOOT_FINAL;
+  const visible = ZC_BOOT_LINES.filter((l) => l.showAt <= bootTick);
+
+  useEffect(() => {
+    if (userPicked || !ready) return;
+    const id = setInterval(
+      () => setSelectedDb((i) => (i + 1) % DB_OPTIONS.length),
+      3600,
+    );
+    return () => clearInterval(id);
+  }, [userPicked, ready]);
+
+  const pick = (i: number) => {
+    setUserPicked(true);
+    setSelectedDb(i);
+  };
+
+  return (
+    <div className="p-4 font-mono text-xs min-h-72">
+      <div className="rounded-xl border border-stroke-neutral overflow-hidden">
+        {/* Panel header */}
+        <div className="flex items-center justify-between px-5 py-3 border-b border-stroke-neutral bg-background-neutral-weaker">
+          <span className="text-[10px] text-foreground-neutral-weak uppercase tracking-widest">
+            Zero connection config
+          </span>
+          <span
+            className={cn(
+              "flex items-center gap-1.5 text-[9px] px-2.5 py-1 rounded-full border font-mono uppercase tracking-wide",
+              ready
+                ? "border-foreground-ppg bg-foreground-ppg text-background-default font-bold"
+                : injected
+                  ? "border-amber-400 text-amber-400"
+                  : "border-stroke-neutral text-foreground-neutral-weaker",
+            )}
+          >
+            <span
+              className={cn(
+                "w-1.5 h-1.5 rounded-full shrink-0",
+                ready
+                  ? "bg-background-default"
+                  : injected
+                    ? "bg-amber-400"
+                    : "bg-foreground-neutral-weaker/40",
+              )}
+            />
+            {ready ? "READY" : injected ? "WIRED" : "BOOTING"}
+          </span>
+        </div>
+
+        {/* Body */}
+        <div className="flex flex-col md:flex-row">
+          {/* Terminal column */}
+          <div className="flex-1 min-w-0 p-4">
+            <div className="rounded-lg border border-stroke-neutral overflow-hidden bg-background-default h-full flex flex-col">
+              {/* Tab-style chrome */}
+              <div className="flex items-stretch border-b border-stroke-neutral bg-background-neutral-weaker shrink-0">
+                <div className="flex items-center gap-1.5 px-3 py-2 border-b-2 border-foreground-ppg bg-background-default">
+                  <i className="fa-regular fa-terminal text-foreground-ppg text-[10px]" />
+                  <span className="text-foreground-neutral text-[10px]">
+                    bun run start
+                  </span>
+                </div>
+                <div className="flex-1" />
+                <button className="px-3 text-foreground-neutral-weak hover:text-foreground-neutral transition-colors">
+                  <i className="fa-regular fa-copy text-[11px]" />
+                </button>
+              </div>
+              {/* Boot lines */}
+              <div className="p-3 space-y-0.5 flex-1">
+                {visible.map((line, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      "flex items-start gap-2 leading-5",
+                      line.tone === "hero" &&
+                        "bg-foreground-ppg/10 border-l-2 border-foreground-ppg -mx-3 px-3 py-1",
+                    )}
+                  >
+                    <span className="text-foreground-neutral-weaker w-8 shrink-0 text-right tabular-nums">
+                      {String(line.t).padStart(4, "0")}ms
+                    </span>
+                    <span
+                      className={cn(
+                        "w-10 shrink-0 uppercase",
+                        line.tone === "hero"
+                          ? "text-foreground-ppg"
+                          : line.tone === "ok"
+                            ? "text-green-400"
+                            : "text-foreground-neutral-weaker",
+                      )}
+                    >
+                      {line.k}
+                    </span>
+                    <span
+                      className={cn(
+                        "flex-1 min-w-0 break-all",
+                        line.tone === "ok"
+                          ? "text-foreground-neutral"
+                          : line.tone === "hero"
+                            ? "text-foreground-neutral"
+                            : "text-foreground-neutral-weak",
+                      )}
+                    >
+                      {line.tone === "hero" ? (
+                        <>
+                          <span className="text-foreground-ppg">
+                            DATABASE_URL
+                          </span>
+                          <span className="text-foreground-neutral-weak">
+                            =
+                          </span>
+                          postgres://
+                          <span className="text-foreground-neutral-weaker">
+                            ***:***
+                          </span>
+                          @
+                          <span className="text-foreground-ppg font-bold">
+                            {seated.host}
+                          </span>
+                          :5432/postgres
+                          <span className="ml-2 text-[9px] border border-foreground-ppg text-foreground-ppg px-1 rounded uppercase">
+                            injected
+                          </span>
+                        </>
+                      ) : (
+                        line.v
+                      )}
+                    </span>
+                  </div>
+                ))}
+                {!ready && (
+                  <span className="inline-block w-1.5 h-3 bg-foreground-ppg animate-pulse ml-20" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Runtime section */}
+          <div className="w-full md:w-64 md:shrink-0 p-4 md:pl-0 flex flex-col gap-3 border-t border-stroke-neutral md:border-t-0 md:border-l">
+            {/* RUNTIME header */}
+            <div className="flex items-center gap-3">
+              <i className="fa-regular fa-microchip text-foreground-ppg text-base shrink-0" />
+              <div className="flex-1">
+                <div className="text-[9px] text-foreground-ppg uppercase tracking-widest">
+                  RUNTIME
+                </div>
+                <div className="text-[10px] text-foreground-neutral-weak">
+                  process.env
+                </div>
+              </div>
+              <div
+                className={cn(
+                  "w-2 h-2 rounded-full shrink-0 transition-colors duration-500",
+                  ready
+                    ? "bg-foreground-ppg"
+                    : injected
+                      ? "bg-amber-400"
+                      : "bg-foreground-neutral-weaker/30",
+                )}
+              />
+            </div>
+
+            <div className="border-t border-stroke-neutral" />
+
+            {/* DATABASE_URL box */}
+            <div className="bg-background-neutral-weak rounded-lg p-3">
+              <div className="text-[9px] text-foreground-ppg mb-1">
+                DATABASE_URL
+              </div>
+              <div className="text-[9px] italic">
+                {injected ? (
+                  <>
+                    <span className="text-foreground-neutral-weaker not-italic">
+                      postgres://***@
+                    </span>
+                    <span className="text-foreground-ppg font-bold not-italic">
+                      {seated.host}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-foreground-neutral-weaker">
+                    — awaiting injection —
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Footnote */}
+            <div className="text-[9px] text-foreground-neutral-weaker uppercase tracking-wide leading-relaxed">
+              NO .ENV FILE · NO SECRETS COMMITTED · ROTATED IN PLACE
+            </div>
+
+            <div className="border-t border-stroke-neutral" />
+
+            {/* Accepts */}
+            <div>
+              <span className="text-[9px] text-foreground-ppg uppercase tracking-wider font-bold">
+                ACCEPTS
+              </span>{" "}
+              <span className="text-[9px] text-foreground-neutral-weak">
+                any Postgres-compatible connection string
+              </span>
+            </div>
+
+            {/* 6-col DB picker */}
+            <div className="grid grid-cols-6 gap-1">
+              {DB_OPTIONS.map((opt, i) => (
+                <button
+                  key={opt.id}
+                  onClick={() => pick(i)}
+                  className={cn(
+                    "flex flex-col items-center gap-1 py-2 px-1 rounded-lg border transition-all",
+                    i === selectedDb
+                      ? "border-foreground-ppg bg-background-ppg/20 text-foreground-ppg"
+                      : "border-stroke-neutral bg-background-default text-foreground-neutral-weaker hover:border-stroke-neutral-strong",
+                  )}
+                >
+                  <i className={cn(opt.icon, "text-sm")} />
+                  <span className="text-[8px] leading-tight text-center">
+                    {opt.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Data
 // ---------------------------------------------------------------------------
 
@@ -354,6 +1458,7 @@ const TABS = [
     label: "Deploy",
     icon: "fa-regular fa-rocket",
     title: "Push code, it runs",
+    visual: <WbDeployReplay />,
     description: (
       <>
         Connect a repo and run{" "}
@@ -372,6 +1477,7 @@ const TABS = [
     label: "Config",
     icon: "fa-regular fa-file-binary",
     title: "Zero config, total control.",
+    visual: <WbConfigMap />,
     description: (
       <>
         A single{" "}
@@ -389,6 +1495,7 @@ const TABS = [
     label: "Runtime",
     icon: "fa-regular fa-microchip",
     title: "Long-lived by default.",
+    visual: <WbRuntimeMonitor />,
     description: (
       <>
         Standard TypeScript on Bun. No cold starts, no execution timeouts, no
@@ -405,6 +1512,7 @@ const TABS = [
     label: "Co-Located",
     icon: "fa-regular fa-database",
     title: "Database right next to your code.",
+    visual: <ZeroConfigBYO />,
     description: (
       <>
         Compute and Prisma Postgres run in the same region, connected
@@ -499,14 +1607,16 @@ export function HowItWorks() {
                 </div>
               </div>
 
-              {/* Visual pane — placeholder for code block / screenshot */}
+              {/* Visual pane */}
               <div
                 className={cn(
-                  "flex-3 flex items-start justify-center",
-                  "bg-background-default min-h-48 lg:min-h-0",
+                  "flex-3",
+                  "bg-background-default min-h-72 lg:min-h-0",
                   "border-t border-stroke-neutral lg:border-t-0 lg:border-l",
                 )}
-              ></div>
+              >
+                {tab.visual}
+              </div>
             </div>
           </TabsContent>
         ))}
