@@ -49,7 +49,7 @@ const FEATURES = [
     visualType: "other" as const,
     other: <DeployTerminal />,
     noShadow: true,
-    visualClass: "md:flex-2 lg:flex-3 ml-0",
+    visualClass: "md:flex-2! lg:flex-3! ml-0 max-w-unset!",
     step: "fa-brands fa-github",
   },
   {
@@ -80,7 +80,7 @@ const FEATURES = [
     visualType: "other" as const,
     other: <StatefulExecutionCard />,
     noShadow: true,
-    visualClass: "md:flex-2 lg:flex-3 ml-0",
+    visualClass: "md:flex-2! lg:flex-3! ml-0 max-w-unset!",
     step: "fa-regular fa-arrow-trend-up",
   },
   {
@@ -112,7 +112,7 @@ const FEATURES = [
     visualType: "other" as const,
     other: <WorkloadCards />,
     noShadow: true,
-    visualClass: "md:flex-2 lg:flex-3 ml-0",
+    visualClass: "md:flex-2! lg:flex-3! ml-0 max-w-unset!",
     step: "fa-regular fa-file-code",
   },
   {
@@ -142,7 +142,7 @@ const FEATURES = [
     visualPosition: "right" as const,
     visualType: "image" as const,
     noShadow: true,
-    visualClass: "md:flex-2 lg:flex-3 ml-0",
+    visualClass: "md:flex-2! lg:flex-3! ml-0 max-w-unset!",
     step: "fa-regular fa-route",
   },
 ];
