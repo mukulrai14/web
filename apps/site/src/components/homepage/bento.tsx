@@ -9,8 +9,9 @@ import { cn } from "@prisma-docs/ui/lib/cn";
 interface CardData {
   id: string;
   title: string;
-  subtitle: string;
-  image: string;
+  subtitle?: string;
+  children?: React.Node;
+  image?: string;
   link: string;
   icon: string;
   row: "top" | "center";
@@ -33,7 +34,13 @@ interface BentoProps {
   color?: "orm" | "ppg";
 }
 
-const HeroContent = ({ className = "", hero }: { className?: string; hero?: React.ReactNode }) =>
+const HeroContent = ({
+  className = "",
+  hero,
+}: {
+  className?: string;
+  hero?: React.ReactNode;
+}) =>
   hero || (
     <div
       className={cn(
@@ -80,11 +87,19 @@ export const Bento = ({ bentoSection, hero, color }: BentoProps) => {
 
         <div className="hidden lg:flex gap-8 mb-4 items-center justify-between">
           {firstCenterCard && (
-            <Card color={color} key={firstCenterCard.id} card={firstCenterCard} />
+            <Card
+              color={color}
+              key={firstCenterCard.id}
+              card={firstCenterCard}
+            />
           )}
 
           {secondCenterCard && (
-            <Card color={color} key={secondCenterCard.id} card={secondCenterCard} />
+            <Card
+              color={color}
+              key={secondCenterCard.id}
+              card={secondCenterCard}
+            />
           )}
         </div>
       </>
@@ -94,10 +109,11 @@ export const Bento = ({ bentoSection, hero, color }: BentoProps) => {
 
 interface CardProps {
   card: CardData;
+  className?: string;
   color?: "orm" | "ppg";
 }
 
-export const Card = ({ card, color }: CardProps) => {
+export const Card = ({ card, color, className }: CardProps) => {
   const cardRef = useRef<HTMLAnchorElement>(null);
   const cardCenterRef = useRef<{ x: number; y: number } | null>(null);
   const isCenterCard = ["4", "5"].includes(card.id);
@@ -155,7 +171,14 @@ export const Card = ({ card, color }: CardProps) => {
       href={card.link}
       target="_blank"
       rel="noopener noreferrer"
-      className={cn("box", "box-visible", "w-full", isCenterCard && "w-full md:order-0", color)}
+      className={cn(
+        className,
+        "box",
+        "box-visible",
+        "w-full",
+        isCenterCard && "w-full md:order-0",
+        color,
+      )}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -168,11 +191,14 @@ export const Card = ({ card, color }: CardProps) => {
           <h2 className="text-foreground-neutral font-sans-display text-base mt-0 mb-1 font-bold">
             {card.title}
           </h2>
-          <p className="text-foreground-neutral dark:text-foreground-neutral-weak text-sm font-normal m-0">
-            {card.subtitle}
-          </p>
+          {card.subtitle && (
+            <p className="text-foreground-neutral dark:text-foreground-neutral-weak text-sm font-normal m-0">
+              {card.subtitle}
+            </p>
+          )}
         </div>
       </div>
+      {card.children}
       {card.image && (
         <>
           <Image

@@ -22,10 +22,12 @@ interface TwoColumnItem {
   visualType: "logoGrid" | "image" | "other";
   noShadow?: boolean;
   step?: string;
+  visualClass?: string;
 }
 
 interface CardSectionProps {
   cardSection: TwoColumnItem[];
+  className?: string;
 }
 
 const imageShadowClass = "shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)]";
@@ -98,7 +100,10 @@ const ThemeImagePair = ({
 }: ThemeImagePairProps) => (
   <div className={wrapperClassName}>
     <Image
-      className={cn("hidden dark:block w-full h-auto", !noShadow && imageShadowClass)}
+      className={cn(
+        "hidden dark:block w-full h-auto",
+        !noShadow && imageShadowClass,
+      )}
       src={`${imageUrl}.svg`}
       alt={alt}
       width={width}
@@ -108,7 +113,10 @@ const ThemeImagePair = ({
       loading={loading}
     />
     <Image
-      className={cn("block dark:hidden w-full h-auto", !noShadow && imageShadowClass)}
+      className={cn(
+        "block dark:hidden w-full h-auto",
+        !noShadow && imageShadowClass,
+      )}
       src={`${imageUrl}_light.svg`}
       alt={alt}
       width={width}
@@ -164,7 +172,13 @@ const ImageVisual = ({ item, isLcpImage }: ImageVisualProps) => {
   );
 };
 
-const SectionVisual = ({ item, isLcpImage }: { item: TwoColumnItem; isLcpImage: boolean }) => {
+const SectionVisual = ({
+  item,
+  isLcpImage,
+}: {
+  item: TwoColumnItem;
+  isLcpImage: boolean;
+}) => {
   if (item.visualType === "other") {
     return item.other ? <>{item.other}</> : null;
   }
@@ -198,7 +212,7 @@ const CardSectionItem = ({
         item.visualPosition === "left" && "lg:flex-row-reverse flex-col",
         item.visualPosition === "right" && "md:flex-row flex-col",
         item.alignItems,
-        item.step && "items-start! flex-row! justify-between",
+        item.step && "items-start! flex-row! justify-start sm:gap-12! gap-4!",
       )}
     >
       {item.step && <StepIndicator icon={item.step} isActive={isActive} />}
@@ -216,6 +230,7 @@ const CardSectionItem = ({
         <div
           className={cn(
             "flex-1 min-w-0 overflow-visible w-full lg:max-w-unset max-w-137 mt-3 mx-auto",
+            item.visualClass,
             item.visualType === "logoGrid" ? "max-w-full" : "lg:w-full",
           )}
         >
@@ -227,7 +242,7 @@ const CardSectionItem = ({
   </section>
 );
 
-export const CardSection = ({ cardSection }: CardSectionProps) => {
+export const CardSection = ({ cardSection, className }: CardSectionProps) => {
   const [active, setActive] = useState(0);
   const [progressHeight, setProgressHeight] = useState(0);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
@@ -247,7 +262,8 @@ export const CardSection = ({ cardSection }: CardSectionProps) => {
         if (!containerRef.current) return;
 
         const container = containerRef.current;
-        const position = container.getBoundingClientRect().y * -1 + window.innerHeight * 0.8;
+        const position =
+          container.getBoundingClientRect().y * -1 + window.innerHeight * 0.8;
 
         setProgressHeight(position);
 
@@ -285,6 +301,7 @@ export const CardSection = ({ cardSection }: CardSectionProps) => {
       className={cn(
         "max-w-[1232px] mx-auto mt-8 px-0 sm:px-4 overflow-visible",
         hasSteps && "flex-col md:flex-row items-start gap-6! relative",
+        className,
       )}
     >
       {hasSteps && (
