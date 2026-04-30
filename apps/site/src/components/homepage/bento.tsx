@@ -10,7 +10,7 @@ interface CardData {
   id: string;
   title: string;
   subtitle?: string;
-  children?: React.Node;
+  children?: React.ReactNode;
   image?: string;
   link: string;
   icon: string;
