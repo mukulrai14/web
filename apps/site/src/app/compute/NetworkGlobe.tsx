@@ -52,6 +52,8 @@ const MARKER_ELEVATION = 0;
 const ARC_HEIGHT = 0.5;
 const ARC_WIDTH = 0.4;
 const EASE = 0.08;
+const AUTO_ROTATE_SPEED = 0.003;
+const FOCUS_PAUSE_MS = 3000;
 
 // ─── Colors ───────────────────────────────────────────────────────────────────
 
@@ -103,6 +105,10 @@ export function NetworkGlobe() {
   // Arcs for the currently-focused region — written by button clicks.
   const arcsRef = useRef(getArcs("SF01"));
 
+  // Auto-rotation state — true by default, paused briefly after a click.
+  const autoRotatingRef = useRef(true);
+  const pauseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const state = { label: "Live", color: "ppg" };
 
   useEffect(() => {
@@ -116,6 +122,16 @@ export function NetworkGlobe() {
     // Snap to the nearest equivalent angle so the globe takes the short path.
     targetPhiRef.current = nearestPhi(rawPhi, phiRef.current);
     targetThetaRef.current = rawTheta;
+
+    // Pause auto-rotation while the globe travels to and dwells on the region.
+    autoRotatingRef.current = false;
+    if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
+    pauseTimerRef.current = setTimeout(() => {
+      // Sync the target to where the globe actually is so rotation resumes
+      // smoothly from the current position instead of jumping.
+      targetPhiRef.current = phiRef.current;
+      autoRotatingRef.current = true;
+    }, FOCUS_PAUSE_MS);
   }, []);
 
   useEffect(() => {
@@ -134,6 +150,11 @@ export function NetworkGlobe() {
     const tick = () => {
       if (!globe) return;
       const colors = isDarkRef.current ? DARK_COLORS : LIGHT_COLORS;
+
+      // Advance the target while auto-rotating so the globe drifts continuously.
+      if (autoRotatingRef.current) {
+        targetPhiRef.current += AUTO_ROTATE_SPEED;
+      }
 
       // Ease phi and theta toward their targets each frame.
       phiRef.current += (targetPhiRef.current - phiRef.current) * EASE;
@@ -219,6 +240,7 @@ export function NetworkGlobe() {
       canvas.remove();
       ro.disconnect();
       g?.destroy();
+      if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
     };
   }, []);
 

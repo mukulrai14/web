@@ -13,17 +13,17 @@ export const dark = {
 } as const;
 
 export const light = {
-  colorBackgroundDefault: "#99f6e4",
-  colorBackgroundNeutral: "#99f6e4",
-  colorBackgroundNeutralWeak: "#99f6e4",
-  colorForegroundNeutral: "#99f6e4",
-  colorForegroundNeutralWeak: "#99f6e4",
-  colorForegroundPpg: "#99f6e4",
-  colorForegroundPpgStrong: "#99f6e4",
-  colorForegroundPpgWeak: "#ffffff",
-  colorForegroundPpgReverseWeak: "#99f6e4",
-  colorStrokePpg: "#99f6e4",
-  colorStrokePpgWeak: "#99f6e4",
+  colorBackgroundDefault: "#CCFBF1", // --color-background-default
+  colorBackgroundNeutral: "#f3f4f6", // --color-background-neutral
+  colorBackgroundNeutralWeak: "#f9fafb", // --color-background-neutral-weak
+  colorForegroundNeutral: "#111827", // --color-foreground-neutral
+  colorForegroundNeutralWeak: "#6b7280", // --color-foreground-neutral-weak
+  colorForegroundPpg: "#0d9488", // --color-foreground-ppg
+  colorForegroundPpgStrong: "#0f766e", // --color-foreground-ppg-strong
+  colorForegroundPpgWeak: "#CCFBF1", // --color-foreground-ppg-weak
+  colorForegroundPpgReverseWeak: "#99f6e4", // --color-foreground-ppg-reverse-weak
+  colorStrokePpg: "#0d9488", // --color-stroke-ppg
+  colorStrokePpgWeak: "#99f6e4", // --color-stroke-ppg-weak
 } as const;
 
 export function hexToRgb01(hex: string): [number, number, number] {
