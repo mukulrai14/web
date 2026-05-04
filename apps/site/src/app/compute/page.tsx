@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { Button, Card, Action, Badge } from "@prisma/eclipse";
 import { Card as BentoCard } from "@/components/homepage/bento";
-import { GlobeComp } from "@/components/globe";
 import { cn } from "@/lib/cn";
 import { CardSection } from "@/components/homepage/card-section/card-section";
 import {
