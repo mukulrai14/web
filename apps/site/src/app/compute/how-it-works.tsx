@@ -1148,25 +1148,25 @@ const DB_OPTIONS = [
   {
     id: "ppg",
     name: "Prisma Postgres",
-    icon: "fa-regular fa-fire",
+    icon: "fa-regular fa-chart-pyramid",
     host: "db.prisma-data.com",
   },
   {
     id: "supabase",
     name: "Supabase",
-    icon: "fa-regular fa-bolt",
+    icon: "fa-kit-duotone fa-supabase",
     host: "db.supabase.co",
   },
   {
     id: "neon",
     name: "Neon",
-    icon: "fa-regular fa-cloud-arrow-up",
+    icon: "fa-kit-duotone fa-neon",
     host: "ep-calm.neon.tech",
   },
   {
     id: "rds",
     name: "Amazon RDS",
-    icon: "fa-regular fa-cloud",
+    icon: "fa-brands fa-aws",
     host: "prod.rds.amazonaws.com",
   },
   {
@@ -1178,7 +1178,7 @@ const DB_OPTIONS = [
   {
     id: "self",
     name: "Self-hosted",
-    icon: "fa-regular fa-hard-drive",
+    icon: "fa-regular fa-server",
     host: "10.0.4.12",
   },
 ];
@@ -1361,7 +1361,7 @@ function ZeroConfigBYO() {
           </div>
 
           {/* Runtime section */}
-          <div className="w-full md:w-64 md:shrink-0 p-4 md:pl-0 flex flex-col gap-3 border-t border-stroke-neutral md:border-t-0 md:border-l">
+          <div className="w-full md:w-64 md:shrink-0 p-4 md:pl-0 flex flex-col gap-3 border-t border-stroke-neutral md:border-t-0 ">
             {/* RUNTIME header */}
             <div className="flex items-center gap-3">
               <i className="fa-regular fa-microchip text-foreground-ppg text-base shrink-0" />
@@ -1441,9 +1441,6 @@ function ZeroConfigBYO() {
                   )}
                 >
                   <i className={cn(opt.icon, "text-sm")} />
-                  <span className="text-[8px] leading-tight text-center">
-                    {opt.name}
-                  </span>
                 </button>
               ))}
             </div>
@@ -1618,7 +1615,7 @@ export function HowItWorks() {
                 className={cn(
                   "flex-3",
                   "bg-background-default min-h-72 lg:min-h-0",
-                  "border-t border-stroke-neutral lg:border-t-0 lg:border-l",
+                  "border-t border-stroke-neutral lg:border-t-0",
                 )}
               >
                 {tab.visual}
