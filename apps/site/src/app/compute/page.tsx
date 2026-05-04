@@ -15,6 +15,7 @@ import {
   StatefulExecutionCard,
 } from "./how-it-works";
 import { CobeGlobe } from "./CobeGlobe";
+import { NetworkGlobe } from "./NetworkGlobe";
 
 const FEATURES = [
   {
@@ -140,8 +141,9 @@ const FEATURES = [
     mobileImageAlt: null,
     logos: null,
     useDefaultLogos: false,
+    other: <NetworkGlobe />,
     visualPosition: "right" as const,
-    visualType: "image" as const,
+    visualType: "other" as const,
     noShadow: true,
     visualClass: "md:flex-2! lg:flex-3! ml-0 max-w-[unset]!",
     step: "fa-regular fa-route",

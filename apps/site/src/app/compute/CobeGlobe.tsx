@@ -40,32 +40,21 @@ const MARKER_SIZE = 0.025;
 const MARKER_ELEVATION = 0;
 const ARC_HEIGHT = 0.5;
 const ARC_WIDTH = 0.4;
-const AUTO_ROTATE_SPEED = 0.003;
+const AUTO_ROTATE_SPEED = 0.0003;
 
 // ─── Theme presets ─────────────────────────────────────────────────────────────
+const _lightGlobe = cobeGlobe(true);
 
 const LIGHT_COLORS = {
-  dark: -1.8,
-  diffuse: 1,
+  dark: -2 as number,
+  diffuse: 0.6 as number,
   mapBrightness: 6,
   mapBaseBrightness: MAP_BASE_BRIGHTNESS,
-  baseColor: hexToRgb01(light.colorForegroundNeutralWeak) as [
-    number,
-    number,
-    number,
-  ],
-  markerColor: hexToRgb01(light.colorForegroundPpg) as [number, number, number],
-  glowColor: hexToRgb01(light.colorBackgroundDefault) as [
-    number,
-    number,
-    number,
-  ],
-  arcColor: hexToRgb01(light.colorForegroundPpg) as [number, number, number],
-  markerDotRgb: hexToRgb01(light.colorForegroundPpg) as [
-    number,
-    number,
-    number,
-  ],
+  baseColor: _lightGlobe.baseColor as [number, number, number],
+  markerColor: _lightGlobe.markerColor as [number, number, number],
+  glowColor: _lightGlobe.glowColor as [number, number, number],
+  arcColor: _lightGlobe.arcColor as [number, number, number],
+  markerDotRgb: COBE_MARKER_DOT_RGB(false),
 };
 
 /** Dark mode — existing cobeGlobe tokens, unchanged. */

@@ -13,16 +13,16 @@ export const dark = {
 } as const;
 
 export const light = {
-  colorBackgroundDefault: "#ffffff",
-  colorBackgroundNeutral: "#f3f4f6",
-  colorBackgroundNeutralWeak: "#f9fafb",
-  colorForegroundNeutral: "#111827",
-  colorForegroundNeutralWeak: "#6b7280",
-  colorForegroundPpg: "#0d9488",
-  colorForegroundPpgStrong: "#0f766e",
-  colorForegroundPpgWeak: "#14b8a6",
+  colorBackgroundDefault: "#99f6e4",
+  colorBackgroundNeutral: "#99f6e4",
+  colorBackgroundNeutralWeak: "#99f6e4",
+  colorForegroundNeutral: "#99f6e4",
+  colorForegroundNeutralWeak: "#99f6e4",
+  colorForegroundPpg: "#99f6e4",
+  colorForegroundPpgStrong: "#99f6e4",
+  colorForegroundPpgWeak: "#ffffff",
   colorForegroundPpgReverseWeak: "#99f6e4",
-  colorStrokePpg: "#0d9488",
+  colorStrokePpg: "#99f6e4",
   colorStrokePpgWeak: "#99f6e4",
 } as const;
 
@@ -36,14 +36,25 @@ export function hexToRgb01(hex: string): [number, number, number] {
 }
 
 /** Per-marker tint so cobe uses the colored marker shader path. */
-export const COBE_MARKER_DOT_RGB = hexToRgb01(
-  dark.colorForegroundPpgReverseWeak,
-) as [number, number, number];
+export const COBE_MARKER_DOT_RGB = (isLight?: boolean) =>
+  hexToRgb01(
+    isLight
+      ? light.colorForegroundPpgReverseWeak
+      : dark.colorForegroundPpgReverseWeak,
+  ) as [number, number, number];
 
 /** RGB 0–1 for cobe `baseColor`, `markerColor`, `glowColor`, `arcColor`. */
-export const cobeGlobe = {
-  baseColor: hexToRgb01(dark.colorForegroundPpgWeak),
-  markerColor: COBE_MARKER_DOT_RGB,
-  glowColor: hexToRgb01(dark.colorForegroundPpgReverseWeak),
-  arcColor: hexToRgb01(dark.colorForegroundPpg),
-};
+export const cobeGlobe = (isLight?: boolean) => ({
+  baseColor: hexToRgb01(
+    isLight ? light.colorForegroundPpgWeak : dark.colorForegroundPpgWeak,
+  ),
+  markerColor: COBE_MARKER_DOT_RGB(isLight),
+  glowColor: hexToRgb01(
+    isLight
+      ? light.colorForegroundPpgReverseWeak
+      : dark.colorForegroundPpgReverseWeak,
+  ),
+  arcColor: hexToRgb01(
+    isLight ? light.colorForegroundPpg : dark.colorForegroundPpg,
+  ),
+});
