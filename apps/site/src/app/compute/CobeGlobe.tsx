@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import createGlobe from "cobe";
 import { useTheme } from "@prisma-docs/ui/components/theme-provider";
 import { COBE_MARKER_DOT_RGB, cobeGlobe, hexToRgb01, light } from "./tokens";
@@ -53,22 +53,21 @@ const LIGHT_COLORS = {
     number,
     number,
     number,
-  ], // #6b7280
-  markerColor: hexToRgb01(light.colorForegroundPpg) as [number, number, number], // #0d9488
+  ],
+  markerColor: hexToRgb01(light.colorForegroundPpg) as [number, number, number],
   glowColor: hexToRgb01(light.colorBackgroundDefault) as [
     number,
     number,
     number,
-  ], // #ffffff
-  arcColor: hexToRgb01(light.colorForegroundPpg) as [number, number, number], // #0d9488
+  ],
+  arcColor: hexToRgb01(light.colorForegroundPpg) as [number, number, number],
   markerDotRgb: hexToRgb01(light.colorForegroundPpg) as [
     number,
     number,
     number,
-  ], // #0d9488
+  ],
 };
 
-/** Dark mode — existing cobeGlobe tokens, unchanged. */
 const DARK_COLORS = {
   dark: 1,
   diffuse: 0.6,
@@ -84,13 +83,17 @@ const DARK_COLORS = {
 export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
   const { resolvedTheme } = useTheme();
 
-  // Store theme in a ref so the RAF tick closure always reads the latest value
-  // without needing to be recreated. Theme changes take effect on the next frame.
+  // Starts hidden; set to true after the globe renders its first frame.
+  // Resets to false automatically on unmount — React StrictMode safe.
+  const [isRevealed, setIsRevealed] = useState(false);
+
   const showLabelsRef = useRef(showLabels);
   useEffect(() => {
     showLabelsRef.current = showLabels;
   }, [showLabels]);
 
+  // Store theme in a ref so the RAF tick closure always reads the latest value
+  // without needing to be recreated. Theme changes take effect on the next frame.
   const isDarkRef = useRef(resolvedTheme === "dark");
   useEffect(() => {
     isDarkRef.current = resolvedTheme === "dark";
@@ -136,13 +139,11 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Own opacity imperatively so React re-renders can't reset it back to 0.
-    canvas.style.opacity = "0";
-    canvas.style.transition = "opacity 0.8s ease";
-
     let animationId = 0;
     let globe: ReturnType<typeof createGlobe> | null = null;
 
+    // Only push time-varying values every frame; static config (mapSamples,
+    // scale, markers, arcs) is set once at creation time.
     const tick = () => {
       if (!globe) return;
       const colors = isDarkRef.current ? DARK_COLORS : LIGHT_COLORS;
@@ -153,7 +154,7 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
         width: canvas.offsetWidth,
         height: canvas.offsetWidth,
         // Push current theme colors every frame — this is how cobe v2 handles
-        // live updates without recreating the globe.
+        // live theme updates without recreating the globe.
         dark: colors.dark,
         diffuse: colors.diffuse,
         mapBrightness: colors.mapBrightness,
@@ -205,8 +206,8 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
       });
 
       globeRef.current = globe;
-      canvas.style.opacity = "1";
 
+      // Inject marker labels using CSS anchor positioning.
       if (showLabelsRef.current) {
         const wrap = canvas.parentElement;
         if (wrap) {
@@ -214,8 +215,7 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
             const nameEl = document.createElement("div");
             nameEl.className = "cobe-marker-label";
             nameEl.textContent = m.name;
-            // CSS anchor positioning — pins the label to the marker's anchor
-            // div that COBE creates inside the wrapper at the correct globe position.
+            // Pins the label to the anchor div that cobe creates inside the wrapper.
             nameEl.style.position = "absolute";
             nameEl.style.setProperty("position-anchor", `--cobe-${m.id}`);
             nameEl.style.setProperty("top", "anchor(bottom)");
@@ -237,22 +237,30 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
         }
       }
 
+      // Kick off the render loop, then use a double-rAF to reveal the globe
+      // only after it has painted at least one real frame — this guarantees a
+      // smooth 0→1 opacity transition with no blank-canvas flash.
       animationId = requestAnimationFrame(tick);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsRevealed(true);
+        });
+      });
     };
+
+    // Mount immediately if the canvas already has layout dimensions (the common
+    // case). The ResizeObserver below acts as a fallback for deferred layouts.
+    mountGlobe();
 
     const ro = new ResizeObserver(() => {
       if (!globe) mountGlobe();
-      else {
-        const w = canvas.offsetWidth;
-        if (w > 0) globe.update({ width: w, height: w });
-      }
     });
     ro.observe(canvas.parentElement ?? canvas);
-    mountGlobe();
 
     return () => {
+      // Null out first so the in-flight tick sees no globe and bails immediately.
+      globe = null;
       cancelAnimationFrame(animationId);
-      globe = null; // stop tick from firing after cleanup
       ro.disconnect();
       canvas.parentElement
         ?.querySelectorAll(".cobe-marker-label")
@@ -263,16 +271,25 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
   }, []); // globe lives for the component lifetime; theme handled via isDarkRef
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="cobe-canvas"
-      onPointerDown={(e) => {
-        pointerInteracting.current = { x: e.clientX, y: e.clientY };
-        e.currentTarget.style.cursor = "grabbing";
+    <div
+      style={{
+        width: "100%",
+        aspectRatio: "1 / 1",
+        position: "relative",
+        opacity: isRevealed ? 1 : 0,
+        transition: "opacity 1s ease",
       }}
-      style={{ width: "100%", aspectRatio: "1 / 1", display: "block" }}
-      role="img"
-      aria-label="Rotating WebGL globe with data center markers and arcs"
-    />
+    >
+      <canvas
+        ref={canvasRef}
+        onPointerDown={(e) => {
+          pointerInteracting.current = { x: e.clientX, y: e.clientY };
+          e.currentTarget.style.cursor = "grabbing";
+        }}
+        style={{ width: "100%", height: "100%", display: "block" }}
+        role="img"
+        aria-label="Rotating WebGL globe with data center markers and arcs"
+      />
+    </div>
   );
 }
