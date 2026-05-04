@@ -45,7 +45,7 @@ const AUTO_ROTATE_SPEED = 0.003;
 // ─── Theme presets ─────────────────────────────────────────────────────────────
 
 const LIGHT_COLORS = {
-  dark: 0,
+  dark: -1.8,
   diffuse: 1,
   mapBrightness: 6,
   mapBaseBrightness: MAP_BASE_BRIGHTNESS,
@@ -68,6 +68,7 @@ const LIGHT_COLORS = {
   ],
 };
 
+/** Dark mode — existing cobeGlobe tokens, unchanged. */
 const DARK_COLORS = {
   dark: 1,
   diffuse: 0.6,
@@ -83,24 +84,30 @@ const DARK_COLORS = {
 export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
   const { resolvedTheme } = useTheme();
 
-  // Starts hidden; set to true after the globe renders its first frame.
-  // Resets to false automatically on unmount — React StrictMode safe.
+  // isRevealed drives the container opacity. Starts false (invisible), set to
+  // true once the globe has rendered its first real frame. Resets automatically
+  // on unmount → React StrictMode safe, no manual cleanup needed.
   const [isRevealed, setIsRevealed] = useState(false);
 
+  // Refs that the RAF tick closure reads on every frame without needing to
+  // be recreated (avoids stale closures with [] deps).
+  const isDarkRef = useRef(resolvedTheme === "dark");
   const showLabelsRef = useRef(showLabels);
+
+  useEffect(() => {
+    isDarkRef.current = resolvedTheme === "dark";
+  }, [resolvedTheme]);
   useEffect(() => {
     showLabelsRef.current = showLabels;
   }, [showLabels]);
 
-  // Store theme in a ref so the RAF tick closure always reads the latest value
-  // without needing to be recreated. Theme changes take effect on the next frame.
-  const isDarkRef = useRef(resolvedTheme === "dark");
-  useEffect(() => {
-    isDarkRef.current = resolvedTheme === "dark";
-  }, [resolvedTheme]);
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // containerRef is the only React-managed DOM node. The canvas is created
+  // imperatively so React's reconciler can never conflict with COBE v2's
+  // own canvas-wrapping (COBE moves the canvas into its own <div> during init).
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const globeRef = useRef<ReturnType<typeof createGlobe> | null>(null);
+
   const pointerInteracting = useRef<{ x: number; y: number } | null>(null);
   const dragOffset = useRef({ phi: 0, theta: 0 });
   const phiRef = useRef(0);
@@ -108,9 +115,10 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
 
   const handlePointerMove = useCallback((e: PointerEvent) => {
     if (pointerInteracting.current !== null) {
-      const deltaX = e.clientX - pointerInteracting.current.x;
-      const deltaY = e.clientY - pointerInteracting.current.y;
-      dragOffset.current = { phi: deltaX / 150, theta: deltaY / 300 };
+      dragOffset.current = {
+        phi: (e.clientX - pointerInteracting.current.x) / 150,
+        theta: (e.clientY - pointerInteracting.current.y) / 300,
+      };
     }
   }, []);
 
@@ -136,14 +144,25 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
   }, [handlePointerMove, handlePointerUp]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Create the canvas imperatively — it never enters React's virtual DOM,
+    // so React reconciliation can't move it back after COBE wraps it.
+    const canvas = document.createElement("canvas");
+    canvas.style.cssText = "width:100%;height:100%;display:block;";
+    container.appendChild(canvas);
+    canvasRef.current = canvas;
+
+    const handlePointerDown = (e: PointerEvent) => {
+      pointerInteracting.current = { x: e.clientX, y: e.clientY };
+      canvas.style.cursor = "grabbing";
+    };
+    canvas.addEventListener("pointerdown", handlePointerDown);
 
     let animationId = 0;
     let globe: ReturnType<typeof createGlobe> | null = null;
 
-    // Only push time-varying values every frame; static config (mapSamples,
-    // scale, markers, arcs) is set once at creation time.
     const tick = () => {
       if (!globe) return;
       const colors = isDarkRef.current ? DARK_COLORS : LIGHT_COLORS;
@@ -153,8 +172,6 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
         theta: THETA + thetaOffsetRef.current + dragOffset.current.theta,
         width: canvas.offsetWidth,
         height: canvas.offsetWidth,
-        // Push current theme colors every frame — this is how cobe v2 handles
-        // live theme updates without recreating the globe.
         dark: colors.dark,
         diffuse: colors.diffuse,
         mapBrightness: colors.mapBrightness,
@@ -207,39 +224,35 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
 
       globeRef.current = globe;
 
-      // Inject marker labels using CSS anchor positioning.
+      // Marker labels via CSS anchor positioning.
+      // canvas.parentElement is now COBE's wrapper div (COBE moved the canvas there).
       if (showLabelsRef.current) {
         const wrap = canvas.parentElement;
         if (wrap) {
           for (const m of DATA_CENTER_MARKERS) {
-            const nameEl = document.createElement("div");
-            nameEl.className = "cobe-marker-label";
-            nameEl.textContent = m.name;
-            // Pins the label to the anchor div that cobe creates inside the wrapper.
-            nameEl.style.position = "absolute";
-            nameEl.style.setProperty("position-anchor", `--cobe-${m.id}`);
-            nameEl.style.setProperty("top", "anchor(bottom)");
-            nameEl.style.setProperty("left", "anchor(center)");
-            nameEl.style.translate = "-50% 4px";
-            nameEl.style.whiteSpace = "nowrap";
-            nameEl.style.pointerEvents = "none";
-            nameEl.style.setProperty(
-              "opacity",
-              `var(--cobe-visible-${m.id}, 0)`,
-            );
-            nameEl.style.setProperty(
+            const el = document.createElement("div");
+            el.className = "cobe-marker-label";
+            el.textContent = m.name;
+            el.style.position = "absolute";
+            el.style.setProperty("position-anchor", `--cobe-${m.id}`);
+            el.style.setProperty("top", "anchor(bottom)");
+            el.style.setProperty("left", "anchor(center)");
+            el.style.translate = "-50% 4px";
+            el.style.whiteSpace = "nowrap";
+            el.style.pointerEvents = "none";
+            el.style.setProperty("opacity", `var(--cobe-visible-${m.id}, 0)`);
+            el.style.setProperty(
               "filter",
               `blur(calc((1 - var(--cobe-visible-${m.id}, 0)) * 6px))`,
             );
-            nameEl.style.setProperty("transition", "opacity 0.3s, filter 0.3s");
-            wrap.appendChild(nameEl);
+            el.style.setProperty("transition", "opacity 0.3s, filter 0.3s");
+            wrap.appendChild(el);
           }
         }
       }
 
-      // Kick off the render loop, then use a double-rAF to reveal the globe
-      // only after it has painted at least one real frame — this guarantees a
-      // smooth 0→1 opacity transition with no blank-canvas flash.
+      // Start the render loop, then reveal after two frames so the globe has
+      // painted at least once before the opacity transition begins.
       animationId = requestAnimationFrame(tick);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -248,30 +261,35 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
       });
     };
 
-    // Mount immediately if the canvas already has layout dimensions (the common
-    // case). The ResizeObserver below acts as a fallback for deferred layouts.
+    // Try immediately (canvas already has layout after first paint).
     mountGlobe();
 
+    // Fallback: some layouts defer sizing (e.g. flex/grid children).
     const ro = new ResizeObserver(() => {
       if (!globe) mountGlobe();
     });
-    ro.observe(canvas.parentElement ?? canvas);
+    ro.observe(container);
 
     return () => {
-      // Null out first so the in-flight tick sees no globe and bails immediately.
-      globe = null;
+      globe = null; // stop tick guard before anything else
       cancelAnimationFrame(animationId);
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.remove();
+      canvasRef.current = null;
       ro.disconnect();
-      canvas.parentElement
-        ?.querySelectorAll(".cobe-marker-label")
+      container
+        .querySelectorAll(".cobe-marker-label")
         .forEach((el) => el.remove());
       globeRef.current?.destroy();
       globeRef.current = null;
     };
-  }, []); // globe lives for the component lifetime; theme handled via isDarkRef
+  }, []); // globe lives for the component lifetime; theme via isDarkRef
 
   return (
     <div
+      ref={containerRef}
+      role="img"
+      aria-label="Rotating WebGL globe with data center markers and arcs"
       style={{
         width: "100%",
         aspectRatio: "1 / 1",
@@ -279,17 +297,6 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
         opacity: isRevealed ? 1 : 0,
         transition: "opacity 1s ease",
       }}
-    >
-      <canvas
-        ref={canvasRef}
-        onPointerDown={(e) => {
-          pointerInteracting.current = { x: e.clientX, y: e.clientY };
-          e.currentTarget.style.cursor = "grabbing";
-        }}
-        style={{ width: "100%", height: "100%", display: "block" }}
-        role="img"
-        aria-label="Rotating WebGL globe with data center markers and arcs"
-      />
-    </div>
+    />
   );
 }
