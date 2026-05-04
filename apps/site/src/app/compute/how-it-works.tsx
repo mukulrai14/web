@@ -477,7 +477,7 @@ function WbDeployReplay() {
   return (
     <div
       ref={containerRef}
-      className="flex flex-col md:flex-row gap-3 p-4 font-mono min-h-72"
+      className="flex flex-col md:flex-row gap-3 font-mono min-h-72"
     >
       {/* Terminal */}
       <div className="flex-1 min-w-0 flex flex-col">
@@ -903,7 +903,7 @@ function WbConfigMap() {
   return (
     <div
       ref={containerRef}
-      className="flex flex-col md:flex-row gap-3 p-4 font-mono text-xs min-h-72"
+      className="flex flex-col md:flex-row gap-3 font-mono text-xs min-h-72"
     >
       {/* Code editor */}
       <div className="flex-1 min-w-0 rounded-lg border border-stroke-neutral overflow-hidden bg-background-default flex flex-col">
@@ -1065,10 +1065,7 @@ function WbRuntimeMonitor() {
   const s = String(tick % 60).padStart(2, "0");
 
   return (
-    <div
-      ref={containerRef}
-      className="p-5 flex flex-col gap-4 font-mono min-h-72"
-    >
+    <div ref={containerRef} className="flex flex-col gap-4 font-mono min-h-72">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -1323,7 +1320,7 @@ function ZeroConfigBYO() {
   };
 
   return (
-    <div ref={containerRef} className="p-4 font-mono text-xs min-h-72">
+    <div ref={containerRef} className="font-mono text-xs min-h-72">
       <div className="rounded-xl border border-stroke-neutral overflow-hidden">
         {/* Panel header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-stroke-neutral bg-background-neutral-weaker">
@@ -1637,7 +1634,7 @@ export function HowItWorks() {
                 // Reset Eclipse defaults & build panel style
                 "group flex items-center justify-left",
                 "sm:flex-1 flex-row gap-2",
-                "px-2! py-3! sm:px-4 sm:py-3 h-auto rounded-none",
+                "px-5 py-3 sm:px-5 sm:py-5 h-auto rounded-none",
                 // Backgrounds
                 "bg-background-neutral-weaker data-[state=active]:bg-background-neutral-weak",
                 // Border — bottom acts as active indicator
@@ -1660,7 +1657,7 @@ export function HowItWorks() {
               {/* Label: always visible on sm+; only when active on mobile */}
               <span
                 className={cn(
-                  "font-sans-display font-bold text-xl leading-tight text-center",
+                  "font-sans-display font-bold text-xl leading-tight text-center [font-variation-settings:'wdth'_125]",
                   "text-foreground-neutral-weak group-data-[state=active]:text-foreground-neutral",
                   // Hide on mobile unless active
                   "hidden group-data-[state=active]:inline sm:inline",
@@ -1695,7 +1692,7 @@ export function HowItWorks() {
               {/* Visual pane */}
               <div
                 className={cn(
-                  "flex-3",
+                  "flex-3 p-6",
                   "bg-background-default min-h-72 lg:min-h-0",
                   "border-t border-stroke-neutral lg:border-t-0",
                 )}
