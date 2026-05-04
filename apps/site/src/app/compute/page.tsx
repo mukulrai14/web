@@ -9,13 +9,16 @@ import {
   TemplateCards,
   WorkloadCards,
 } from "./components";
+// Heavy client components are dynamically imported with ssr:false.
+// The dynamic() calls with ssr:false must live in a Client Component boundary;
+// client-components.tsx is that boundary.
 import {
-  HowItWorks,
+  CobeGlobe,
+  NetworkGlobe,
   DeployTerminal,
   StatefulExecutionCard,
-} from "./how-it-works";
-import { CobeGlobe } from "./CobeGlobe";
-import { NetworkGlobe } from "./NetworkGlobe";
+  HowItWorks,
+} from "./client-components";
 
 const FEATURES = [
   {
@@ -275,22 +278,22 @@ const WHY_FEATURES = [
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Prisma Query Insights",
+    title: "Prisma Compute",
     description:
-      "Understand why your database queries are slow, see their real impact in production, and generate a structured AI prompt to improve them.",
+      "Deploy TypeScript to production. Push code, it runs. Long-running processes, background jobs, APIs, and AI agents — no cold starts, no timeouts.",
     openGraph: {
-      title: "Prisma Query Insights",
+      title: "Prisma Compute",
       description:
-        "Understand why your database queries are slow, see their real impact in production, and generate a structured AI prompt to improve them.",
-      url: "https://www.prisma.io/query-insights",
+        "Deploy TypeScript to production. Push code, it runs. Long-running processes, background jobs, APIs, and AI agents — no cold starts, no timeouts.",
+      url: "https://www.prisma.io/compute",
       type: "website",
       siteName: "Prisma",
       images: [
         {
-          url: "/og/og-query-insights.png",
+          url: "/og/og-compute.png",
           width: 1200,
           height: 630,
-          alt: "Prisma Query Insights",
+          alt: "Prisma Compute",
         },
       ],
     },

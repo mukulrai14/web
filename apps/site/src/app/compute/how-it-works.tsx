@@ -727,237 +727,6 @@ function WbDeployReplay() {
 }
 
 // ---------------------------------------------------------------------------
-// WbConfigMap — Config tab art
-// ---------------------------------------------------------------------------
-
-type TokenClass = "kw" | "st" | "fn" | "";
-type TokenLine = { k: string | null; tokens: [TokenClass, string][] };
-
-const CONFIG_TOKENS: TokenLine[] = [
-  {
-    k: null,
-    tokens: [
-      ["kw", "import"],
-      ["", "  { defineConfig } "],
-      ["kw", "from"],
-      ["", " "],
-      ["st", '"prisma/config"'],
-    ],
-  },
-  { k: null, tokens: [["", ""]] },
-  {
-    k: null,
-    tokens: [
-      ["kw", "export default"],
-      ["", " "],
-      ["fn", "defineConfig"],
-      ["", "({"],
-    ],
-  },
-  { k: null, tokens: [["", "  services: {"]] },
-  {
-    k: "api",
-    tokens: [
-      ["", "    api:    { entry: "],
-      ["st", '"./src/api.ts"'],
-      ["", ", region: "],
-      ["st", '"us-east-1"'],
-      ["", " },"],
-    ],
-  },
-  {
-    k: "worker",
-    tokens: [
-      ["", "    worker: { entry: "],
-      ["st", '"./src/worker.ts"'],
-      ["", ", schedule: "],
-      ["st", '"*/5 * * * *"'],
-      ["", " },"],
-    ],
-  },
-  { k: null, tokens: [["", "  },"]] },
-  {
-    k: "db",
-    tokens: [
-      ["", "  database: { provider: "],
-      ["st", '"prisma-postgres"'],
-      ["", " },"],
-    ],
-  },
-  { k: null, tokens: [["", "})"]] },
-];
-
-const CONFIG_TOTAL_CHARS = CONFIG_TOKENS.reduce(
-  (a, l) => a + l.tokens.reduce((b, [, t]) => b + t.length, 0) + 1,
-  0,
-);
-
-const CONFIG_NODES = [
-  {
-    key: "api",
-    icon: "fa-regular fa-globe",
-    kind: "service",
-    title: "api",
-    sub: "https://api.your-app.prisma.run",
-  },
-  {
-    key: "worker",
-    icon: "fa-regular fa-clock-rotate-left",
-    kind: "scheduled",
-    title: "worker",
-    sub: "every 5 min · */5 * * * *",
-  },
-  {
-    key: "db",
-    icon: "fa-regular fa-database",
-    kind: "database",
-    title: "prisma-postgres",
-    sub: "DATABASE_URL injected",
-  },
-];
-
-function WbConfigMap() {
-  const [typed, setTyped] = useState(0);
-  const [hovering, setHovering] = useState<string | null>(null);
-  const [cycleIdx, setCycleIdx] = useState(0);
-
-  // #1 + #2 + #5 — pause typewriter + node-cycle when off-screen; reset on re-entry.
-  const containerRef = useRef<HTMLDivElement>(null);
-  const paused = useShouldPause(containerRef, () => {
-    setTyped(0);
-    setCycleIdx(0);
-  });
-
-  const done = typed >= CONFIG_TOTAL_CHARS;
-
-  useEffect(() => {
-    if (done || paused) return;
-    const id = setInterval(
-      () => setTyped((t) => Math.min(CONFIG_TOTAL_CHARS, t + 8)),
-      20,
-    );
-    return () => clearInterval(id);
-  }, [done, paused]);
-
-  useEffect(() => {
-    if (!done || hovering || paused) return;
-    const id = setInterval(
-      () => setCycleIdx((c) => (c + 1) % CONFIG_NODES.length),
-      4000,
-    );
-    return () => clearInterval(id);
-  }, [done, hovering, paused]);
-
-  const active = done ? (hovering ?? CONFIG_NODES[cycleIdx].key) : null;
-
-  let consumed = 0;
-  const renderedLines = CONFIG_TOKENS.map((line, li) => {
-    const lineLen = line.tokens.reduce((s, [, t]) => s + t.length, 0);
-    const lineStart = consumed;
-    const lineEnd = consumed + lineLen;
-    consumed = lineEnd + 1;
-    if (typed <= lineStart) return null;
-    const visibleChars = Math.max(0, Math.min(lineLen, typed - lineStart));
-    const isCurrentLine = !done && typed > lineStart && typed <= lineEnd;
-    let used = 0;
-    return (
-      <div
-        key={li}
-        className={cn(
-          "px-3 leading-5 rounded transition-colors duration-200",
-          active === line.k && line.k ? "bg-foreground-ppg/10" : "",
-        )}
-        onMouseEnter={line.k ? () => setHovering(line.k) : undefined}
-        onMouseLeave={line.k ? () => setHovering(null) : undefined}
-      >
-        {line.tokens.map(([cls, txt], ti) => {
-          if (used >= visibleChars) return null;
-          const take = Math.min(txt.length, visibleChars - used);
-          const slice = txt.slice(0, take);
-          used += take;
-          return (
-            <span
-              key={ti}
-              className={
-                cls === "kw"
-                  ? "text-purple-400"
-                  : cls === "st"
-                    ? "text-teal-300"
-                    : cls === "fn"
-                      ? "text-yellow-200"
-                      : "text-foreground-neutral"
-              }
-            >
-              {slice}
-            </span>
-          );
-        })}
-        {isCurrentLine && (
-          <span className="inline-block w-1.5 h-[0.85em] bg-foreground-ppg align-text-bottom animate-pulse" />
-        )}
-        {lineLen === 0 && <span>&nbsp;</span>}
-      </div>
-    );
-  });
-
-  return (
-    <div
-      ref={containerRef}
-      className="flex flex-col md:flex-row gap-3 font-mono text-xs min-h-72"
-    >
-      {/* Code editor */}
-      <div className="flex-1 min-w-0 rounded-lg border border-stroke-neutral overflow-hidden bg-background-default flex flex-col">
-        <div className="flex items-center gap-2 px-3 py-1.5 border-b border-stroke-neutral bg-background-neutral-weak shrink-0">
-          <i className="fa-regular fa-file-code text-foreground-ppg text-[10px]" />
-          <span className="text-foreground-neutral text-[10px]">
-            prisma.config.ts
-          </span>
-        </div>
-        <div className="py-3 flex-1 overflow-auto">{renderedLines}</div>
-      </div>
-      {/* Nodes */}
-      <div className="flex flex-col gap-2 justify-center w-full md:w-44 md:shrink-0">
-        {CONFIG_NODES.map((node) => (
-          <div
-            key={node.key}
-            className={cn(
-              "flex items-center gap-2 p-2 rounded-lg border transition-all duration-300 cursor-default",
-              active === node.key
-                ? "border-stroke-ppg bg-background-ppg/20"
-                : "border-stroke-neutral bg-background-neutral-weak",
-            )}
-            onMouseEnter={() => setHovering(node.key)}
-            onMouseLeave={() => setHovering(null)}
-          >
-            <div
-              className={cn(
-                "w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors duration-300",
-                active === node.key
-                  ? "bg-background-ppg text-foreground-ppg"
-                  : "bg-background-neutral text-foreground-neutral-weak",
-              )}
-            >
-              <i className={cn(node.icon, "text-xs")} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-[9px] text-foreground-neutral-weaker uppercase tracking-wider leading-none mb-0.5">
-                {node.kind}
-              </div>
-              <div className="text-[11px] text-foreground-neutral font-medium leading-none truncate">
-                {node.title}
-              </div>
-              <div className="text-[9px] text-foreground-neutral-weaker truncate leading-tight mt-0.5">
-                {node.sub}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // WbRuntimeMonitor — Runtime tab art
 // ---------------------------------------------------------------------------
 
@@ -1540,7 +1309,7 @@ const TABS = [
     label: "Deploy",
     icon: "fa-regular fa-rocket",
     title: "Push code, it runs",
-    visual: <WbDeployReplay />,
+    Visual: WbDeployReplay,
     description: (
       <>
         Connect a repo and run{" "}
@@ -1555,29 +1324,11 @@ const TABS = [
     ),
   },
   {
-    value: "config",
-    label: "Config",
-    icon: "fa-regular fa-file-binary",
-    title: "Zero config, total control.",
-    visual: <WbConfigMap />,
-    description: (
-      <>
-        A single{" "}
-        <code className="font-mono text-foreground-ppg">prisma.config.ts</code>{" "}
-        file. Define services, environment, and routing in TypeScript — no YAML,
-        no platform-specific DSL, no hidden defaults to fight.
-        <br />
-        <br />
-        What&apos;s in the file is what runs. No surprises.
-      </>
-    ),
-  },
-  {
     value: "runtime",
     label: "Runtime",
     icon: "fa-regular fa-microchip",
     title: "Long-lived by default.",
-    visual: <WbRuntimeMonitor />,
+    Visual: WbRuntimeMonitor,
     description: (
       <>
         Standard TypeScript on Bun. No cold starts, no execution timeouts, no
@@ -1594,7 +1345,7 @@ const TABS = [
     label: "Co-Located",
     icon: "fa-regular fa-database",
     title: "Database right next to your code.",
-    visual: <ZeroConfigBYO />,
+    Visual: ZeroConfigBYO,
     description: (
       <>
         Compute and Prisma Postgres run in the same region, connected
@@ -1613,10 +1364,17 @@ const TABS = [
 // ---------------------------------------------------------------------------
 
 export function HowItWorks() {
+  // Track the active tab so we only mount the active visual.
+  // All three visual components (WbDeployReplay, WbRuntimeMonitor, ZeroConfigBYO)
+  // run timers and animation loops — there's no reason to have all three alive
+  // simultaneously when only one is ever visible.
+  const [activeTab, setActiveTab] = useState("deploy");
+
   return (
     <div className="w-full rounded-xl border border-stroke-neutral overflow-hidden">
       <Tabs
         defaultValue="deploy"
+        onValueChange={setActiveTab}
         className="my-0 overflow-visible flex flex-col"
       >
         {/* Tab list */}
@@ -1689,7 +1447,7 @@ export function HowItWorks() {
                 </div>
               </div>
 
-              {/* Visual pane */}
+              {/* Visual pane — only mount when this tab is active. */}
               <div
                 className={cn(
                   "flex-3 p-6",
@@ -1697,7 +1455,7 @@ export function HowItWorks() {
                   "border-t border-stroke-neutral lg:border-t-0",
                 )}
               >
-                {tab.visual}
+                {activeTab === tab.value ? <tab.Visual /> : null}
               </div>
             </div>
           </TabsContent>

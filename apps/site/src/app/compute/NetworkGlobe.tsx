@@ -71,15 +71,19 @@ const FOCUS_PAUSE_MS = 3000;
 
 // ─── Colors ───────────────────────────────────────────────────────────────────
 
+// Computed once so cobeGlobe() is not called 4× per theme preset.
+const _lightGlobe = cobeGlobe(true);
+const _darkGlobe = cobeGlobe(false);
+
 const LIGHT_COLORS = {
   dark: -2 as number,
   diffuse: 0.6,
   mapBrightness: 12,
   mapBaseBrightness: MAP_BASE_BRIGHTNESS,
-  baseColor: cobeGlobe(true).baseColor as [number, number, number],
-  markerColor: cobeGlobe(true).markerColor as [number, number, number],
-  glowColor: cobeGlobe(true).glowColor as [number, number, number],
-  arcColor: cobeGlobe(true).arcColor as [number, number, number],
+  baseColor: _lightGlobe.baseColor as [number, number, number],
+  markerColor: _lightGlobe.markerColor as [number, number, number],
+  glowColor: _lightGlobe.glowColor as [number, number, number],
+  arcColor: _lightGlobe.arcColor as [number, number, number],
   markerDotRgb: COBE_MARKER_DOT_RGB(true),
 };
 
@@ -88,10 +92,10 @@ const DARK_COLORS = {
   diffuse: 0.6,
   mapBrightness: 12,
   mapBaseBrightness: MAP_BASE_BRIGHTNESS,
-  baseColor: cobeGlobe(false).baseColor as [number, number, number],
-  markerColor: cobeGlobe(false).markerColor as [number, number, number],
-  glowColor: cobeGlobe(false).glowColor as [number, number, number],
-  arcColor: cobeGlobe(false).arcColor as [number, number, number],
+  baseColor: _darkGlobe.baseColor as [number, number, number],
+  markerColor: _darkGlobe.markerColor as [number, number, number],
+  glowColor: _darkGlobe.glowColor as [number, number, number],
+  arcColor: _darkGlobe.arcColor as [number, number, number],
   markerDotRgb: COBE_MARKER_DOT_RGB(false),
 };
 
@@ -352,7 +356,7 @@ export function NetworkGlobe() {
       </div>
 
       {/* Region selector */}
-      <div className="grid grid-cols-4 border-t border-white/10">
+      <div className="grid grid-cols-2 md:grid-cols-4 border-t">
         {REGION_KEYS.map((key, i) => {
           const active = focused === key;
           return (
@@ -360,7 +364,7 @@ export function NetworkGlobe() {
               key={key}
               onClick={() => handleFocus(key)}
               className={cn(
-                "group flex items-center gap-2 px-3 py-4 text-left",
+                "group flex items-center gap-2 px-3 py-4 text-left border max-sm:border-stroke-neutral-strong! ",
                 "cursor-pointer transition-colors duration-150 bg-background-neutral",
                 i < REGION_KEYS.length - 1
                   ? "border-r border-stroke-neutral"

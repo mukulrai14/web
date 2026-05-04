@@ -4,22 +4,6 @@ import createGlobe from "cobe";
 import { useTheme } from "@prisma-docs/ui/components/theme-provider";
 import { COBE_MARKER_DOT_RGB, cobeGlobe, hexToRgb01, light } from "./tokens";
 
-const DATA_CENTER_MARKERS: {
-  location: [number, number];
-  id: string;
-  /** Region name shown above the marker (cobe bindable `id` → `--cobe-{id}` / `--cobe-visible-{id}`). */
-  name: string;
-}[] = [
-  { id: "dc-sanjose", location: [37.37, -121.92], name: "us-west-1" },
-  { id: "dc-ashburn", location: [39.04, -77.49], name: "us-east-1" },
-  { id: "dc-dublin", location: [53.35, -6.26], name: "eu-west-1" },
-  { id: "dc-frankfurt", location: [50.11, 8.68], name: "eu-central-1" },
-  { id: "dc-singapore", location: [1.35, 103.82], name: "ap-southeast-1" },
-  { id: "dc-tokyo", location: [35.68, 139.65], name: "ap-northeast-1" },
-  { id: "dc-sydney", location: [-33.87, 151.21], name: "ap-southeast-2" },
-  { id: "dc-saopaulo", location: [-23.55, -46.63], name: "sa-east-1" },
-];
-
 const DATA_CENTER_ARCS: {
   from: [number, number];
   to: [number, number];
@@ -224,12 +208,6 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
         glowColor: colors.glowColor,
         scale: SCALE,
         offset: OFFSET,
-        markers: DATA_CENTER_MARKERS.map((m) => ({
-          id: m.id,
-          location: m.location,
-          size: MARKER_SIZE,
-          color: colors.markerDotRgb,
-        })),
         arcs: DATA_CENTER_ARCS,
         arcColor: colors.arcColor,
         arcWidth: ARC_WIDTH,
@@ -241,30 +219,6 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
 
       // Marker labels via CSS anchor positioning.
       // canvas.parentElement is now COBE's wrapper div (COBE moved the canvas there).
-      if (showLabelsRef.current) {
-        const wrap = canvas.parentElement;
-        if (wrap) {
-          for (const m of DATA_CENTER_MARKERS) {
-            const el = document.createElement("div");
-            el.className = "cobe-marker-label";
-            el.textContent = m.name;
-            el.style.position = "absolute";
-            el.style.setProperty("position-anchor", `--cobe-${m.id}`);
-            el.style.setProperty("top", "anchor(bottom)");
-            el.style.setProperty("left", "anchor(center)");
-            el.style.translate = "-50% 4px";
-            el.style.whiteSpace = "nowrap";
-            el.style.pointerEvents = "none";
-            el.style.setProperty("opacity", `var(--cobe-visible-${m.id}, 0)`);
-            el.style.setProperty(
-              "filter",
-              `blur(calc((1 - var(--cobe-visible-${m.id}, 0)) * 6px))`,
-            );
-            el.style.setProperty("transition", "opacity 0.3s, filter 0.3s");
-            wrap.appendChild(el);
-          }
-        }
-      }
 
       // Start the render loop, then reveal after two frames so the globe has
       // painted at least once before the opacity transition begins.
