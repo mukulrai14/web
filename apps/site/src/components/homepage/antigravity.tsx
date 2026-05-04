@@ -59,7 +59,8 @@ const createParticles = (count: number, width: number, height: number) =>
     };
   });
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
 const AntigravityInner = ({
   count = 300,
@@ -89,6 +90,8 @@ const AntigravityInner = ({
   const lastMouseMoveTime = useRef(0);
   const virtualMouse = useRef({ x: 0, y: 0 });
   const isPageVisible = useRef(true);
+  // #1 – IntersectionObserver: skip RAF work when off-screen.
+  const isInViewRef = useRef(true);
   const [size, setSize] = useState({ width: 0, height: 0 });
 
   const sceneSize = useMemo(() => {
@@ -131,6 +134,21 @@ const AntigravityInner = ({
     return () => {
       observer.disconnect();
     };
+  }, []);
+
+  // #1 – IntersectionObserver: stop RAF work when the component is off-screen.
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element || typeof IntersectionObserver === "undefined") return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isInViewRef.current = entry.isIntersecting;
+      },
+      { threshold: 0.05 },
+    );
+    io.observe(element);
+    return () => io.disconnect();
   }, []);
 
   useEffect(() => {
@@ -176,12 +194,17 @@ const AntigravityInner = ({
 
   useEffect(() => {
     particleRefs.current = particleRefs.current.slice(0, count);
-    particlesRef.current = createParticles(count, sceneSize.width, sceneSize.height);
+    particlesRef.current = createParticles(
+      count,
+      sceneSize.width,
+      sceneSize.height,
+    );
     introStartTime.current = null;
   }, [count, sceneSize.height, sceneSize.width]);
 
   const particleIds = useMemo(
-    () => Array.from({ length: count }, (_, index) => `particle-${index}-${count}`),
+    () =>
+      Array.from({ length: count }, (_, index) => `particle-${index}-${count}`),
     [count],
   );
 
@@ -198,7 +221,8 @@ const AntigravityInner = ({
     const inverseFieldStrength = 5 / (fieldStrength + 0.1);
 
     const tick = (now: number) => {
-      if (isPageVisible.current) {
+      // #1 + #5: skip all particle computation when off-screen or tab hidden.
+      if (isPageVisible.current && isInViewRef.current) {
         if (introStartTime.current === null) {
           introStartTime.current = now;
         }
@@ -207,7 +231,8 @@ const AntigravityInner = ({
 
         const mouseDeltaX = pointerRef.current.x - lastMousePos.current.x;
         const mouseDeltaY = pointerRef.current.y - lastMousePos.current.y;
-        const mouseDistSq = mouseDeltaX * mouseDeltaX + mouseDeltaY * mouseDeltaY;
+        const mouseDistSq =
+          mouseDeltaX * mouseDeltaX + mouseDeltaY * mouseDeltaY;
 
         if (mouseDistSq > 0.000001) {
           lastMouseMoveTime.current = now;
@@ -252,14 +277,17 @@ const AntigravityInner = ({
 
           if (distSq < magnetRadiusSq) {
             const angle = Math.atan2(dy, dx) + globalRotation;
-            const wave = Math.sin(particle.t * waveSpeed + angle) * (0.5 * waveAmplitude);
-            const deviation = particle.randomRadiusOffset * inverseFieldStrength;
+            const wave =
+              Math.sin(particle.t * waveSpeed + angle) * (0.5 * waveAmplitude);
+            const deviation =
+              particle.randomRadiusOffset * inverseFieldStrength;
             const currentRingRadius = ringRadius + wave + deviation;
 
             targetXPos = projectedTargetX + currentRingRadius * Math.cos(angle);
             targetYPos = projectedTargetY + currentRingRadius * Math.sin(angle);
             targetZPos =
-              particle.mz * depthFactor + Math.sin(particle.t) * waveAmplitude * depthFactor;
+              particle.mz * depthFactor +
+              Math.sin(particle.t) * waveAmplitude * depthFactor;
           }
 
           particle.cx += (targetXPos - particle.cx) * lerpSpeed;
@@ -268,7 +296,9 @@ const AntigravityInner = ({
 
           const currentDx = particle.cx - projectedTargetX;
           const currentDy = particle.cy - projectedTargetY;
-          const currentDistToMouse = Math.sqrt(currentDx * currentDx + currentDy * currentDy);
+          const currentDistToMouse = Math.sqrt(
+            currentDx * currentDx + currentDy * currentDy,
+          );
 
           const distFromRing = Math.abs(currentDistToMouse - ringRadius);
           const scaleFactor = clamp(1 - distFromRing / 10, 0, 1);
@@ -278,14 +308,20 @@ const AntigravityInner = ({
             particleSize;
 
           const angleToCenter =
-            (Math.atan2(projectedTargetY - particle.cy, projectedTargetX - particle.cx) * 180) /
+            (Math.atan2(
+              projectedTargetY - particle.cy,
+              projectedTargetX - particle.cx,
+            ) *
+              180) /
             Math.PI;
           const introProgress = clamp(
-            (now - introStartTime.current - particle.introOffset) / INTRO_DURATION_MS,
+            (now - introStartTime.current - particle.introOffset) /
+              INTRO_DURATION_MS,
             0,
             1,
           );
-          const depthOpacity = clamp(0.25 + (particle.cz + 20) / 40, 0.25, 1) * introProgress;
+          const depthOpacity =
+            clamp(0.25 + (particle.cz + 20) / 40, 0.25, 1) * introProgress;
 
           element.setAttribute(
             "transform",
@@ -337,7 +373,9 @@ const AntigravityInner = ({
       return <polygon points="0,-0.3 0.26,0.15 -0.26,0.15" fill={color} />;
     }
 
-    return <rect x="-0.1" y="-0.3" width="0.2" height="0.6" rx="0.1" fill={color} />;
+    return (
+      <rect x="-0.1" y="-0.3" width="0.2" height="0.6" rx="0.1" fill={color} />
+    );
   }, [color, particleShape]);
 
   return (

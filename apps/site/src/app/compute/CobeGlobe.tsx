@@ -153,6 +153,28 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
     let animationId = 0;
     let globe: ReturnType<typeof createGlobe> | null = null;
 
+    // ── Pause / resume helpers ───────────────────────────────────────────
+    // We track two independent signals: IntersectionObserver (#1) and the
+    // Tab Visibility API (#5). The RAF stops when either fires and restarts
+    // as soon as both are clear.
+    let isInView = false; // set true by IO on first intersect
+    let isTabVisible =
+      typeof document !== "undefined" ? !document.hidden : true;
+
+    const maybePause = () => {
+      if (animationId !== 0) {
+        cancelAnimationFrame(animationId);
+        animationId = 0;
+      }
+    };
+
+    const maybeResume = () => {
+      if (isInView && isTabVisible && animationId === 0 && globe) {
+        animationId = requestAnimationFrame(tick);
+      }
+    };
+    // ─────────────────────────────────────────────────────────────────────
+
     const tick = () => {
       if (!globe) return;
       const colors = isDarkRef.current ? DARK_COLORS : LIGHT_COLORS;
@@ -173,6 +195,9 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
       });
       animationId = requestAnimationFrame(tick);
     };
+
+    // #3 – CSS animation pausing: the cobe canvas itself is WebGL, not a
+    // CSS animation, so we handle it via the RAF stop/start above.
 
     const mountGlobe = () => {
       if (globe) return;
@@ -260,6 +285,25 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
     });
     ro.observe(container);
 
+    // #1 – IntersectionObserver: stop the RAF when the globe scrolls off-screen.
+    // #2 – Reset is intentionally skipped here — the globe's rotation angle is
+    //       kept so it resumes exactly where it left off (no disorienting jump).
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isInView = entry.isIntersecting;
+        isInView ? maybeResume() : maybePause();
+      },
+      { threshold: 0.05 },
+    );
+    io.observe(container);
+
+    // #5 – Tab Visibility API: pause when the user switches tabs.
+    const onVisibilityChange = () => {
+      isTabVisible = !document.hidden;
+      isTabVisible ? maybeResume() : maybePause();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
     return () => {
       globe = null; // stop tick guard before anything else
       cancelAnimationFrame(animationId);
@@ -267,6 +311,8 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
       canvas.remove();
       canvasRef.current = null;
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       container
         .querySelectorAll(".cobe-marker-label")
         .forEach((el) => el.remove());

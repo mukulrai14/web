@@ -161,6 +161,25 @@ export function NetworkGlobe() {
     let animationId = 0;
     let globe: ReturnType<typeof createGlobe> | null = null;
 
+    // ── Pause / resume helpers (É #1 IntersectionObserver + #5 Tab Visibility) ──
+    let isInView = false;
+    let isTabVisible =
+      typeof document !== "undefined" ? !document.hidden : true;
+
+    const maybePause = () => {
+      if (animationId !== 0) {
+        cancelAnimationFrame(animationId);
+        animationId = 0;
+      }
+    };
+
+    const maybeResume = () => {
+      if (isInView && isTabVisible && animationId === 0 && globe) {
+        animationId = requestAnimationFrame(tick);
+      }
+    };
+    // ─────────────────────────────────────────────────────────────────────
+
     const tick = () => {
       if (!globe) return;
       const colors = isDarkRef.current ? DARK_COLORS : LIGHT_COLORS;
@@ -247,12 +266,31 @@ export function NetworkGlobe() {
     });
     ro.observe(container);
 
+    // #1 – IntersectionObserver: halt the RAF when the globe is off-screen.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isInView = entry.isIntersecting;
+        isInView ? maybeResume() : maybePause();
+      },
+      { threshold: 0.05 },
+    );
+    io.observe(container);
+
+    // #5 – Tab Visibility API.
+    const onVisibilityChange = () => {
+      isTabVisible = !document.hidden;
+      isTabVisible ? maybeResume() : maybePause();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
     return () => {
       const g = globe;
       globe = null;
       cancelAnimationFrame(animationId);
       canvas.remove();
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       g?.destroy();
       if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
     };

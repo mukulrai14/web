@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useShouldPause } from "@/lib/use-animation-pausing";
 import {
   Tabs,
   TabsList,
@@ -66,22 +67,29 @@ function MetricRow({ label, value }: { label: string; value: string }) {
 export function StatefulExecutionCard() {
   const [elapsed, setElapsed] = useState(0);
   const [mounted, setMounted] = useState(false);
+  // #1 + #5 — pause the 1 s uptime ticker when off-screen or tab hidden.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const paused = useShouldPause(containerRef);
 
   useEffect(() => {
     setMounted(true);
+    if (paused) return;
     const start = Date.now();
     const id = setInterval(
       () => setElapsed(Math.floor((Date.now() - start) / 1000)),
       1000,
     );
     return () => clearInterval(id);
-  }, []);
+  }, [paused]);
 
   const t = BASE_UPTIME_SECS + elapsed;
   const uptime = `UP ${Math.floor(t / 86400)}d ${Math.floor((t % 86400) / 3600)}h ${Math.floor((t % 3600) / 60)}m ${String(t % 60).padStart(2, "0")}s`;
 
   return (
-    <div className="rounded-xl border border-stroke-neutral bg-background-neutral-weak overflow-hidden w-full">
+    <div
+      ref={containerRef}
+      className="rounded-xl border border-stroke-neutral bg-background-neutral-weak overflow-hidden w-full"
+    >
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-6 pb-2">
         <div className="flex items-center gap-2 font-mono text-2xs">
@@ -283,7 +291,23 @@ export function DeployTerminal() {
   const [copied, setCopied] = useState(false);
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
+  // #1 + #2 + #5 — pause loop when off-screen/tab hidden; reset on re-entry.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const paused = useShouldPause(containerRef, () => {
+    // Re-entry: cancel pending timeouts and reset so the animation restarts fresh.
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+    setVisibleCount(0);
+  });
+
   useEffect(() => {
+    if (paused) {
+      // Pause: cancel all pending timeouts.
+      timeoutsRef.current.forEach(clearTimeout);
+      timeoutsRef.current = [];
+      return;
+    }
+
     function schedule() {
       // Clear any pending timeouts from previous run
       timeoutsRef.current.forEach(clearTimeout);
@@ -304,7 +328,7 @@ export function DeployTerminal() {
 
     schedule();
     return () => timeoutsRef.current.forEach(clearTimeout);
-  }, []);
+  }, [paused]);
 
   function handleCopy() {
     void navigator.clipboard.writeText("prisma deploy");
@@ -313,7 +337,10 @@ export function DeployTerminal() {
   }
 
   return (
-    <div className="w-full rounded-xl border border-stroke-neutral overflow-hidden bg-background-default font-mono leading-6 select-text">
+    <div
+      ref={containerRef}
+      className="w-full rounded-xl border border-stroke-neutral overflow-hidden bg-background-default font-mono leading-6 select-text"
+    >
       {/* ── Tab bar ── */}
       <div className="flex items-stretch border-b border-stroke-neutral bg-background-neutral-weak">
         {/* Active tab */}
@@ -418,10 +445,19 @@ function WbDeployReplay() {
   const [stage, setStage] = useState<DeployStage | null>(null);
   const [runKey, setRunKey] = useState(0);
 
+  // #1 + #2 + #5 — pause step-chain when off-screen; reset on re-entry.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const paused = useShouldPause(containerRef, () => {
+    setN(0);
+    setStage(null);
+    setRunKey((k) => k + 1);
+  });
+
   const has = (s: DeployStage) =>
     stage !== null && DEPLOY_STAGES.indexOf(stage) >= DEPLOY_STAGES.indexOf(s);
 
   useEffect(() => {
+    if (paused) return;
     if (n >= DEPLOY_STEPS.length) {
       const t = setTimeout(() => {
         setN(0);
@@ -436,10 +472,13 @@ function WbDeployReplay() {
       setN((prev) => prev + 1);
     }, step.delay);
     return () => clearTimeout(t);
-  }, [n, runKey]);
+  }, [n, runKey, paused]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 p-4 font-mono min-h-72">
+    <div
+      ref={containerRef}
+      className="flex flex-col md:flex-row gap-3 p-4 font-mono min-h-72"
+    >
       {/* Terminal */}
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="rounded-lg border border-stroke-neutral overflow-hidden bg-background-default text-[11px] flex flex-col flex-1">
@@ -782,25 +821,32 @@ function WbConfigMap() {
   const [hovering, setHovering] = useState<string | null>(null);
   const [cycleIdx, setCycleIdx] = useState(0);
 
+  // #1 + #2 + #5 — pause typewriter + node-cycle when off-screen; reset on re-entry.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const paused = useShouldPause(containerRef, () => {
+    setTyped(0);
+    setCycleIdx(0);
+  });
+
   const done = typed >= CONFIG_TOTAL_CHARS;
 
   useEffect(() => {
-    if (done) return;
+    if (done || paused) return;
     const id = setInterval(
       () => setTyped((t) => Math.min(CONFIG_TOTAL_CHARS, t + 8)),
       20,
     );
     return () => clearInterval(id);
-  }, [done]);
+  }, [done, paused]);
 
   useEffect(() => {
-    if (!done || hovering) return;
+    if (!done || hovering || paused) return;
     const id = setInterval(
       () => setCycleIdx((c) => (c + 1) % CONFIG_NODES.length),
       4000,
     );
     return () => clearInterval(id);
-  }, [done, hovering]);
+  }, [done, hovering, paused]);
 
   const active = done ? (hovering ?? CONFIG_NODES[cycleIdx].key) : null;
 
@@ -855,7 +901,10 @@ function WbConfigMap() {
   });
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 p-4 font-mono text-xs min-h-72">
+    <div
+      ref={containerRef}
+      className="flex flex-col md:flex-row gap-3 p-4 font-mono text-xs min-h-72"
+    >
       {/* Code editor */}
       <div className="flex-1 min-w-0 rounded-lg border border-stroke-neutral overflow-hidden bg-background-default flex flex-col">
         <div className="flex items-center gap-2 px-3 py-1.5 border-b border-stroke-neutral bg-background-neutral-weak shrink-0">
@@ -955,6 +1004,16 @@ const RUNTIME_TASKS = [
   },
 ];
 
+// #4 – requestIdleCallback polyfill: defer sparkline updates to idle time.
+const rIC: (cb: () => void) => number =
+  typeof requestIdleCallback !== "undefined"
+    ? (cb) => requestIdleCallback(cb)
+    : (cb) => window.setTimeout(cb, 16) as unknown as number;
+const cIC: (id: number) => void =
+  typeof cancelIdleCallback !== "undefined"
+    ? (id) => cancelIdleCallback(id)
+    : (id) => clearTimeout(id);
+
 function WbRuntimeMonitor() {
   const [cpu, setCpu] = useState<number[]>(() =>
     Array.from({ length: 40 }, () => 4),
@@ -964,20 +1023,32 @@ function WbRuntimeMonitor() {
   );
   const [tick, setTick] = useState(0);
 
+  // #1 + #5 — pause the 700 ms sparkline ticker when off-screen or tab hidden.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const paused = useShouldPause(containerRef);
+
   useEffect(() => {
+    if (paused) return;
+    let icHandle = 0;
+    // #4 – schedule the heavy state update during browser idle time.
     const id = setInterval(() => {
-      setCpu((p) => [
-        ...p.slice(1),
-        12 + Math.random() * 22 + (Math.random() < 0.12 ? 22 : 0),
-      ]);
-      setMem((p) => [
-        ...p.slice(1),
-        26 + Math.random() * 14 + (Math.random() < 0.1 ? 10 : 0),
-      ]);
-      setTick((t) => t + 1);
+      icHandle = rIC(() => {
+        setCpu((p) => [
+          ...p.slice(1),
+          12 + Math.random() * 22 + (Math.random() < 0.12 ? 22 : 0),
+        ]);
+        setMem((p) => [
+          ...p.slice(1),
+          26 + Math.random() * 14 + (Math.random() < 0.1 ? 10 : 0),
+        ]);
+        setTick((t) => t + 1);
+      });
     }, 700);
-    return () => clearInterval(id);
-  }, []);
+    return () => {
+      clearInterval(id);
+      cIC(icHandle);
+    };
+  }, [paused]);
 
   const W = 200,
     H = 42;
@@ -994,7 +1065,10 @@ function WbRuntimeMonitor() {
   const s = String(tick % 60).padStart(2, "0");
 
   return (
-    <div className="p-5 flex flex-col gap-4 font-mono min-h-72">
+    <div
+      ref={containerRef}
+      className="p-5 flex flex-col gap-4 font-mono min-h-72"
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -1211,29 +1285,37 @@ function ZeroConfigBYO() {
   const [bootTick, setBootTick] = useState(0);
   const [userPicked, setUserPicked] = useState(false);
 
+  // #1 + #2 + #5 — pause boot/cycle when off-screen; reset fully on re-entry.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const paused = useShouldPause(containerRef, () => {
+    setBootTick(0);
+    setUserPicked(false);
+    setSelectedDb(0);
+  });
+
   const seated = DB_OPTIONS[selectedDb];
 
   useEffect(() => {
-    if (bootTick >= ZC_BOOT_FINAL) return;
+    if (bootTick >= ZC_BOOT_FINAL || paused) return;
     const id = setInterval(
       () => setBootTick((t) => Math.min(ZC_BOOT_FINAL, t + 80)),
       80,
     );
     return () => clearInterval(id);
-  }, [bootTick]);
+  }, [bootTick, paused]);
 
   const injected = bootTick >= 2500;
   const ready = bootTick >= ZC_BOOT_FINAL;
   const visible = ZC_BOOT_LINES.filter((l) => l.showAt <= bootTick);
 
   useEffect(() => {
-    if (userPicked || !ready) return;
+    if (userPicked || !ready || paused) return;
     const id = setInterval(
       () => setSelectedDb((i) => (i + 1) % DB_OPTIONS.length),
       3600,
     );
     return () => clearInterval(id);
-  }, [userPicked, ready]);
+  }, [userPicked, ready, paused]);
 
   const pick = (i: number) => {
     setUserPicked(true);
@@ -1241,7 +1323,7 @@ function ZeroConfigBYO() {
   };
 
   return (
-    <div className="p-4 font-mono text-xs min-h-72">
+    <div ref={containerRef} className="p-4 font-mono text-xs min-h-72">
       <div className="rounded-xl border border-stroke-neutral overflow-hidden">
         {/* Panel header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-stroke-neutral bg-background-neutral-weaker">
