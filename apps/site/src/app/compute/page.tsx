@@ -24,7 +24,7 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral text-xl font-black! font-sans-display mt-0 mb-4">
+        <h2 className="text-foreground-neutral text-xl stretch-display font-sans-display mt-0 mb-4">
           Deploy from your repo
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4">
@@ -60,7 +60,7 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral text-xl font-black! font-sans-display mt-0 mb-4">
+        <h2 className="text-foreground-neutral text-xl stretch-display font-sans-display mt-0 mb-4">
           Stateful execution
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4">
@@ -91,7 +91,7 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral text-xl font-black! font-sans-display mt-0 mb-4">
+        <h2 className="text-foreground-neutral text-xl stretch-display font-sans-display mt-0 mb-4">
           Any TypeScript workload
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4">
@@ -123,7 +123,7 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral text-xl font-black! font-sans-display mt-0 mb-4">
+        <h2 className="text-foreground-neutral text-xl stretch-display font-sans-display mt-0 mb-4">
           Co-located database
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4">
@@ -208,7 +208,6 @@ const WHY_FEATURES = [
       </div>
     ),
     icon: "fa-regular fa-rocket",
-    link: "#",
     row: "top" as const,
   },
   {
@@ -220,7 +219,6 @@ const WHY_FEATURES = [
       </div>
     ),
     icon: "fa-regular fa-infinity",
-    link: "#",
     row: "top" as const,
   },
   {
@@ -233,7 +231,6 @@ const WHY_FEATURES = [
       </div>
     ),
     icon: "fa-regular fa-layer-group",
-    link: "#",
     row: "top" as const,
   },
   {
@@ -245,7 +242,6 @@ const WHY_FEATURES = [
       </div>
     ),
     icon: "fa-regular fa-brackets-square",
-    link: "#",
     row: "center" as const,
   },
   {
@@ -258,7 +254,6 @@ const WHY_FEATURES = [
       </div>
     ),
     icon: "fa-regular fa-database",
-    link: "#",
     row: "center" as const,
   },
   {
@@ -271,7 +266,6 @@ const WHY_FEATURES = [
       </div>
     ),
     icon: "fa-regular fa-shield-check",
-    link: "#",
     row: "center" as const,
   },
 ];
@@ -336,7 +330,10 @@ export default async function Page() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <Button asChild variant="ppg" size="2xl">
-              <a href="/postgres" className="flex items-center gap-2">
+              <a
+                href="https://prisma.io/apps"
+                className="flex items-center gap-2"
+              >
                 <span>Deploy a template</span>
                 <i
                   className="flex items-center fa-regular fa-arrow-up-right"
@@ -346,7 +343,7 @@ export default async function Page() {
             </Button>
             <Button asChild variant="default-strong" size="2xl">
               <a
-                href="/docs/postgres/faq#query-insights"
+                href="https://prisma.io/docs/compute"
                 className="flex items-center gap-2"
               >
                 <span>Read the docs</span>
@@ -378,8 +375,8 @@ export default async function Page() {
           ))}
         </div>
       </section>
-      <section className="my-12">
-        <div className="pt-12 relative gap-8 flex flex-col max-w-312 w-full mx-auto px-4">
+      <section className="my-12 py-12 px-8">
+        <div className="pt-12 relative gap-8 flex flex-col max-w-296 w-full mx-auto">
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             02 / FEATURES
           </span>
@@ -428,7 +425,7 @@ export default async function Page() {
                 />
               </div>
               <div>
-                <h3 className="text-foreground-neutral font-sans-display font-bold text-base m-0 mb-2">
+                <h3 className="text-foreground-neutral font-sans-display [font-variation-settings:'wght'_800,'wdth'_110] font-bold text-base m-0 mb-2">
                   {item.title}
                 </h3>
                 <p className="text-foreground-neutral-weak text-sm m-0">
@@ -471,7 +468,7 @@ export default async function Page() {
           <p className="text-left text-sm mt-6 text-foreground-neutral-weak">
             Already have a codebase?{" "}
             <a
-              href="/"
+              href="https://prisma.io/docs/compute"
               className="underline text-foreground-ppg-strong underline-offset-2"
             >
               Connect your GitHub repo →
@@ -508,7 +505,10 @@ export default async function Page() {
             </div>
             <div className="flex flex-col md:flex-row gap-6">
               <Button asChild variant="ppg" size="2xl">
-                <a href="/postgres" className="flex gap-2 items-center">
+                <a
+                  href="https://pris.ly/compute-blog"
+                  className="flex gap-2 items-center"
+                >
                   <span>Read the launch post</span>
                   <i
                     className="fa-regular h-auto fa-arrow-right"
@@ -518,7 +518,7 @@ export default async function Page() {
               </Button>
               <Button asChild variant="default-strong" size="2xl">
                 <a
-                  href="/docs/postgres/faq#query-insights"
+                  href="https://prisma.io/docs/compute"
                   className="flex gap-2 items-center"
                 >
                   <span>Read the docs</span>

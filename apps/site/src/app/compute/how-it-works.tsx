@@ -1149,7 +1149,7 @@ function ZeroConfigBYO() {
                         "bg-foreground-ppg/10 border-l-2 border-foreground-ppg -mx-3 px-3 py-1",
                     )}
                   >
-                    <span className="text-foreground-neutral-weaker w-8 shrink-0 text-right tabular-nums">
+                    <span className="text-foreground-neutral-weaker shrink-0 text-right tabular-nums">
                       {String(line.t).padStart(4, "0")}ms
                     </span>
                     <span

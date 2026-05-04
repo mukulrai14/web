@@ -170,7 +170,7 @@ export function WorkloadCards() {
             <i className={cn(item.icon, "text-sm")} />
           </Action>
           <div className="flex flex-col gap-0.5 min-w-0">
-            <span className="font-sans-display font-bold text-sm text-foreground-neutral leading-5 truncate">
+            <span className="font-sans-display [font-variation-settings:'wght'_800,'wdth'_110] text-sm text-foreground-neutral leading-5 truncate">
               {item.title}
             </span>
             <span className="font-mono text-xs text-foreground-neutral-weak truncate">
@@ -228,7 +228,7 @@ export function ThemFragmentedCard() {
     <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-neutral bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] shadow-box-low">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <span className="font-sans-display font-bold text-base text-foreground-neutral">
+        <span className="[font-variation-settings:'wght'_800,'wdth'_110] font-sans-display font-bold text-base text-foreground-neutral">
           Most TypeScript platforms
         </span>
         <span className="font-mono text-[11px] text-foreground-neutral-weaker tracking-wide shrink-0">
@@ -346,7 +346,7 @@ export function UsUnifiedCard() {
     <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-ppg bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg-strong)_262.5%)] shadow-box-low">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
-        <span className="font-sans-display font-bold text-base text-foreground-neutral">
+        <span className="[font-variation-settings:'wght'_800,'wdth'_110] font-sans-display font-bold text-base text-foreground-neutral">
           Prisma Compute
         </span>
         <span className="font-mono text-[11px] text-foreground-ppg tracking-wide shrink-0">

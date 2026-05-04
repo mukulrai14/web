@@ -4,27 +4,16 @@ import createGlobe from "cobe";
 import { useTheme } from "@prisma-docs/ui/components/theme-provider";
 import { COBE_MARKER_DOT_RGB, cobeGlobe, hexToRgb01, light } from "./tokens";
 
-const DATA_CENTER_ARCS: {
-  from: [number, number];
-  to: [number, number];
-  id: string;
-}[] = [
-  { id: "dc-west-east", from: [37.37, -121.92], to: [39.04, -77.49] },
-  { id: "dc-dublin-frankfurt", from: [53.35, -6.26], to: [50.11, 8.68] },
-  { id: "dc-singapore-tokyo", from: [1.35, 103.82], to: [35.68, 139.65] },
-];
-
 const PHI = 0;
 const THETA = 0.2;
 const MAP_SAMPLES = 16000;
 const MAP_BASE_BRIGHTNESS = 0.025;
 const SCALE = 1;
 const OFFSET: [number, number] = [0, 0];
-const MARKER_SIZE = 0.025;
 const MARKER_ELEVATION = 0;
 const ARC_HEIGHT = 0.5;
 const ARC_WIDTH = 0.4;
-const AUTO_ROTATE_SPEED = 0.0003;
+const AUTO_ROTATE_SPEED = 0.0008;
 
 // ─── Theme presets ─────────────────────────────────────────────────────────────
 const _lightGlobe = cobeGlobe(true);
@@ -208,7 +197,6 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
         glowColor: colors.glowColor,
         scale: SCALE,
         offset: OFFSET,
-        arcs: DATA_CENTER_ARCS,
         arcColor: colors.arcColor,
         arcWidth: ARC_WIDTH,
         arcHeight: ARC_HEIGHT,
