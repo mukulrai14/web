@@ -1,0 +1,27 @@
+---
+title: Environment variables
+url: /compute/environment-variables
+metaTitle: Environment variables | Prisma Compute
+metaDescription: Set environment variables on a Prisma Compute deployment, either inline on deploy or without rebuilding.
+---
+
+Set environment variables inline when deploying, or update them later without rebuilding. Either path cuts a new deployment. The old deployment stays live until the new one is healthy.
+
+## During a deploy
+
+Repeat `--env` per variable:
+
+```bash
+prisma app deploy \
+  --env DATABASE_URL=postgresql://example \
+  --env NODE_ENV=production
+```
+
+## Without rebuilding
+
+Update environment variables on an existing deployment:
+
+```bash
+prisma app update-env --env STRIPE_KEY=sk_live_xxx
+prisma app list-env
+```

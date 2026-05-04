@@ -34,6 +34,16 @@ export const links: LinkItemTypeWithActivePaths[] = [
     active: "nested-url",
   },
   {
+    text: "Compute",
+    url: "/compute",
+    active: "nested-url",
+  },
+  {
+    text: "Compute (Internal)",
+    url: "/compute-internal",
+    active: "nested-url",
+  },
+  {
     text: "CLI",
     url: "/cli",
     active: "nested-url",

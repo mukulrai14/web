@@ -1,0 +1,24 @@
+---
+title: Limitations
+url: /compute/limitations
+metaTitle: Limitations | Prisma Compute
+metaDescription: Known Prisma Compute limitations covering framework support, environment updates, and log streaming.
+---
+
+## Framework support
+
+First-class support: **Next.js**, **Astro**, **Nuxt**, **TanStack Start**, and **Bun**. Other Node.js frameworks may build via auto-detection but are not explicitly tested.
+
+Framework-specific requirements:
+
+- **Next.js**: must use `output: "standalone"` in `next.config.ts`.
+- **Astro**: needs `@astrojs/node` in standalone mode.
+
+## Environment updates
+
+Updating environment variables cuts a new deployment. The old deployment stays live until the new one is healthy.
+
+## Logs
+
+- Stream caps at around 10 minutes.
+- One concurrent log stream per deployment.

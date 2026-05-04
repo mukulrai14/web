@@ -1,0 +1,15 @@
+{
+  "title": "compute",
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "login",
+    "logout",
+    "deploy",
+    "logs",
+    "env",
+    "projects",
+    "services",
+    "versions"
+  ]
+}
