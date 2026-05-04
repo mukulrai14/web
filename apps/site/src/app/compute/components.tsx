@@ -82,7 +82,7 @@ function CostBadge({ icon, label }: { icon: string; label: string }) {
   return (
     <div className="flex items-center gap-1.5 px-2 py-1 rounded-md border border-foreground-error/60 text-foreground-error-strong">
       <i className={cn(icon, "text-[10px]")} />
-      <span className="font-mono text-[11px] font-semibold leading-none">
+      <span className="whitespace-nowrap font-mono text-[11px] font-semibold leading-none">
         {label}
       </span>
     </div>
@@ -227,7 +227,7 @@ export function ThemFragmentedCard() {
   return (
     <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-neutral bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] shadow-box-low">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <span className="font-sans-display font-bold text-base text-foreground-neutral">
           Most TypeScript platforms
         </span>
@@ -239,14 +239,14 @@ export function ThemFragmentedCard() {
       {/* Services panel */}
       <div className="flex flex-col gap-6 border border-stroke-neutral rounded-md p-4">
         {/* 3×3 chip grid */}
-        <div className="grid grid-cols-3 gap-1.5">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
           {THEM_CHIPS.map((chip) => (
             <Chip key={chip.label} {...chip} />
           ))}
         </div>
 
         {/* Total cost row */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-start md:items-center justify-between gap-4 flex-col md:flex-row">
           <span className="font-mono text-[11px] text-foreground-neutral-weaker uppercase tracking-wide">
             TOTAL COST
           </span>

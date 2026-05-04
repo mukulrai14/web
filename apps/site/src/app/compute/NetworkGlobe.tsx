@@ -304,12 +304,13 @@ export function NetworkGlobe() {
     <div className="w-full overflow-hidden rounded-xl border border-stroke-neutral bg-background-default">
       <div className="header uppercase font-mono text-foreground-neutral-weaker text-xs p-4 flex justify-between border-b border-stroke-neutral">
         <span>Global Data Plane · {REGION_KEYS.length} regions · 43 pops</span>
-        <div className="flex gap-2 text-foreground-ppg">
+        <div className="flex gap-2 text-foreground-ppg items-center">
           <span
             className={cn(
-              `bg-foreground-${state.color} before:bg-foreground-${state.color}`,
+              `after:bg-foreground-ppg before:bg-foreground-ppg animate-pulse`,
               "h-3.5 w-3.5 block rounded-full relative",
-              "before:content-'' before:absolute before:inset-0 rounded-full blur-xs pulse",
+              "before:content-'' before:absolute before:inset-0 before:rounded-full before:blur-[1px]",
+              "after:content-'' after:absolute after:inset- after:rounded-full after:overflow-hidden",
             )}
           ></span>
           <span>{state.label}</span>
