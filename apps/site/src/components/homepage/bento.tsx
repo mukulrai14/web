@@ -12,7 +12,7 @@ interface CardData {
   subtitle?: string;
   children?: React.ReactNode;
   image?: string;
-  link: string;
+  link?: string;
   icon: string;
   row: "top" | "center";
 }
@@ -23,7 +23,7 @@ interface BentoBox {
   imageUrl: string;
   icon: string;
   imageAlt: string | null;
-  link: string;
+  link?: string;
 }
 
 interface BentoProps {
