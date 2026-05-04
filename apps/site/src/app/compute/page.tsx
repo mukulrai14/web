@@ -141,7 +141,6 @@ const FEATURES = [
     mobileImageAlt: null,
     logos: null,
     useDefaultLogos: false,
-    other: <NetworkGlobe />,
     visualPosition: "right" as const,
     visualType: "other" as const,
     noShadow: true,
