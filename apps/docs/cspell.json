@@ -12,6 +12,7 @@
     "anotherproduct",
     "apbkobhfnmcqqzqeeqss",
     "apikey",
+    "astrodark",
     "asyncio",
     "Atrue",
     "authjs",
@@ -171,6 +172,7 @@
     "Noor",
     "ntext",
     "nuxi",
+    "nuxtjs",
     "nvarchar",
     "NVARCHAR",
     "nzpppscrldfwlzfalbrf",
@@ -345,6 +347,8 @@
       "pattern": "/videoId=\"[A-Za-z0-9_-]{6,}\"/g"
     }
   ],
-  "ignoreRegExpList": ["mdxVideoIdAttribute"],
+  "ignoreRegExpList": [
+    "mdxVideoIdAttribute"
+  ],
   "ignorePaths": []
 }
