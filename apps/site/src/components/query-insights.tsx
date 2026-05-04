@@ -1,6 +1,11 @@
 "use client";
 
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@prisma/eclipse";
+import { useState, useEffect } from "react";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@prisma/eclipse";
 import { Line, LineChart, XAxis, YAxis, CartesianGrid } from "recharts";
 import { CodeBlock, Pre } from "@prisma/eclipse";
 import { cn } from "@/lib/cn";
@@ -8,14 +13,22 @@ import Image from "next/image";
 import { Bar, BarChart } from "recharts";
 
 const Table = ({ children }: { children?: React.ReactNode }) => (
-  <table className="w-full border-separate border-spacing-0">{children ?? null}</table>
+  <table className="w-full border-separate border-spacing-0">
+    {children ?? null}
+  </table>
 );
 
 const TableHeader = ({ children }: { children?: React.ReactNode }) => (
   <thead>{children ?? null}</thead>
 );
 
-const TableRow = ({ children, className }: { children?: React.ReactNode; className?: string }) => (
+const TableRow = ({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) => (
   <tr
     className={cn(
       "rounded-square relative border-none grid grid-cols-[72px_minmax(0,1fr)_80px_48px_72px] gap-6 py-4 px-3",
@@ -40,7 +53,9 @@ const TableCell = ({ children }: { children?: React.ReactNode }) => (
 );
 
 const TableBody = ({ children }: { children?: React.ReactNode }) => (
-  <tbody className="text-foreground-neutral font-mono">{children ?? null}</tbody>
+  <tbody className="text-foreground-neutral font-mono">
+    {children ?? null}
+  </tbody>
 );
 
 export const QueryInsightsTable = () => (
@@ -59,9 +74,10 @@ export const QueryInsightsTable = () => (
         <TableCell>15ms</TableCell>
         <TableCell>
           <Pre className="w-full whitespace-normal line-clamp-2 text-ellipsis">
-            SELECT p.id, p.title, p.content, p.published, p.authorId, p.createdAt, u.id as
-            author_id, u.name, u.email FROM Post p INNER JOIN User u ON p.authorId = u.id WHERE
-            p.published = true ORDER BY p.createdAt DESC LIMIT 10;
+            SELECT p.id, p.title, p.content, p.published, p.authorId,
+            p.createdAt, u.id as author_id, u.name, u.email FROM Post p INNER
+            JOIN User u ON p.authorId = u.id WHERE p.published = true ORDER BY
+            p.createdAt DESC LIMIT 10;
           </Pre>
         </TableCell>
         <TableCell>7</TableCell>
@@ -103,7 +119,10 @@ export const ContentBox = ({
 }) => {
   return (
     <div
-      className={cn("flex flex-col gap-12 py-12", reverse ? "md:flex-row-reverse" : "md:flex-row")}
+      className={cn(
+        "flex flex-col gap-12 py-12",
+        reverse ? "md:flex-row-reverse" : "md:flex-row",
+      )}
     >
       <div className="w-full md:min-w-[50%] md:w-[50%] lg:w-120 lg:min-w-120 h-auto flex flex-col justify-center shrink-0">
         {children}
@@ -155,6 +174,9 @@ const chartConfig = {
 };
 
 export function QueryInsightsLine() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return <div className="h-25 w-full" />;
   return (
     <ChartContainer config={chartConfig} className="h-25 w-full">
       <LineChart data={chartData} responsive>
@@ -202,6 +224,9 @@ const chartConfigBars = {
 };
 
 export function QueryInsightsBars() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return <div className="h-25 w-full" />;
   return (
     <ChartContainer config={chartConfigBars} className="h-25 w-full">
       <BarChart data={chartDataBars}>

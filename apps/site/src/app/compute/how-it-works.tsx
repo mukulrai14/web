@@ -65,8 +65,10 @@ function MetricRow({ label, value }: { label: string; value: string }) {
 
 export function StatefulExecutionCard() {
   const [elapsed, setElapsed] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const start = Date.now();
     const id = setInterval(
       () => setElapsed(Math.floor((Date.now() - start) / 1000)),
@@ -95,24 +97,28 @@ export function StatefulExecutionCard() {
 
       {/* Traffic chart */}
       <div className="px-6">
-        <ChartContainer
-          config={CHART_CONFIG}
-          className="h-32 w-full aspect-auto"
-        >
-          <BarChart
-            data={TRAFFIC_DATA}
-            margin={{ top: 4, right: 0, left: 0, bottom: 0 }}
-            barCategoryGap="25%"
+        {mounted ? (
+          <ChartContainer
+            config={CHART_CONFIG}
+            className="h-32 w-full aspect-auto"
           >
-            <YAxis domain={[0, 100]} hide />
-            <Bar
-              dataKey="v"
-              fill="var(--color-v)"
-              radius={[2, 2, 0, 0]}
-              isAnimationActive={false}
-            />
-          </BarChart>
-        </ChartContainer>
+            <BarChart
+              data={TRAFFIC_DATA}
+              margin={{ top: 4, right: 0, left: 0, bottom: 0 }}
+              barCategoryGap="25%"
+            >
+              <YAxis domain={[0, 100]} hide />
+              <Bar
+                dataKey="v"
+                fill="var(--color-v)"
+                radius={[2, 2, 0, 0]}
+                isAnimationActive={false}
+              />
+            </BarChart>
+          </ChartContainer>
+        ) : (
+          <div className="h-32" />
+        )}
       </div>
 
       {/* Metrics */}
