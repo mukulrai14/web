@@ -5,6 +5,7 @@ import createGlobe from "cobe";
 import { useTheme } from "@prisma-docs/ui/components/theme-provider";
 import { COBE_MARKER_DOT_RGB, cobeGlobe, hexToRgb01, light } from "./tokens";
 import { cn } from "@/lib/cn";
+import { Separator } from "@prisma/eclipse";
 
 // ─── Region Data ──────────────────────────────────────────────────────────────
 
@@ -12,10 +13,23 @@ const REGIONS = {
   SF01: {
     location: [37.37, -121.92] as [number, number],
     city: "San Francisco",
+    zone: "US West",
   },
-  IAD1: { location: [39.04, -77.49] as [number, number], city: "Washington" },
-  FRA1: { location: [50.11, 8.68] as [number, number], city: "Frankfurt" },
-  SIN1: { location: [1.35, 103.82] as [number, number], city: "Singapore" },
+  IAD1: {
+    location: [39.04, -77.49] as [number, number],
+    city: "Washington",
+    zone: "US East",
+  },
+  FRA1: {
+    location: [50.11, 8.68] as [number, number],
+    city: "Frankfurt",
+    zone: "Europe",
+  },
+  SIN1: {
+    location: [1.35, 103.82] as [number, number],
+    city: "Singapore",
+    zone: "SE Asia",
+  },
 } as const;
 
 type RegionKey = keyof typeof REGIONS;
@@ -261,19 +275,43 @@ export function NetworkGlobe() {
       </div>
       {/* Globe canvas */}
       <div
-        ref={containerRef}
-        role="img"
-        aria-label="Interactive globe showing Prisma Compute data center locations"
+        className="content"
         style={{
           width: "100%",
-          maxWidth: `400px`,
-          margin: `0 auto`,
           aspectRatio: "1 / 1",
+          maxHeight: "400px",
           position: "relative",
           opacity: isRevealed ? 1 : 0,
           transition: "opacity 1s ease",
         }}
-      />
+      >
+        <div
+          ref={containerRef}
+          role="img"
+          className="max-w-[400px] mx-auto w-full"
+          aria-label="Interactive globe showing Prisma Compute data center locations"
+        />
+        <div className="text-[10px] font-mono absolute max-w-[150px] bottom-4 right-4 text-foreground-neutral w-full">
+          <div className="flex justify-between pb-3 mb-3 border-b border-dashed border-stroke-neutral">
+            <span className="uppercase text-foreground-neutral-weaker">
+              Region
+            </span>{" "}
+            <span>{focused}</span>
+          </div>
+          <div className="flex justify-between mb-2">
+            <span className="uppercase text-foreground-neutral-weaker">
+              Location
+            </span>{" "}
+            <span>{REGIONS[focused].city}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="uppercase text-foreground-neutral-weaker">
+              Zone
+            </span>{" "}
+            <span>{REGIONS[focused].zone}</span>
+          </div>
+        </div>
+      </div>
 
       {/* Region selector */}
       <div className="grid grid-cols-4 border-t border-white/10">
