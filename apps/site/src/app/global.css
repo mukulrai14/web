@@ -93,6 +93,11 @@
     background: linear-gradient(180deg, #171937 0%, transparent 100%);
 }
 
+html,
+body {
+    overscroll-behavior: none;
+}
+
 body {
     background: var(--color-background-default);
 }

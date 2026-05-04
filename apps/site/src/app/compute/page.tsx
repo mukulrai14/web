@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Button, Card, Action, Badge } from "@prisma/eclipse";
 import { Card as BentoCard } from "@/components/homepage/bento";
+import { GlobeComp } from "@/components/globe";
 import { cn } from "@/lib/cn";
 import { CardSection } from "@/components/homepage/card-section/card-section";
 import {
@@ -14,6 +15,7 @@ import {
   DeployTerminal,
   StatefulExecutionCard,
 } from "./how-it-works";
+import { CobeGlobe } from "./CobeGlobe";
 
 const FEATURES = [
   {
@@ -303,7 +305,10 @@ export default async function Page() {
   return (
     <main className="bg-background-default">
       <div className="hero -mt-24 pt-40 flex items-end justify-center px-4 relative mb-24">
-        <div className="absolute z-1 inset-0 hero-background">
+        <div className="absolute z-0 inset-0 hero-background max-sm:overflow-hidden max-sm:flex max-sm:items-center">
+          <div className="relative max-w-[1800px] mx-auto w-full md:-mt-[10vw] lg:-mt-[30vw] opacity-10">
+            <CobeGlobe />
+          </div>
           <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--color-foreground-ppg)_0%,var(--color-background-default)_100%)] opacity-20" />
           <div className="absolute inset-0 pointer-events-none z-1 bg-[url('/illustrations/homepage/footer_grid.svg')]" />
         </div>
@@ -350,7 +355,7 @@ export default async function Page() {
           </div>
         </div>
       </div>
-      <section className="flex flex-col items-center gap-12 py-12 px-8">
+      <section className=" relative z-2 flex flex-col items-center gap-12 py-12 px-8">
         <div className="flex flex-col gap-3 max-w-296 w-full items-start">
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             01 / WHY-PRISMA-COMPUTE
