@@ -56,7 +56,7 @@ const LIGHT_COLORS = {
   arcColor: _lightGlobe.arcColor as [number, number, number],
   markerDotRgb: COBE_MARKER_DOT_RGB(false),
 };
-const _darkGlobe = cobeGlobe(true);
+const _darkGlobe = cobeGlobe(false);
 
 /** Dark mode — existing cobeGlobe tokens, unchanged. */
 const DARK_COLORS = {
@@ -68,7 +68,7 @@ const DARK_COLORS = {
   markerColor: _darkGlobe.markerColor as [number, number, number],
   glowColor: _darkGlobe.glowColor as [number, number, number],
   arcColor: _darkGlobe.arcColor as [number, number, number],
-  markerDotRgb: COBE_MARKER_DOT_RGB,
+  markerDotRgb: COBE_MARKER_DOT_RGB(false),
 };
 
 export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {

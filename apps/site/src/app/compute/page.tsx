@@ -14,6 +14,7 @@ import {
   DeployTerminal,
   StatefulExecutionCard,
 } from "./how-it-works";
+import { CobeGlobe } from "./CobeGlobe";
 import { NetworkGlobe } from "./NetworkGlobe";
 
 const FEATURES = [
@@ -306,6 +307,9 @@ export default async function Page() {
     <main className="bg-background-default">
       <div className="hero -mt-24 pt-40 flex items-end justify-center px-4 relative mb-24">
         <div className="absolute z-0 inset-0 hero-background max-sm:overflow-hidden max-sm:flex max-sm:items-center">
+          <div className="relative max-w-[1800px] mx-auto w-full md:-mt-[10vw] lg:-mt-[30vw] opacity-10">
+            <CobeGlobe />
+          </div>
           <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--color-foreground-ppg)_0%,var(--color-background-default)_100%)] opacity-20" />
           <div className="absolute inset-0 pointer-events-none z-1 bg-[url('/illustrations/homepage/footer_grid.svg')]" />
         </div>
