@@ -740,7 +740,7 @@ const RUNTIME_TASKS = [
     pulse: true,
   },
   {
-    icon: "fa-regular fa-arrows-left-right",
+    icon: "fa-regular fa-arrows-left-arrow-right",
     kind: "HTTP",
     code: "POST /api/invoice",
     tag: "42ms",
