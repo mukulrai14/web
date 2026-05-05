@@ -748,7 +748,7 @@ const RUNTIME_TASKS = [
     pulse: false,
   },
   {
-    icon: "fa-regular fa-list-ul",
+    icon: "fa-regular fa-bars",
     kind: "Queue",
     code: "email.send",
     tag: "12 in flight",
