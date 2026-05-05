@@ -463,6 +463,7 @@
     }
 
     /* Typography - Titles */
+    .type-title-6xl,
     .type-title-5xl,
     .type-title-4xl,
     .type-title-3xl,
@@ -477,6 +478,11 @@
         font-variant-numeric: lining-nums tabular-nums slashed-zero;
         font-stretch: 125%;
         font-width: 125%;
+    }
+
+    .type-title-6xl {
+        font-size: var(--text-6xl);
+        line-height: var(--text-6xl--line-height);
     }
 
     .type-title-5xl {

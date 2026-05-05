@@ -312,11 +312,11 @@ export default async function Page() {
         </div>
         <div className="content relative z-2 flex flex-col gap-8 max-w-308 w-full">
           <div className="flex flex-col gap-4 items-center text-center">
-            <div className="flex items-center gap-2 text-foreground-ppg uppercase tracking-widest text-base font-sans-display [font-variation-settings:'wght'_700,'wdth'_125]">
+            <div className="flex items-center gap-2 text-foreground-ppg type-title-sm">
               <i className="fa-solid fa-microchip" aria-hidden="true"></i>
               <span>Prisma Compute</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl stretch-display mb-0 text-center mt-0 font-sans-display text-foreground-neutral max-w-4xl mx-auto">
+            <h1 className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto">
               Deploy TypeScript
               <br /> to production
             </h1>
@@ -361,7 +361,7 @@ export default async function Page() {
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             01 / WHY-PRISMA-COMPUTE
           </span>
-          <h2 className="text-4xl leading-[48px] font-black font-sans-display text-foreground-neutral m-0 stretch-display">
+          <h2 className="type-title-4xl text-foreground-neutral m-0">
             Built for the way TypeScript actually runs.
           </h2>
         </div>
@@ -391,7 +391,7 @@ export default async function Page() {
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             03 / WHY USE COMPUTE
           </span>
-          <h2 className="text-4xl leading-[48px] font-black font-sans-display text-foreground-neutral m-0 text-left stretch-display">
+          <h2 className="type-title-4xl text-foreground-neutral m-0 text-left">
             Does it work for me?
           </h2>
         </div>
@@ -441,7 +441,7 @@ export default async function Page() {
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             04 / WHAT MAKES IT UNIQUE
           </span>
-          <h2 className="text-4xl leading-[48px] font-black font-sans-display text-foreground-neutral m-0 text-left stretch-display">
+          <h2 className="type-title-4xl text-foreground-neutral m-0 text-left">
             Compute keeps it all together.
           </h2>
         </div>
@@ -459,7 +459,7 @@ export default async function Page() {
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             05 / STARTERS
           </span>
-          <h2 className="text-4xl leading-[48px] font-black font-sans-display text-foreground-neutral m-0 text-center stretch-display">
+          <h2 className="type-title-4xl text-foreground-neutral m-0 text-center">
             Starter apps
           </h2>
         </div>
@@ -481,7 +481,7 @@ export default async function Page() {
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             06 / CORE TECHNICAL OVERVIEW
           </span>
-          <h2 className="text-4xl leading-[48px] font-black font-sans-display text-foreground-neutral m-0 text-center stretch-display">
+          <h2 className="type-title-4xl text-foreground-neutral m-0 text-center">
             How it works
           </h2>
         </div>
