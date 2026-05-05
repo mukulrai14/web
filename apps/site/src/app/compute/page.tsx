@@ -377,7 +377,7 @@ export default async function Page() {
       </section>
       <section className="my-12 py-12 px-8">
         <div className="pt-12 relative gap-8 flex flex-col max-w-296 w-full mx-auto">
-          <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
+          <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider mb-12">
             02 / FEATURES
           </span>
           <CardSection
