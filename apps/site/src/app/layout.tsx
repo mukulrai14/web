@@ -104,6 +104,12 @@ function baseOptions() {
             url: "/studio",
             desc: "Explore and manipulate your data",
           },
+          {
+            text: "Compute",
+            url: "/compute",
+            desc: "Deploy TypeScript to production",
+            icon: "fa-regular fa-microchip",
+          },
         ],
       },
       {

@@ -30,10 +30,10 @@ export function baseOptions() {
             desc: "Explore and manipulate your data",
           },
           {
-            icon: "fa-regular fa-bolt",
-            text: "Accelerate",
-            desc: "Make your database global",
-            url: "https://www.prisma.io/accelerate",
+            text: "Compute",
+            url: "/compute",
+            desc: "Deploy TypeScript to production",
+            icon: "fa-regular fa-microchip",
           },
         ],
       },
@@ -105,7 +105,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider defaultTheme="system" storageKey="theme">
       <UtmPersistence />
-      <NavigationWrapper links={baseOptions().links} utm={{ source: "website", medium: "blog" }} />
+      <NavigationWrapper
+        links={baseOptions().links}
+        utm={{ source: "website", medium: "blog" }}
+      />
       {children}
       <Footer />
     </ThemeProvider>
