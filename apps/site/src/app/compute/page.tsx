@@ -24,7 +24,7 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral text-xl stretch-display font-sans-display mt-0 mb-4">
+        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4">
           Deploy from your repo
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4">
@@ -60,7 +60,7 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral text-xl stretch-display font-sans-display mt-0 mb-4">
+        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4">
           Stateful execution
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4">
@@ -91,7 +91,7 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral text-xl stretch-display font-sans-display mt-0 mb-4">
+        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4">
           Any TypeScript workload
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4">
@@ -123,7 +123,7 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral text-xl stretch-display font-sans-display mt-0 mb-4">
+        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4">
           Co-located database
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4">
@@ -425,7 +425,7 @@ export default async function Page() {
                 />
               </div>
               <div>
-                <h3 className="text-foreground-neutral font-sans-display [font-variation-settings:'wght'_800,'wdth'_110] font-bold text-base m-0 mb-2">
+                <h3 className="text-foreground-neutral type-title-md m-0 mb-2">
                   {item.title}
                 </h3>
                 <p className="text-foreground-neutral-weak text-sm m-0">
@@ -494,7 +494,7 @@ export default async function Page() {
         <div className="my-12 p-12 relative z-1">
           <div className="flex flex-col mx-auto w-fit items-center justify-center gap-8">
             <div className="flex flex-col items-center text-center gap-4">
-              <h2 className="text-3xl text-foreground-neutral font-sans-display stretch-display">
+              <h2 className="type-title-2xl text-foreground-neutral">
                 Why we built Prisma Compute
               </h2>
               <p className="text-foreground-neutral-weak max-w-154">

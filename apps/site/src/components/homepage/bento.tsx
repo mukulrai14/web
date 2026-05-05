@@ -182,7 +182,7 @@ export const Card = ({ card, color, className }: CardProps) => {
           <i className={cn("text-xl", card.icon)} />
         </Action>
         <div className="z-2">
-          <h2 className="text-foreground-neutral [font-variation-settings:'wdth'_125] font-sans-display text-base mt-0 mb-1 font-bold">
+          <h2 className="text-foreground-neutral type-title-xl mt-0 mb-1">
             {card.title}
           </h2>
           {card.subtitle && (

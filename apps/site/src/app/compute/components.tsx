@@ -195,7 +195,7 @@ export function TemplateCards() {
           )}
         >
           <CardHeader className="space-y-2 border-b-0">
-            <h3 className="font-sans-display font-bold text-xl text-foreground-neutral m-0 leading-7 [font-variation-settings:'wght'_700,'wdth'_125] mb-2">
+            <h3 className="type-title-xl text-foreground-neutral m-0 mb-2">
               {template.title}
             </h3>
             <p className="text-sm text-foreground-neutral-weak m-0 font-normal">

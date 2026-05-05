@@ -1415,7 +1415,7 @@ export function HowItWorks() {
               {/* Label: always visible on sm+; only when active on mobile */}
               <span
                 className={cn(
-                  "font-sans-display font-bold text-xl leading-tight text-center [font-variation-settings:'wdth'_125]",
+                  "type-title-lg",
                   "text-foreground-neutral-weak group-data-[state=active]:text-foreground-neutral",
                   // Hide on mobile unless active
                   "hidden group-data-[state=active]:inline sm:inline",
@@ -1438,7 +1438,7 @@ export function HowItWorks() {
               {/* Description pane */}
               <div className="bg-background-neutral-weaker flex-1">
                 <div className="p-6 flex flex-col gap-4">
-                  <h3 className="font-sans-display font-black text-2xl text-foreground-neutral m-0 leading-8">
+                  <h3 className=" text-foreground-neutral m-0 type-title-2xl">
                     {tab.title}
                   </h3>
                   <p className="text-sm text-foreground-neutral leading-relaxed m-0 text-pretty">
