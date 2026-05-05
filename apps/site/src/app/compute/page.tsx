@@ -24,10 +24,10 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4">
+        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4 text-pretty">
           Deploy from your repo
         </h2>
-        <p className="text-foreground-neutral-weak text-base mb-4">
+        <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
           Connect a GitHub repo. Prisma Compute discovers your services and
           deploys them in seconds.
         </p>
@@ -60,10 +60,10 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4">
+        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4 text-pretty">
           Stateful execution
         </h2>
-        <p className="text-foreground-neutral-weak text-base mb-4">
+        <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
           Your code runs as a long-lived process. Connections stay open.
           In-process caches persist across requests.
         </p>
@@ -91,10 +91,10 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4">
+        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4 text-pretty">
           Any TypeScript workload
         </h2>
-        <p className="text-foreground-neutral-weak text-base mb-4">
+        <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
           Standard TypeScript on Bun. No V8 isolate limits. No runtime
           constraints.
         </p>
@@ -123,10 +123,10 @@ const FEATURES = [
   {
     content: (
       <>
-        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4">
+        <h2 className="text-foreground-neutral type-title-2xl mt-0 mb-4 text-pretty">
           Co-located database
         </h2>
-        <p className="text-foreground-neutral-weak text-base mb-4">
+        <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
           Pair with Prisma Postgres; compute and database run in the same
           region, connected automatically.
         </p>
