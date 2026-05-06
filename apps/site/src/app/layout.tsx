@@ -190,7 +190,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           src={WebFA}
           crossOrigin="anonymous"
           data-auto-add-css="false"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <Script
           id="cookieyes"

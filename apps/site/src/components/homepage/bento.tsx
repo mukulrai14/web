@@ -200,7 +200,8 @@ export const Card = ({ card, color, className }: CardProps) => {
             alt={card.title}
             width={1200}
             height={800}
-            loading="eager"
+            loading="lazy"
+            sizes="(min-width: 1024px) 420px, 100vw"
             className={cn(imageClassName, "dark:hidden")}
           />
           <Image
@@ -208,7 +209,8 @@ export const Card = ({ card, color, className }: CardProps) => {
             alt={card.title}
             width={1200}
             height={800}
-            loading="eager"
+            loading="lazy"
+            sizes="(min-width: 1024px) 420px, 100vw"
             className={cn(imageClassName, "hidden dark:block")}
           />
         </>

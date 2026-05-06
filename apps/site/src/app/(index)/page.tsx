@@ -1,10 +1,14 @@
-import Antigravity from "../../components/homepage/antigravity";
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/page-metadata";
 import { SITE_HOME_DESCRIPTION, SITE_HOME_TITLE } from "@/lib/site-metadata";
 import { Button } from "@prisma/eclipse";
 import { CardSection } from "@/components/homepage/card-section/card-section";
 import review from "../../data/homepage.json";
 import Testimonials from "../../components/homepage/testimonials";
+// Antigravity is a purely decorative particle animation — skip SSR to keep
+// the 300 inline <g> elements out of the initial HTML payload (~36 KB).
+// The actual next/dynamic({ ssr: false }) call lives in the client wrapper
+// because ssr:false is only valid inside Client Components in the App Router.
+import Antigravity from "../../components/homepage/antigravity-client";
 
 const twoCol = [
   {
@@ -109,30 +113,12 @@ const twoCol = [
     visualType: "other" as const,
   },
 ];
-
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: SITE_HOME_TITLE,
   description: SITE_HOME_DESCRIPTION,
-  alternates: {
-    canonical: "https://www.prisma.io/",
-  },
-  openGraph: {
-    title: SITE_HOME_TITLE,
-    description: SITE_HOME_DESCRIPTION,
-    url: "https://www.prisma.io/",
-    images: [
-      {
-        url: "/og/og-index.png",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: SITE_HOME_TITLE,
-    description: SITE_HOME_DESCRIPTION,
-    images: ["/og/og-index.png"],
-  },
-};
+  path: "/",
+  ogImage: "/og/og-index.png",
+});
 
 export default function SiteHome() {
   return (
