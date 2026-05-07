@@ -14,7 +14,7 @@ type TestimonialsType = {
 
 const Testimonials = ({ color, list, noShadow, mask }: TestimonialsType) => {
   const marqueeClasses = cn(
-    "relative max-w-full",
+    "w-full overflow-hidden py-2",
     !noShadow &&
       "before:content-[''] before:absolute before:inset-y-0 before:left-0 before:w-[12%] before:pointer-events-none before:z-[1] before:bg-gradient-to-r before:from-[#0B0C17] before:to-[rgba(11,12,23,0)]",
     !noShadow &&
@@ -22,14 +22,19 @@ const Testimonials = ({ color, list, noShadow, mask }: TestimonialsType) => {
   );
 
   return (
-    <div style={mask ? { maskImage: mask } : undefined} data-testid="testimonials">
-      <div className={marqueeClasses}>
+    <div
+      style={mask ? { maskImage: mask, WebkitMaskImage: mask } : undefined}
+      data-testid="testimonials"
+    >
+      <div className={cn("relative max-w-full", marqueeClasses)}>
         <Marquee
           direction="left"
-          
+          pauseOnHover
           className="w-full overflow-hidden py-2"
           innerClassName="items-stretch"
-          style={{ "--duration": "180s" } as CSSProperties}
+          deferDuplicateCopiesUntilMount
+          hideDuplicateCopiesFromAccessibility
+          style={{ "--duration": "350s", "--gap": "1rem" } as CSSProperties}
         >
           {list.map((testimonial, idx) => (
             <div

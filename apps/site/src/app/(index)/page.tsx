@@ -1,6 +1,8 @@
 import { createPageMetadata } from "@/lib/page-metadata";
+import { createCollectionPageStructuredData } from "@/lib/structured-data";
 import { SITE_HOME_DESCRIPTION, SITE_HOME_TITLE } from "@/lib/site-metadata";
 import { Button } from "@prisma/eclipse";
+import { JsonLd } from "@prisma-docs/ui/components/json-ld";
 import { CardSection } from "@/components/homepage/card-section/card-section";
 import LogoParade from "@/components/logo-parade";
 import review from "../../data/homepage.json";
@@ -178,9 +180,36 @@ export const metadata = createPageMetadata({
   ogImage: "/og/og-index.png",
 });
 
+const homeStructuredData = createCollectionPageStructuredData({
+  path: "/",
+  name: "A Database Platform for TypeScript Developers",
+  description: SITE_HOME_DESCRIPTION,
+  items: [
+    {
+      name: "Prisma ORM",
+      url: "/orm",
+      description:
+        "A type-safe ORM for TypeScript and Node.js with a schema-first workflow and generated client.",
+    },
+    {
+      name: "Prisma Postgres",
+      url: "/postgres",
+      description:
+        "Managed PostgreSQL with built-in pooling for modern deployment environments.",
+    },
+    {
+      name: "Prisma Compute",
+      url: "/compute",
+      description:
+        "Production compute for APIs, background jobs, and AI agents without cold starts or timeouts.",
+    },
+  ],
+});
+
 export default function SiteHome() {
   return (
     <main className="flex-1 w-full z-1 bg-background-default">
+      <JsonLd id="home-structured-data" data={homeStructuredData} />
       <section className="hero h-full relative -mt-24 flex items-end justify-center px-4 pt-40">
         <div className="w-screen h-full absolute inset-0">
           <Antigravity
@@ -204,19 +233,24 @@ export default function SiteHome() {
         <div className="absolute inset-0 pointer-events-none z-1 bg-[linear-gradient(180deg,var(--color-foreground-ppg)_0%,var(--color-background-default)_100%)] opacity-20" />
         <div className="content relative z-2 flex flex-col gap-8">
           <div className="flex flex-col gap-4 items-center text-center">
+            <div className="flex items-center gap-2 text-foreground-ppg-weak uppercase tracking-widest text-sm font-sans-display font-black">
+              <i className="fa-solid fa-triangle" />
+              <span>Prisma</span>
+            </div>
             <h1 className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto">
-              Prisma for
+              A Database Platform for
               <br />
-              TypeScript developers
+              TypeScript Developers
             </h1>
           </div>
           <p className="text-center text-foreground-neutral max-w-3xl mx-auto text-xl">
-            Type-safe data, modern infrastructure, and a better developer experience
-            from schema to production.
+            Prisma gives TypeScript and Node.js teams a type-safe ORM, managed
+            Postgres, and production-ready compute for modern applications from
+            schema to production.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <Button asChild variant="ppg" size="3xl" className="font-sans-display! font-[650]">
-              <a href="/docs/orm">
+              <a href="/orm">
                 <span>Explore Prisma ORM</span>
                 <i className="fa-regular fa-arrow-right ml-2" />
               </a>
@@ -232,7 +266,6 @@ export default function SiteHome() {
       </section>
 
       <section className="my-16 px-4 md:my-20">
-        
         <LogoParade />
       </section>
 
@@ -259,7 +292,7 @@ export default function SiteHome() {
                     </p>
                   </div>
                   <div className="inline-flex h-6 items-center gap-2 rounded-[3px] bg-background-ppg/10 px-2 py-1 text-xs font-medium uppercase text-foreground-ppg">
-                    <i className="fa-regular fa-pen-to-square text-[11px]" aria-hidden="true" />
+                    <i className="fa-regular fa-code text-[11px]" aria-hidden="true" />
                     <span className="font-mono tracking-wide">MODEL</span>
                   </div>
                 </div>
@@ -337,6 +370,32 @@ export default function SiteHome() {
         </div>
       </section>
 
+      <section className="px-4 py-10 md:py-12">
+        <div className="mx-auto flex max-w-[860px] flex-col gap-4 text-center">
+          <h2 className="m-0 text-3xl font-black! font-sans-display text-foreground-neutral">
+            A modern database platform for TypeScript applications
+          </h2>
+          <p className="mx-auto max-w-[760px] text-base leading-7 text-foreground-neutral-weak md:text-lg">
+            Start with{" "}
+            <a className="text-foreground-neutral underline underline-offset-2" href="/orm">
+              Prisma ORM
+            </a>{" "}
+            for type-safe database access, add{" "}
+            <a className="text-foreground-neutral underline underline-offset-2" href="/postgres">
+              Prisma Postgres
+            </a>{" "}
+            for managed PostgreSQL, and run APIs, background jobs, and AI agents
+            on{" "}
+            <a className="text-foreground-neutral underline underline-offset-2" href="/compute">
+              Prisma Compute
+            </a>
+            . The platform is built for teams that want better developer
+            experience, safer schema changes, and production infrastructure that
+            fits modern deployment workflows.
+          </p>
+        </div>
+      </section>
+
       {/* Card Sections */}
       <section className="my-16 w-screen md:my-20">
         <CardSection cardSection={twoCol} />
@@ -371,7 +430,7 @@ export default function SiteHome() {
         <section className="my-16 md:my-20">
           <div className="px-4 py-12 md:py-16">
             <div className="max-w-[1240px] mx-auto">
-              <h5
+              <p
                 className="[&>b]:text-background-ppg-reverse-strong font-sans-display stretch-display text-center text-base mb-12"
                 dangerouslySetInnerHTML={{ __html: review.title }}
               />
@@ -402,7 +461,7 @@ export default function SiteHome() {
               </div>
               <div className="flex flex-col gap-6 md:flex-row">
                 <Button asChild variant="ppg" size="2xl">
-                  <a href="/docs/orm">
+                  <a href="/orm">
                     Explore Prisma ORM
                     <i className="fa-regular fa-arrow-right ml-2" />
                   </a>
@@ -414,9 +473,9 @@ export default function SiteHome() {
                   </a>
                 </Button>
               </div>
-              <h6 className="mb-0! -mt-4 text-xs text-foreground-neutral-weaker">
+              <p className="mb-0! -mt-4 text-xs text-foreground-neutral-weaker">
                 Free to get started, no credit card needed.
-              </h6>
+              </p>
             </div>
           </div>
         </div>

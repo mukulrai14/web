@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 import { cn } from "@prisma-docs/ui/lib/cn";
@@ -17,8 +18,11 @@ export type MarqueeProps = HTMLAttributes<HTMLDivElement> & {
   pauseOnHover?: boolean;
   reverse?: boolean;
   fade?: boolean;
+  fillContainer?: boolean;
   innerClassName?: string;
   numberOfCopies?: number;
+  deferDuplicateCopiesUntilMount?: boolean;
+  hideDuplicateCopiesFromAccessibility?: boolean;
 };
 
 export function Marquee({
@@ -27,19 +31,32 @@ export function Marquee({
   pauseOnHover = false,
   reverse = false,
   fade = false,
+  fillContainer = true,
   className,
   innerClassName,
   numberOfCopies = 2,
+  deferDuplicateCopiesUntilMount = false,
+  hideDuplicateCopiesFromAccessibility = false,
   style,
   ...rest
 }: MarqueeProps) {
   const animationName = direction === "left" ? "marquee-left" : "marquee-up";
+  const fadeMask =
+    fade
+      ? `linear-gradient(${
+          direction === "left" ? "to right" : "to bottom"
+        }, transparent 0%, rgba(0, 0, 0, 1.0) 10%, rgba(0, 0, 0, 1.0) 90%, transparent 100%)`
+      : undefined;
 
-  // #3 – CSS animation pausing: toggle `paused` class when the marquee is
-  //       outside the viewport or the tab is backgrounded.
-  // #5 – Tab Visibility API combined with IntersectionObserver below.
+  // CSS hover pause is driven by a custom property on the container. JS only
+  // handles offscreen/tab pausing via IntersectionObserver + Visibility API.
   const containerRef = useRef<HTMLDivElement>(null);
   const [autoPaused, setAutoPaused] = useState(false);
+  const hasMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   useEffect(() => {
     const el = containerRef.current;
@@ -76,49 +93,49 @@ export function Marquee({
     };
   }, []);
 
+  const copyCount =
+    deferDuplicateCopiesUntilMount && !hasMounted ? 1 : numberOfCopies;
+
   return (
     <div
       ref={containerRef}
       className={cn(
-        "group flex gap-[1rem] overflow-hidden",
+        "flex overflow-hidden [--marquee-play-state:running]",
+        pauseOnHover && "hover:[--marquee-play-state:paused]",
         direction === "left" ? "flex-row" : "flex-col",
         className,
       )}
       style={{
         ...style,
-        maskImage: fade
-          ? `linear-gradient(${
-              direction === "left" ? "to right" : "to bottom"
-            }, transparent 0%, rgba(0, 0, 0, 1.0) 10%, rgba(0, 0, 0, 1.0) 90%, transparent 100%)`
-          : undefined,
-        WebkitMaskImage: fade
-          ? `linear-gradient(${
-              direction === "left" ? "to right" : "to bottom"
-            }, transparent 0%, rgba(0, 0, 0, 1.0) 10%, rgba(0, 0, 0, 1.0) 90%, transparent 100%)`
-          : undefined,
+        gap: "var(--gap, 1rem)",
+        maskImage: fadeMask ?? style?.maskImage,
+        WebkitMaskImage: fadeMask ?? style?.WebkitMaskImage ?? style?.maskImage,
       }}
       {...rest}
     >
-      {Array(numberOfCopies)
+      {Array(copyCount)
         .fill(0)
         .map((_, i) => (
           <div
             key={i}
+            aria-hidden={hideDuplicateCopiesFromAccessibility && i > 0 ? true : undefined}
             className={cn(
-              "flex gap-[1rem] [--gap:1rem] shrink-0",
+              "flex shrink-0",
               direction === "left"
-                ? "min-w-full flex-row justify-around"
+                ? fillContainer
+                  ? "min-w-full flex-row justify-around"
+                  : "w-max flex-row justify-start"
                 : "min-h-full flex-col justify-start",
-              pauseOnHover && "group-hover:paused",
-              // #3 – apply `paused` utility (animation-play-state: paused)
-              // when viewport or tab visibility says to stop.
-              autoPaused && "paused",
               innerClassName,
             )}
             style={
               {
                 animation: `${animationName} var(--duration, 40s) linear infinite`,
                 animationDirection: reverse ? "reverse" : "normal",
+                animationPlayState: autoPaused
+                  ? "paused"
+                  : "var(--marquee-play-state)",
+                gap: "var(--gap, 1rem)",
                 willChange: "transform",
               } as CSSProperties
             }
