@@ -32,7 +32,7 @@ interface CardSectionProps {
 
 const imageShadowClass = "shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)]";
 const sectionClass =
-  "py-6 md:py-8 lg:py-12 my-6 md:my-8 lg:my-12 w-full overflow-visible px-4 sm:px-0";
+  "py-8 md:py-10 lg:py-14 my-8 md:my-10 lg:my-14 w-full overflow-visible px-4 sm:px-0";
 
 const getCardSectionItemKey = (item: TwoColumnItem) =>
   [
