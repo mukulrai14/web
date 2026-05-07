@@ -3,6 +3,7 @@ import { createCollectionPageStructuredData } from "@/lib/structured-data";
 import { SITE_HOME_DESCRIPTION, SITE_HOME_TITLE } from "@/lib/site-metadata";
 import { Button } from "@prisma/eclipse";
 import { JsonLd } from "@prisma-docs/ui/components/json-ld";
+import Image from "next/image";
 import { CardSection } from "@/components/homepage/card-section/card-section";
 import LogoParade from "@/components/logo-parade";
 import review from "../../data/homepage.json";
@@ -88,14 +89,15 @@ const twoCol = [
     other: (
       <div
         className="box box-visible flex h-full min-h-[320px] flex-col justify-between gap-6 bg-cover bg-center bg-no-repeat p-6 md:p-8"
-        style={{
-          backgroundImage: `url('/illustrations/homepage/compute-illustration-cropped.svg')`,
-          backgroundSize: "100% 100%",
-          backgroundPosition: "bottom right",
-          backgroundRepeat: "no-repeat",
-        }}
       >
-        <div className="space-y-4">
+        <ThemeFillIllustration
+          lightSrc="/illustrations/homepage/compute-illustration-cropped-light.svg"
+          darkSrc="/illustrations/homepage/compute-illustration-cropped.svg"
+          className="pointer-events-none absolute inset-0"
+          imageClassName="object-fill object-bottom-right"
+          sizes="(min-width: 1024px) 50vw, 100vw"
+        />
+        <div className="relative z-10 space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-stroke-ppg/40 bg-background-ppg/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-foreground-ppg">
             <i className="fa-regular fa-microchip" aria-hidden="true" />
             Long-lived compute
@@ -107,7 +109,7 @@ const twoCol = [
             <li>Co-locates with Prisma Postgres by default</li>
           </ul>
         </div>
-        <div>
+        <div className="relative z-10">
           <Button asChild variant="ppg" size="lg">
             <a href="/compute">
               Explore Compute
@@ -170,6 +172,39 @@ function StoreDatabaseIcon({ className = "" }: { className?: string }) {
         strokeWidth="1.8"
       />
     </svg>
+  );
+}
+
+function ThemeFillIllustration({
+  lightSrc,
+  darkSrc,
+  className,
+  imageClassName,
+  sizes = "100vw",
+}: {
+  lightSrc: string;
+  darkSrc: string;
+  className: string;
+  imageClassName: string;
+  sizes?: string;
+}) {
+  return (
+    <div aria-hidden="true" className={className}>
+      <Image
+        src={lightSrc}
+        alt=""
+        fill
+        sizes={sizes}
+        className={`block dark:hidden ${imageClassName}`}
+      />
+      <Image
+        src={darkSrc}
+        alt=""
+        fill
+        sizes={sizes}
+        className={`hidden dark:block ${imageClassName}`}
+      />
+    </div>
   );
 }
 
@@ -278,7 +313,6 @@ export default function SiteHome() {
 
           <div className="mx-auto mt-10 grid max-w-[1200px] gap-4 lg:grid-cols-3">
             <div className="relative h-[300px] overflow-hidden rounded-[12px] border border-stroke bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-              
               <div className="relative z-10 flex h-full flex-col p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-2">
@@ -291,17 +325,18 @@ export default function SiteHome() {
                       your app uses every day.
                     </p>
                   </div>
-                  <div className="inline-flex h-6 items-center gap-2 rounded-[3px] bg-background-ppg/10 px-2 py-1 text-xs font-medium uppercase text-foreground-ppg">
+                  <div className="inline-flex h-6 items-center gap-2 rounded-[3px] bg-background-ppg-strong px-2 py-1 text-xs font-medium uppercase text-foreground-ppg">
                     <i className="fa-regular fa-code text-[11px]" aria-hidden="true" />
                     <span className="font-mono tracking-wide">MODEL</span>
                   </div>
                 </div>
               </div>
-              <img
-                src="/illustrations/homepage/model-illustration.svg"
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 h-full w-full"
+              <ThemeFillIllustration
+                lightSrc="/illustrations/homepage/model-illustration-light.svg"
+                darkSrc="/illustrations/homepage/model-illustration.svg"
+                className="pointer-events-none absolute inset-0"
+                imageClassName="object-fill"
+                sizes="(min-width: 1024px) 400px, 100vw"
               />
             </div>
 
@@ -318,29 +353,23 @@ export default function SiteHome() {
                       ready for production.
                     </p>
                   </div>
-                  <div className="inline-flex h-6 items-center gap-2 rounded-[3px] bg-background-ppg/10 px-2 py-1 text-xs font-medium uppercase text-foreground-ppg">
+                  <div className="inline-flex h-6 items-center gap-2 rounded-[3px] bg-background-ppg-strong px-2 py-1 text-xs font-medium uppercase text-foreground-ppg">
                     <StoreDatabaseIcon className="size-[11px]" />
                     <span className="font-mono tracking-wide">STORE</span>
                   </div>
                 </div>
               </div>
 
-              <img
-                src="/illustrations/homepage/store-illustration.svg"
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute bottom-3 left-0 right-0 mx-auto w-[80%]"
+              <ThemeFillIllustration
+                lightSrc="/illustrations/homepage/store-illustration-light.svg"
+                darkSrc="/illustrations/homepage/store-illustration.svg"
+                className="pointer-events-none absolute bottom-3 left-0 right-0 mx-auto h-[180px] w-[80%]"
+                imageClassName="object-contain"
+                sizes="(min-width: 1024px) 320px, 80vw"
               />
             </div>
 
             <div className="relative h-[300px] overflow-hidden rounded-[12px] border border-stroke bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-              <svg
-                viewBox="0 0 389 300"
-                className="pointer-events-none absolute inset-0 h-full w-full"
-                aria-hidden="true"
-              >
-                <path d="M304 26L109 149" stroke="rgba(45,212,191,0.45)" strokeWidth="1.5" />
-              </svg>
               <div className="relative z-10 flex h-full flex-col p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-2">
@@ -353,17 +382,18 @@ export default function SiteHome() {
                       runtime constraints.
                     </p>
                   </div>
-                  <div className="inline-flex h-6 items-center gap-2 rounded-[3px] bg-background-ppg/10 px-2 py-1 text-xs font-medium uppercase text-foreground-ppg">
+                  <div className="inline-flex h-6 items-center gap-2 rounded-[3px] bg-background-ppg-strong px-2 py-1 text-xs font-medium uppercase text-foreground-ppg">
                     <i className="fa-regular fa-microchip text-[11px]" aria-hidden="true" />
                     <span className="font-mono tracking-wide">RUN</span>
                   </div>
                 </div>
               </div>
-              <img
-                src="/illustrations/homepage/run-illustration.svg"
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+              <ThemeFillIllustration
+                lightSrc="/illustrations/homepage/run-illustration-light.svg"
+                darkSrc="/illustrations/homepage/run-illustration.svg"
+                className="pointer-events-none absolute inset-0"
+                imageClassName="object-cover"
+                sizes="(min-width: 1024px) 400px, 100vw"
               />
             </div>
           </div>
