@@ -56,10 +56,10 @@ const twoCol = [
         </p>
       </>
     ),
-    imageUrl: "/illustrations/homepage/real_ppg",
+    imageUrl: "/illustrations/homepage/managed-postgres",
     imageAlt: "Real Postgres",
-    mobileImageUrl: "/illustrations/homepage/real_ppg_mobile",
-    mobileImageAlt: "Real PPG mobile",
+    mobileImageUrl: null,
+    mobileImageAlt: null,
     logos: null,
     useDefaultLogos: false,
     visualPosition: "left" as const,
@@ -98,7 +98,7 @@ const twoCol = [
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
         <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-stroke-ppg/40 bg-background-ppg/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-foreground-ppg">
+          <div className="ml-3 inline-flex items-center gap-2 rounded-full border border-stroke-ppg/40 bg-background-ppg/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-foreground-ppg">
             <i className="fa-regular fa-microchip" aria-hidden="true" />
             Long-lived compute
           </div>
@@ -109,7 +109,7 @@ const twoCol = [
             <li>Co-locates with Prisma Postgres by default</li>
           </ul>
         </div>
-        <div className="relative z-10">
+        <div className="relative z-10 ml-4">
           <Button asChild variant="ppg" size="lg">
             <a href="/compute">
               Explore Compute
@@ -402,8 +402,8 @@ export default function SiteHome() {
 
       <section className="px-4 py-10 md:py-12">
         <div className="mx-auto flex max-w-[860px] flex-col gap-4 text-center">
-          <h2 className="m-0 text-3xl font-black! font-sans-display text-foreground-neutral">
-            A modern database platform for TypeScript applications
+          <h2 className="m-0 text-3xl font-black! font-sans-display text-foreground-neutral stretch-display">
+            A modern platform for TypeScript applications
           </h2>
           <p className="mx-auto max-w-[760px] text-base leading-7 text-foreground-neutral-weak md:text-lg">
             Start with{" "}
@@ -419,9 +419,7 @@ export default function SiteHome() {
             <a className="text-foreground-neutral underline underline-offset-2" href="/compute">
               Prisma Compute
             </a>
-            . The platform is built for teams that want better developer
-            experience, safer schema changes, and production infrastructure that
-            fits modern deployment workflows.
+            .
           </p>
         </div>
       </section>
@@ -432,7 +430,7 @@ export default function SiteHome() {
       </section>
 
       {/* Pricing CTA Section */}
-      <section className="my-16 bg-[linear-gradient(180deg,var(--color-background-default)-177.75%,var(--color-background-ppg-str)100%)] px-6 py-14 shadow-[0_1px_2px_0_rgba(0,0,0,0.04)] md:my-20 md:px-8 md:py-16">
+      <section className="my-16 bg-background-default px-6 py-14 shadow-[0_1px_2px_0_rgba(0,0,0,0.04)] md:my-20 bg-[linear-gradient(180deg,var(--color-background-default)_-177.75%,var(--color-background-ppg)_100%)] md:px-8 md:py-16">
         <div className="web-cta mx-auto flex w-fit flex-col items-center gap-3 md:flex-row md:gap-12 lg:p-4">
           <h3 className="text-2xl text-center font-sans-display font-bold text-foreground-neutral md:text-left">
             Run TypeScript
@@ -458,7 +456,7 @@ export default function SiteHome() {
       {/* Testimonials Section */}
       {review?.testimonials?.length > 0 && (
         <section className="my-16 md:my-20">
-          <div className="px-4 py-12 md:py-16">
+          <div className="px-4 pt-12 pb-8 md:pt-16 md:pb-10">
             <div className="max-w-[1240px] mx-auto">
               <p
                 className="[&>b]:text-background-ppg-reverse-strong font-sans-display stretch-display text-center text-base mb-12"
@@ -475,13 +473,13 @@ export default function SiteHome() {
       )}
 
       {/* Footer CTA Section */}
-      <section className="bg-radial from-background-ppg/50 from-0% to-background-default to-70% px-4 py-16 md:py-20">
+      <section className="bg-radial from-background-ppg/50 from-0% to-background-default to-70% px-4 pt-8 pb-16 md:pt-10 md:pb-20">
         <div className="mx-auto rounded-2xl bg-[url('/illustrations/homepage/footer_grid.svg')] bg-cover bg-center px-4 py-14 md:py-16">
           <div className="p-4 md:p-8">
             <div className="mx-auto flex max-w-[580px] flex-col items-center gap-8 text-center">
               <div className="flex flex-col items-center gap-4">
                 <h2 className="text-3xl text-foreground-neutral font-sans-display stretch-display">
-                  Start with Prisma. Expand when you need more.
+                  Start with Prisma.<br/> Expand when you need more.
                 </h2>
                 <p className="text-foreground-neutral-weak">
                   Begin with Prisma ORM, add Prisma Postgres when you need managed

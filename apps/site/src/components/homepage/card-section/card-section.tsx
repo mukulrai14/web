@@ -87,6 +87,14 @@ interface ThemeImagePairProps {
   wrapperClassName: string;
 }
 
+const withDefaultIllustrationExtension = (imagePath: string) =>
+  /\.[a-zA-Z0-9]+$/.test(imagePath) ? imagePath : `${imagePath}.svg`;
+
+const getLightIllustrationPath = (imagePath: string) =>
+  /\.[a-zA-Z0-9]+$/.test(imagePath)
+    ? imagePath.replace(/(\.[^.]+)$/, "_light$1")
+    : `${imagePath}_light.svg`;
+
 const ThemeImagePair = ({
   imageUrl,
   alt,
@@ -104,7 +112,7 @@ const ThemeImagePair = ({
         "hidden dark:block w-full h-auto",
         !noShadow && imageShadowClass,
       )}
-      src={`${imageUrl}.svg`}
+      src={withDefaultIllustrationExtension(imageUrl)}
       alt={alt}
       width={width}
       height={height}
@@ -117,7 +125,7 @@ const ThemeImagePair = ({
         "block dark:hidden w-full h-auto",
         !noShadow && imageShadowClass,
       )}
-      src={`${imageUrl}_light.svg`}
+      src={getLightIllustrationPath(imageUrl)}
       alt={alt}
       width={width}
       height={height}

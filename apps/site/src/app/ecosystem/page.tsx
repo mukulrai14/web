@@ -45,9 +45,9 @@ const twoCol = [
         </p>
       </>
     ),
-    imageUrl: "/illustrations/homepage/real_ppg",
+    imageUrl: "/illustrations/homepage/real_ppg.png",
     imageAlt: "Real Postgres",
-    mobileImageUrl: "/illustrations/homepage/real_ppg_mobile",
+    mobileImageUrl: "/illustrations/homepage/real_ppg.png",
     mobileImageAlt: "Real PPG mobile",
     logos: null,
     useDefaultLogos: false,
