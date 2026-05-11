@@ -144,6 +144,7 @@ interface ImageVisualProps {
 const ImageVisual = ({ item, isLcpImage }: ImageVisualProps) => {
   if (!item.imageUrl) return null;
 
+  const mobileImageUrl = item.mobileImageUrl;
   const imageAlt = item.imageAlt || "";
   const mobileImageAlt = item.mobileImageAlt || "";
   const imageLoading = isLcpImage ? "eager" : "lazy";
@@ -151,7 +152,7 @@ const ImageVisual = ({ item, isLcpImage }: ImageVisualProps) => {
   const imageFetchPriority = isLcpImage ? "high" : "low";
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full border border-stroke rounded-[12px]">
       <ThemeImagePair
         imageUrl={item.imageUrl}
         alt={imageAlt}
@@ -161,11 +162,11 @@ const ImageVisual = ({ item, isLcpImage }: ImageVisualProps) => {
         fetchPriority={imageFetchPriority}
         loading={imageLoading}
         noShadow={item.noShadow}
-        wrapperClassName="hidden sm:block"
+        wrapperClassName={mobileImageUrl ? "hidden sm:block" : ""}
       />
-      {item.mobileImageUrl && (
+      {mobileImageUrl ? (
         <ThemeImagePair
-          imageUrl={item.mobileImageUrl}
+          imageUrl={mobileImageUrl}
           alt={mobileImageAlt}
           width={800}
           height={600}
@@ -175,7 +176,7 @@ const ImageVisual = ({ item, isLcpImage }: ImageVisualProps) => {
           noShadow={item.noShadow}
           wrapperClassName="sm:hidden"
         />
-      )}
+      ) : null}
     </div>
   );
 };

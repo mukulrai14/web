@@ -104,8 +104,26 @@ export default function LogoParade() {
         >
           {logoParade.map((item) => {
             const className =
-              "relative shrink-0 rounded-lg overflow-hidden transition-transform duration-200 invert-100 dark:brightness-150 dark:hover:filter-none contrast-75 grayscale hover:filter-none";
+              `relative 
+              shrink-0 
+              rounded-lg 
+              overflow-hidden 
+              transition-[transform,filter] 
+              duration-200
+              
+              grayscale  
+              invert-84
+              sepia-5
+              saturate-625
+              hue-rotate-179
+              brightness-77
+              contrast-88
+            
+              hover:filter-none`;
 
+
+              
+            
             const logo = (
               <Image
                 src={item.imageUrl}

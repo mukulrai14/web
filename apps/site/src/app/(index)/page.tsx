@@ -56,14 +56,25 @@ const twoCol = [
         </p>
       </>
     ),
-    imageUrl: "/illustrations/homepage/managed-postgres",
-    imageAlt: "Real Postgres",
+    imageUrl: null,
+    imageAlt: null,
     mobileImageUrl: null,
     mobileImageAlt: null,
     logos: null,
+    other: (
+      <div className="relative w-full rounded-[12px] border border-stroke overflow-hidden">
+        <ThemeFillIllustration
+          lightSrc="/illustrations/homepage/managed-postgres_light.svg"
+          darkSrc="/illustrations/homepage/managed-postgres.svg"
+          imageClassName="object-fill object-bottom-right"
+          className="pointer-events-none block inset-0"
+          sizes="(min-width: 1024px) 50vw, 100vw"
+        />
+      </div>
+    ),
     useDefaultLogos: false,
     visualPosition: "left" as const,
-    visualType: "image" as const,
+    visualType: "other" as const,
   },
   {
     content: (
@@ -98,18 +109,18 @@ const twoCol = [
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
         <div className="relative z-10 space-y-4">
-          <div className="ml-3 inline-flex items-center gap-2 rounded-full border border-stroke-ppg/40 bg-background-ppg/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-foreground-ppg">
+          <div className="inline-flex items-center gap-2 rounded-full border border-stroke-ppg/40 bg-background-ppg/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-foreground-ppg">
             <i className="fa-regular fa-microchip" aria-hidden="true" />
             Long-lived compute
           </div>
-          <ul className="m-0 space-y-3 pl-4 text-sm text-foreground-neutral-weak">
+          <ul className="mx-0 mt-4 space-y-3 pl-5 text-sm text-foreground-neutral-weak list-disc">
             <li>No cold starts</li>
             <li>No execution timeouts</li>
             <li>Great for APIs, jobs, and AI agents</li>
             <li>Co-locates with Prisma Postgres by default</li>
           </ul>
         </div>
-        <div className="relative z-10 ml-4">
+        <div className="relative z-10">
           <Button asChild variant="ppg" size="lg">
             <a href="/compute">
               Explore Compute
@@ -241,11 +252,14 @@ const homeStructuredData = createCollectionPageStructuredData({
   ],
 });
 
+const sectionSpacing = "py-16 md:py-20";
+const insetSectionSpacing = `px-4 ${sectionSpacing}`;
+
 export default function SiteHome() {
   return (
     <main className="flex-1 w-full z-1 bg-background-default">
       <JsonLd id="home-structured-data" data={homeStructuredData} />
-      <section className="hero h-full relative -mt-24 flex items-end justify-center px-4 pt-40">
+      <section className="hero h-full relative -mt-24 flex items-end justify-center px-4 pt-40 pb-16 md:pb-20">
         <div className="w-screen h-full absolute inset-0">
           <Antigravity
             count={300}
@@ -268,17 +282,14 @@ export default function SiteHome() {
         <div className="absolute inset-0 pointer-events-none z-1 bg-[linear-gradient(180deg,var(--color-foreground-ppg)_0%,var(--color-background-default)_100%)] opacity-20" />
         <div className="content relative z-2 flex flex-col gap-8">
           <div className="flex flex-col gap-4 items-center text-center">
-            <div className="flex items-center gap-2 text-foreground-ppg-weak uppercase tracking-widest text-sm font-sans-display font-black">
-              <i className="fa-solid fa-triangle" />
-              <span>Prisma</span>
-            </div>
+            
             <h1 className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto">
               A Database Platform for
               <br />
               TypeScript Developers
             </h1>
           </div>
-          <p className="text-center text-foreground-neutral max-w-3xl mx-auto text-xl">
+          <p className="text-center text-foreground-neutral-weak max-w-4xl mx-auto text-xl">
             Prisma gives TypeScript and Node.js teams a type-safe ORM, managed
             Postgres, and production-ready compute for modern applications from
             schema to production.
@@ -300,12 +311,12 @@ export default function SiteHome() {
         </div>
       </section>
 
-      <section className="my-16 px-4 md:my-20">
+      <section className={insetSectionSpacing}>
         <LogoParade />
       </section>
 
       {/* One Platform for the Full TypeScript Path */}
-      <section className="px-4 py-[88px] md:py-[104px]">
+      <section className={insetSectionSpacing}>
         <div className="mx-auto max-w-[1200px]">
           <h2 className="m-0 text-center text-4xl md:text-[36px] font-black text-foreground-neutral font-sans-display stretch-display tracking-[-0.015em]">
             One platform for the full TypeScript path.
@@ -400,7 +411,7 @@ export default function SiteHome() {
         </div>
       </section>
 
-      <section className="px-4 py-10 md:py-12">
+      <section className={insetSectionSpacing}>
         <div className="mx-auto flex max-w-[860px] flex-col gap-4 text-center">
           <h2 className="m-0 text-3xl font-black! font-sans-display text-foreground-neutral stretch-display">
             A modern platform for TypeScript applications
@@ -425,12 +436,12 @@ export default function SiteHome() {
       </section>
 
       {/* Card Sections */}
-      <section className="my-16 w-screen md:my-20">
+      <section className={`w-screen ${sectionSpacing}`}>
         <CardSection cardSection={twoCol} />
       </section>
 
       {/* Pricing CTA Section */}
-      <section className="my-16 bg-background-default px-6 py-14 shadow-[0_1px_2px_0_rgba(0,0,0,0.04)] md:my-20 bg-[linear-gradient(180deg,var(--color-background-default)_-177.75%,var(--color-background-ppg)_100%)] md:px-8 md:py-16">
+      <section className={`bg-background-default px-6 ${sectionSpacing} shadow-[0_1px_2px_0_rgba(0,0,0,0.04)] bg-[linear-gradient(180deg,var(--color-background-default)_-177.75%,var(--color-background-ppg)_100%)] md:px-8`}>
         <div className="web-cta mx-auto flex w-fit flex-col items-center gap-3 md:flex-row md:gap-12 lg:p-4">
           <h3 className="text-2xl text-center font-sans-display font-bold text-foreground-neutral md:text-left">
             Run TypeScript
@@ -444,8 +455,8 @@ export default function SiteHome() {
               infrastructure to stitch together.
             </p>
             <Button asChild variant="ppg" size="2xl">
-              <a href="/compute">
-                Explore Compute
+              <a href="/docs">
+                Read the docs
                 <i className="fa-regular fa-arrow-right" />
               </a>
             </Button>
@@ -455,8 +466,8 @@ export default function SiteHome() {
 
       {/* Testimonials Section */}
       {review?.testimonials?.length > 0 && (
-        <section className="my-16 md:my-20">
-          <div className="px-4 pt-12 pb-8 md:pt-16 md:pb-10">
+        <section className={sectionSpacing}>
+          <div className="px-4">
             <div className="max-w-[1240px] mx-auto">
               <p
                 className="[&>b]:text-background-ppg-reverse-strong font-sans-display stretch-display text-center text-base mb-12"
@@ -473,7 +484,7 @@ export default function SiteHome() {
       )}
 
       {/* Footer CTA Section */}
-      <section className="bg-radial from-background-ppg/50 from-0% to-background-default to-70% px-4 pt-8 pb-16 md:pt-10 md:pb-20">
+      <section className={`bg-radial from-background-ppg/50 from-0% to-background-default to-70% px-4 ${sectionSpacing}`}>
         <div className="mx-auto rounded-2xl bg-[url('/illustrations/homepage/footer_grid.svg')] bg-cover bg-center px-4 py-14 md:py-16">
           <div className="p-4 md:p-8">
             <div className="mx-auto flex max-w-[580px] flex-col items-center gap-8 text-center">

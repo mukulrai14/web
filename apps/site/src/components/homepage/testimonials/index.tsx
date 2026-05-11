@@ -32,8 +32,6 @@ const Testimonials = ({ color, list, noShadow, mask }: TestimonialsType) => {
           pauseOnHover
           className="w-full overflow-hidden py-2"
           innerClassName="items-stretch"
-          deferDuplicateCopiesUntilMount
-          hideDuplicateCopiesFromAccessibility
           style={{ "--duration": "350s", "--gap": "1rem" } as CSSProperties}
         >
           {list.map((testimonial, idx) => (
