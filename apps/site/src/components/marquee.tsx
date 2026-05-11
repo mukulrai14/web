@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  CSSProperties,
-  HTMLAttributes,
-  ReactNode,
-  useEffect,
-  useState,
-} from "react";
+import { CSSProperties, HTMLAttributes, ReactNode, useEffect, useState } from "react";
 
 import { cn } from "@prisma-docs/ui/lib/cn";
 
@@ -34,12 +28,11 @@ export function Marquee({
 }: MarqueeProps) {
   const [isMounted, setIsMounted] = useState(false);
   const animationName = direction === "left" ? "marquee-left" : "marquee-up";
-  const fadeMask =
-    fade
-      ? `linear-gradient(${
-          direction === "left" ? "to right" : "to bottom"
-        }, transparent 0%, rgba(0, 0, 0, 1.0) 10%, rgba(0, 0, 0, 1.0) 90%, transparent 100%)`
-      : undefined;
+  const fadeMask = fade
+    ? `linear-gradient(${
+        direction === "left" ? "to right" : "to bottom"
+      }, transparent 0%, rgba(0, 0, 0, 1.0) 10%, rgba(0, 0, 0, 1.0) 90%, transparent 100%)`
+    : undefined;
 
   useEffect(() => {
     setIsMounted(true);

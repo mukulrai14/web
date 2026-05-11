@@ -5,9 +5,7 @@
  */
 function hasAnalyticsConsent(): boolean {
   try {
-    const match = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith("cookieyes-consent="));
+    const match = document.cookie.split("; ").find((c) => c.startsWith("cookieyes-consent="));
     if (!match) return false;
     return decodeURIComponent(match.split("=")[1]).includes("analytics:yes");
   } catch {
@@ -36,10 +34,7 @@ const initPostHog = () => {
 
     document.addEventListener("cookieyes-consent-update", (event: Event) => {
       const detail = (event as CustomEvent<{ accepted: string[] }>).detail;
-      if (
-        Array.isArray(detail?.accepted) &&
-        detail.accepted.includes("analytics")
-      ) {
+      if (Array.isArray(detail?.accepted) && detail.accepted.includes("analytics")) {
         posthog.opt_in_capturing();
       } else {
         posthog.opt_out_capturing();

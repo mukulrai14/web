@@ -103,8 +103,7 @@ export default function LogoParade() {
           style={{ "--duration": "110s", "--gap": "6rem" } as CSSProperties}
         >
           {logoParade.map((item) => {
-            const className =
-              `relative 
+            const className = `relative 
               shrink-0 
               rounded-lg 
               overflow-hidden 
@@ -121,9 +120,6 @@ export default function LogoParade() {
             
               hover:filter-none`;
 
-
-              
-            
             const logo = (
               <Image
                 src={item.imageUrl}
@@ -135,22 +131,20 @@ export default function LogoParade() {
               />
             );
 
-            return (
-              item.url ? (
-                <a
-                  key={item.label}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${className} cursor-pointer`}
-                >
-                  {logo}
-                </a>
-              ) : (
-                <div key={item.label} className={className}>
-                  {logo}
-                </div>
-              )
+            return item.url ? (
+              <a
+                key={item.label}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${className} cursor-pointer`}
+              >
+                {logo}
+              </a>
+            ) : (
+              <div key={item.label} className={className}>
+                {logo}
+              </div>
             );
           })}
         </Marquee>

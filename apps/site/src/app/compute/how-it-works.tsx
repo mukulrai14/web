@@ -75,10 +75,7 @@ export function StatefulExecutionCard() {
     setMounted(true);
     if (paused) return;
     const start = Date.now();
-    const id = setInterval(
-      () => setElapsed(Math.floor((Date.now() - start) / 1000)),
-      1000,
-    );
+    const id = setInterval(() => setElapsed(Math.floor((Date.now() - start) / 1000)), 1000);
     return () => clearInterval(id);
   }, [paused]);
 
@@ -106,10 +103,7 @@ export function StatefulExecutionCard() {
       {/* Traffic chart */}
       <div className="px-6">
         {mounted ? (
-          <ChartContainer
-            config={CHART_CONFIG}
-            className="h-32 w-full aspect-auto"
-          >
+          <ChartContainer config={CHART_CONFIG} className="h-32 w-full aspect-auto">
             <BarChart
               data={TRAFFIC_DATA}
               margin={{ top: 4, right: 0, left: 0, bottom: 0 }}
@@ -241,39 +235,27 @@ function renderLine(line: TerminalLine) {
     case "step":
       return (
         <div className="flex items-baseline">
-          <span className="text-gray-600 w-4 shrink-0 select-none">
-            {line.prefix}
-          </span>
+          <span className="text-gray-600 w-4 shrink-0 select-none">{line.prefix}</span>
           <span className="flex-1">
             <span className="text-foreground-neutral">{line.label}</span>
-            {line.detail && (
-              <span className="text-gray-500"> {line.detail}</span>
-            )}
+            {line.detail && <span className="text-gray-500"> {line.detail}</span>}
           </span>
-          <span className="text-foreground-ppg text-xs ml-6 shrink-0">
-            done
-          </span>
+          <span className="text-foreground-ppg text-xs ml-6 shrink-0">done</span>
         </div>
       );
     case "success":
       return (
         <div className="flex items-baseline gap-2">
           <span className="text-foreground-ppg select-none">✓</span>
-          <span className="text-foreground-neutral font-medium">
-            {line.text}
-          </span>
+          <span className="text-foreground-neutral font-medium">{line.text}</span>
         </div>
       );
     case "service":
       return (
         <div className="flex items-baseline gap-3 pl-4">
-          <span className="text-foreground-neutral w-10 shrink-0">
-            {line.name}
-          </span>
+          <span className="text-foreground-neutral w-10 shrink-0">{line.name}</span>
           {line.isLink ? (
-            <span className="text-foreground-ppg underline underline-offset-2">
-              {line.value}
-            </span>
+            <span className="text-foreground-ppg underline underline-offset-2">{line.value}</span>
           ) : (
             <span className="text-gray-500">{line.value}</span>
           )}
@@ -316,9 +298,7 @@ export function DeployTerminal() {
       setVisibleCount(0);
 
       DELAYS.forEach((delay, i) => {
-        timeoutsRef.current.push(
-          setTimeout(() => setVisibleCount(i + 1), delay),
-        );
+        timeoutsRef.current.push(setTimeout(() => setVisibleCount(i + 1), delay));
       });
 
       // Loop: reset then restart
@@ -475,19 +455,14 @@ function WbDeployReplay() {
   }, [n, runKey, paused]);
 
   return (
-    <div
-      ref={containerRef}
-      className="flex flex-col md:flex-row gap-3 font-mono min-h-72"
-    >
+    <div ref={containerRef} className="flex flex-col md:flex-row gap-3 font-mono min-h-72">
       {/* Terminal */}
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="rounded-lg border border-stroke-neutral overflow-hidden bg-background-default text-[11px] flex flex-col flex-1">
           <div className="flex items-stretch border-b border-stroke-neutral bg-background-neutral-weaker shrink-0">
             <div className="flex items-center gap-1.5 px-3 py-2 border-b-2 border-foreground-ppg bg-background-default">
               <i className="fa-regular fa-terminal text-foreground-ppg text-[10px]" />
-              <span className="text-foreground-neutral text-[10px]">
-                ~/my-app · main
-              </span>
+              <span className="text-foreground-neutral text-[10px]">~/my-app · main</span>
             </div>
             <div className="flex-1" />
             <div className="flex items-center gap-3 px-3">
@@ -509,10 +484,7 @@ function WbDeployReplay() {
           </div>
           <div className="p-3 space-y-0.5 flex-1">
             {DEPLOY_STEPS.slice(0, n).map((step, i) => (
-              <div
-                key={`${runKey}-${i}`}
-                className="flex items-start gap-1.5 leading-5"
-              >
+              <div key={`${runKey}-${i}`} className="flex items-start gap-1.5 leading-5">
                 <span
                   className={cn(
                     "shrink-0 w-3 text-center",
@@ -550,9 +522,7 @@ function WbDeployReplay() {
                   {step.type === "url" ? (
                     <>
                       api {"      "}→{" "}
-                      <span className="text-foreground-ppg">
-                        https://your-app.prisma.run
-                      </span>
+                      <span className="text-foreground-ppg">https://your-app.prisma.run</span>
                     </>
                   ) : (
                     step.text
@@ -616,9 +586,7 @@ function WbDeployReplay() {
                   key={i}
                   className={cn(
                     "h-1.5 rounded",
-                    i === 0
-                      ? "bg-foreground-ppg/30"
-                      : "bg-foreground-neutral-weaker/20",
+                    i === 0 ? "bg-foreground-ppg/30" : "bg-foreground-neutral-weaker/20",
                   )}
                   style={{ width: `${w}%` }}
                 />
@@ -639,9 +607,7 @@ function WbDeployReplay() {
                   <div
                     className={cn(
                       "h-2 w-2 rounded-full transition-colors duration-500",
-                      has("live")
-                        ? "bg-foreground-ppg"
-                        : "bg-foreground-neutral-weaker/20",
+                      has("live") ? "bg-foreground-ppg" : "bg-foreground-neutral-weaker/20",
                     )}
                   />
                 </div>
@@ -650,10 +616,7 @@ function WbDeployReplay() {
             {has("kpis") && (
               <div className="grid grid-cols-3 gap-1">
                 {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="bg-background-default/60 rounded p-1 space-y-0.5"
-                  >
+                  <div key={i} className="bg-background-default/60 rounded p-1 space-y-0.5">
                     <div className="h-1 w-6 bg-foreground-neutral-weaker/25 rounded" />
                     <div className="h-2 w-5 bg-foreground-neutral-weaker/30 rounded" />
                   </div>
@@ -664,15 +627,13 @@ function WbDeployReplay() {
               <div className="bg-background-default/40 rounded p-1.5 flex-1 flex flex-col gap-1">
                 <div className="h-1 w-10 bg-foreground-neutral-weaker/20 rounded" />
                 <div className="flex items-end gap-px flex-1 min-h-0">
-                  {[45, 62, 38, 71, 55, 83, 49, 67, 58, 76, 42, 68].map(
-                    (h, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 rounded-sm bg-foreground-ppg/35"
-                        style={{ height: `${h}%` }}
-                      />
-                    ),
-                  )}
+                  {[45, 62, 38, 71, 55, 83, 49, 67, 58, 76, 42, 68].map((h, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-sm bg-foreground-ppg/35"
+                      style={{ height: `${h}%` }}
+                    />
+                  ))}
                 </div>
               </div>
             )}
@@ -716,8 +677,7 @@ function WbDeployReplay() {
             "rendering data"
           ) : (
             <>
-              <span className="text-foreground-ppg">● </span>live ·
-              your-app.prisma.run
+              <span className="text-foreground-ppg">● </span>live · your-app.prisma.run
             </>
           )}
         </div>
@@ -784,12 +744,8 @@ const cIC: (id: number) => void =
     : (id) => clearTimeout(id);
 
 function WbRuntimeMonitor() {
-  const [cpu, setCpu] = useState<number[]>(() =>
-    Array.from({ length: 40 }, () => 4),
-  );
-  const [mem, setMem] = useState<number[]>(() =>
-    Array.from({ length: 40 }, () => 6),
-  );
+  const [cpu, setCpu] = useState<number[]>(() => Array.from({ length: 40 }, () => 4));
+  const [mem, setMem] = useState<number[]>(() => Array.from({ length: 40 }, () => 6));
   const [tick, setTick] = useState(0);
 
   // #1 + #5 — pause the 700 ms sparkline ticker when off-screen or tab hidden.
@@ -802,14 +758,8 @@ function WbRuntimeMonitor() {
     // #4 – schedule the heavy state update during browser idle time.
     const id = setInterval(() => {
       icHandle = rIC(() => {
-        setCpu((p) => [
-          ...p.slice(1),
-          12 + Math.random() * 22 + (Math.random() < 0.12 ? 22 : 0),
-        ]);
-        setMem((p) => [
-          ...p.slice(1),
-          26 + Math.random() * 14 + (Math.random() < 0.1 ? 10 : 0),
-        ]);
+        setCpu((p) => [...p.slice(1), 12 + Math.random() * 22 + (Math.random() < 0.12 ? 22 : 0)]);
+        setMem((p) => [...p.slice(1), 26 + Math.random() * 14 + (Math.random() < 0.1 ? 10 : 0)]);
         setTick((t) => t + 1);
       });
     }, 700);
@@ -839,9 +789,7 @@ function WbRuntimeMonitor() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-foreground-ppg animate-pulse shrink-0" />
-          <span className="text-xs text-foreground-neutral">
-            bun · pid 4f2a · api.ts
-          </span>
+          <span className="text-xs text-foreground-neutral">bun · pid 4f2a · api.ts</span>
         </div>
         <span className="text-[10px] text-foreground-neutral-weaker tabular-nums">
           UP 6d 14h {m}m {s}s
@@ -852,9 +800,7 @@ function WbRuntimeMonitor() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="rounded-lg border border-stroke-neutral bg-background-neutral-weak p-3">
           <div className="flex items-baseline justify-between mb-2">
-            <span className="text-[10px] text-foreground-neutral-weaker tracking-wider">
-              CPU
-            </span>
+            <span className="text-[10px] text-foreground-neutral-weaker tracking-wider">CPU</span>
             <span className="text-xs text-foreground-ppg tabular-nums">
               {Math.round(cpu[cpu.length - 1])}%
             </span>
@@ -894,9 +840,7 @@ function WbRuntimeMonitor() {
         </div>
         <div className="rounded-lg border border-stroke-neutral bg-background-neutral-weak p-3">
           <div className="flex items-baseline justify-between mb-2">
-            <span className="text-[10px] text-foreground-neutral-weaker tracking-wider">
-              MEM
-            </span>
+            <span className="text-[10px] text-foreground-neutral-weaker tracking-wider">MEM</span>
             <span className="text-xs text-indigo-300 tabular-nums">
               {Math.round(mem[mem.length - 1] * 8)}MB
             </span>
@@ -948,13 +892,8 @@ function WbRuntimeMonitor() {
             <div key={i}>
               {i > 0 && <div className="border-t border-stroke-neutral" />}
               <div className="flex items-center gap-2 py-2.5">
-                <i
-                  className={cn(task.icon, "text-sm shrink-0")}
-                  style={{ color: task.color }}
-                />
-                <span className="text-[11px] text-foreground-neutral-weak">
-                  {task.kind} ·
-                </span>
+                <i className={cn(task.icon, "text-sm shrink-0")} style={{ color: task.color }} />
+                <span className="text-[11px] text-foreground-neutral-weak">{task.kind} ·</span>
                 <span
                   className="font-mono text-[9px] border px-1.5 py-0.5 rounded shrink-0"
                   style={{ borderColor: task.color + "60", color: task.color }}
@@ -1063,10 +1002,7 @@ function ZeroConfigBYO() {
 
   useEffect(() => {
     if (bootTick >= ZC_BOOT_FINAL || paused) return;
-    const id = setInterval(
-      () => setBootTick((t) => Math.min(ZC_BOOT_FINAL, t + 80)),
-      80,
-    );
+    const id = setInterval(() => setBootTick((t) => Math.min(ZC_BOOT_FINAL, t + 80)), 80);
     return () => clearInterval(id);
   }, [bootTick, paused]);
 
@@ -1076,10 +1012,7 @@ function ZeroConfigBYO() {
 
   useEffect(() => {
     if (userPicked || !ready || paused) return;
-    const id = setInterval(
-      () => setSelectedDb((i) => (i + 1) % DB_OPTIONS.length),
-      3600,
-    );
+    const id = setInterval(() => setSelectedDb((i) => (i + 1) % DB_OPTIONS.length), 3600);
     return () => clearInterval(id);
   }, [userPicked, ready, paused]);
 
@@ -1129,9 +1062,7 @@ function ZeroConfigBYO() {
               <div className="flex items-stretch border-b border-stroke-neutral bg-background-neutral-weaker shrink-0">
                 <div className="flex items-center gap-1.5 px-3 py-2 border-b-2 border-foreground-ppg bg-background-default">
                   <i className="fa-regular fa-terminal text-foreground-ppg text-[10px]" />
-                  <span className="text-foreground-neutral text-[10px]">
-                    bun run start
-                  </span>
+                  <span className="text-foreground-neutral text-[10px]">bun run start</span>
                 </div>
                 <div className="flex-1" />
                 <button className="px-3 text-foreground-neutral-weak hover:text-foreground-neutral transition-colors">
@@ -1176,20 +1107,11 @@ function ZeroConfigBYO() {
                     >
                       {line.tone === "hero" ? (
                         <>
-                          <span className="text-foreground-ppg">
-                            DATABASE_URL
-                          </span>
-                          <span className="text-foreground-neutral-weak">
-                            =
-                          </span>
+                          <span className="text-foreground-ppg">DATABASE_URL</span>
+                          <span className="text-foreground-neutral-weak">=</span>
                           postgres://
-                          <span className="text-foreground-neutral-weaker">
-                            ***:***
-                          </span>
-                          @
-                          <span className="text-foreground-ppg font-bold">
-                            {seated.host}
-                          </span>
+                          <span className="text-foreground-neutral-weaker">***:***</span>@
+                          <span className="text-foreground-ppg font-bold">{seated.host}</span>
                           :5432/postgres
                           <span className="ml-2 text-[9px] border border-foreground-ppg text-foreground-ppg px-1 rounded uppercase">
                             injected
@@ -1217,9 +1139,7 @@ function ZeroConfigBYO() {
                 <div className="text-[9px] text-foreground-ppg uppercase tracking-widest">
                   RUNTIME
                 </div>
-                <div className="text-[10px] text-foreground-neutral-weak">
-                  process.env
-                </div>
+                <div className="text-[10px] text-foreground-neutral-weak">process.env</div>
               </div>
               <div
                 className={cn(
@@ -1237,23 +1157,17 @@ function ZeroConfigBYO() {
 
             {/* DATABASE_URL box */}
             <div className="bg-background-neutral-weak rounded-lg p-3">
-              <div className="text-[9px] text-foreground-ppg mb-1">
-                DATABASE_URL
-              </div>
+              <div className="text-[9px] text-foreground-ppg mb-1">DATABASE_URL</div>
               <div className="text-[9px] italic">
                 {injected ? (
                   <>
                     <span className="text-foreground-neutral-weaker not-italic">
                       postgres://***@
                     </span>
-                    <span className="text-foreground-ppg font-bold not-italic">
-                      {seated.host}
-                    </span>
+                    <span className="text-foreground-ppg font-bold not-italic">{seated.host}</span>
                   </>
                 ) : (
-                  <span className="text-foreground-neutral-weaker">
-                    — awaiting injection —
-                  </span>
+                  <span className="text-foreground-neutral-weaker">— awaiting injection —</span>
                 )}
               </div>
             </div>
@@ -1312,14 +1226,13 @@ const TABS = [
     Visual: WbDeployReplay,
     description: (
       <>
-        Connect a repo and run{" "}
-        <code className="font-mono text-foreground-ppg">prisma deploy</code>.{" "}
-        Prisma Compute builds your application, discovers your services, and
-        brings them live with URLs attached.
+        Connect a repo and run <code className="font-mono text-foreground-ppg">prisma deploy</code>.{" "}
+        Prisma Compute builds your application, discovers your services, and brings them live with
+        URLs attached.
         <br />
         <br />
-        No build pipeline to configure. No deployment scripts to maintain. No
-        dashboard state that drifts from what&apos;s in your repo.
+        No build pipeline to configure. No deployment scripts to maintain. No dashboard state that
+        drifts from what&apos;s in your repo.
       </>
     ),
   },
@@ -1331,9 +1244,8 @@ const TABS = [
     Visual: WbRuntimeMonitor,
     description: (
       <>
-        Standard TypeScript on Bun. No cold starts, no execution timeouts, no
-        connection limits. In-process caches, open sockets, and streaming
-        responses work exactly as you&apos;d expect.
+        Standard TypeScript on Bun. No cold starts, no execution timeouts, no connection limits.
+        In-process caches, open sockets, and streaming responses work exactly as you&apos;d expect.
         <br />
         <br />
         Because your code never stops running, neither do your connections.
@@ -1348,9 +1260,9 @@ const TABS = [
     Visual: ZeroConfigBYO,
     description: (
       <>
-        Compute and Prisma Postgres run in the same region, connected
-        automatically. No connection strings to copy, no networking to
-        configure, built-in connection pooling for long-lived processes.
+        Compute and Prisma Postgres run in the same region, connected automatically. No connection
+        strings to copy, no networking to configure, built-in connection pooling for long-lived
+        processes.
         <br />
         <br />
         Works with any database — no lock-in.
@@ -1404,11 +1316,7 @@ export function HowItWorks() {
                 "data-[state=inactive]:max-sm:shrink-0",
               )}
             >
-              <Action
-                color="ppg"
-                size="lg"
-                className="shrink-0 pointer-events-none"
-              >
+              <Action color="ppg" size="lg" className="shrink-0 pointer-events-none">
                 <i className={cn(tab.icon, "text-xs")} />
               </Action>
 
@@ -1438,9 +1346,7 @@ export function HowItWorks() {
               {/* Description pane */}
               <div className="bg-background-neutral-weaker flex-1">
                 <div className="p-6 flex flex-col gap-4">
-                  <h3 className=" text-foreground-neutral m-0 type-title-2xl">
-                    {tab.title}
-                  </h3>
+                  <h3 className=" text-foreground-neutral m-0 type-title-2xl">{tab.title}</h3>
                   <p className="text-sm text-foreground-neutral leading-relaxed m-0 text-pretty">
                     {tab.description}
                   </p>

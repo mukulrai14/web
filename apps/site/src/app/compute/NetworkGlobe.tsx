@@ -38,10 +38,7 @@ const REGION_KEYS = Object.keys(REGIONS) as RegionKey[];
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function locationToAngles(lat: number, long: number): [number, number] {
-  return [
-    Math.PI - ((long * Math.PI) / 180 - Math.PI / 2),
-    (lat * Math.PI) / 180,
-  ];
+  return [Math.PI - ((long * Math.PI) / 180 - Math.PI / 2), (lat * Math.PI) / 180];
 }
 
 /** Find the equivalent target phi closest to current to avoid long-way-around spins. */
@@ -167,8 +164,7 @@ export function NetworkGlobe() {
 
     // ── Pause / resume helpers (É #1 IntersectionObserver + #5 Tab Visibility) ──
     let isInView = false;
-    let isTabVisible =
-      typeof document !== "undefined" ? !document.hidden : true;
+    let isTabVisible = typeof document !== "undefined" ? !document.hidden : true;
 
     const maybePause = () => {
       if (animationId !== 0) {
@@ -258,9 +254,7 @@ export function NetworkGlobe() {
 
       animationId = requestAnimationFrame(tick);
       // Reveal after two frames so the globe has painted before fading in.
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => setIsRevealed(true)),
-      );
+      requestAnimationFrame(() => requestAnimationFrame(() => setIsRevealed(true)));
     };
 
     mountGlobe();
@@ -336,21 +330,15 @@ export function NetworkGlobe() {
         />
         <div className="text-[10px] font-mono absolute max-w-[150px] bottom-4 right-4 text-foreground-neutral w-full">
           <div className="flex justify-between pb-3 mb-3 border-b border-dashed border-stroke-neutral">
-            <span className="uppercase text-foreground-neutral-weaker">
-              Region
-            </span>{" "}
+            <span className="uppercase text-foreground-neutral-weaker">Region</span>{" "}
             <span>{focused}</span>
           </div>
           <div className="flex justify-between mb-2">
-            <span className="uppercase text-foreground-neutral-weaker">
-              Location
-            </span>{" "}
+            <span className="uppercase text-foreground-neutral-weaker">Location</span>{" "}
             <span>{REGIONS[focused].city}</span>
           </div>
           <div className="flex justify-between">
-            <span className="uppercase text-foreground-neutral-weaker">
-              Zone
-            </span>{" "}
+            <span className="uppercase text-foreground-neutral-weaker">Zone</span>{" "}
             <span>{REGIONS[focused].zone}</span>
           </div>
         </div>
@@ -367,12 +355,8 @@ export function NetworkGlobe() {
               className={cn(
                 "group flex items-center gap-2 px-3 py-4 text-left border max-sm:border-stroke-neutral-strong! ",
                 "cursor-pointer transition-colors duration-150 bg-background-neutral",
-                i < REGION_KEYS.length - 1
-                  ? "border-r border-stroke-neutral"
-                  : "",
-                active
-                  ? "bg-background-neutral-weak"
-                  : "hover:bg-background-neutral-weak",
+                i < REGION_KEYS.length - 1 ? "border-r border-stroke-neutral" : "",
+                active ? "bg-background-neutral-weak" : "hover:bg-background-neutral-weak",
               )}
             >
               <i

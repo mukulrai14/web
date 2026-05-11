@@ -73,10 +73,7 @@ export function usePageVisibility(): boolean {
  * Returns `true` whenever animations should pause — element is either outside
  * the viewport OR the tab is backgrounded.
  */
-export function useShouldPause(
-  ref: { current: Element | null },
-  onReEntry?: () => void,
-): boolean {
+export function useShouldPause(ref: { current: Element | null }, onReEntry?: () => void): boolean {
   const outOfViewport = useIntersectionPause(ref, onReEntry);
   const tabHidden = usePageVisibility();
   return outOfViewport || tabHidden;

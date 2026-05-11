@@ -34,13 +34,7 @@ interface BentoProps {
   color?: "orm" | "ppg";
 }
 
-const HeroContent = ({
-  className = "",
-  hero,
-}: {
-  className?: string;
-  hero?: React.ReactNode;
-}) =>
+const HeroContent = ({ className = "", hero }: { className?: string; hero?: React.ReactNode }) =>
   hero || (
     <div
       className={cn(
@@ -87,19 +81,11 @@ export const Bento = ({ bentoSection, hero, color }: BentoProps) => {
 
         <div className="hidden lg:flex gap-8 mb-4 items-center justify-between">
           {firstCenterCard && (
-            <Card
-              color={color}
-              key={firstCenterCard.id}
-              card={firstCenterCard}
-            />
+            <Card color={color} key={firstCenterCard.id} card={firstCenterCard} />
           )}
 
           {secondCenterCard && (
-            <Card
-              color={color}
-              key={secondCenterCard.id}
-              card={secondCenterCard}
-            />
+            <Card color={color} key={secondCenterCard.id} card={secondCenterCard} />
           )}
         </div>
       </>
@@ -182,9 +168,7 @@ export const Card = ({ card, color, className }: CardProps) => {
           <i className={cn("text-xl", card.icon)} />
         </Action>
         <div className="z-2">
-          <h2 className="text-foreground-neutral type-title-xl mt-0 mb-1">
-            {card.title}
-          </h2>
+          <h2 className="text-foreground-neutral type-title-xl mt-0 mb-1">{card.title}</h2>
           {card.subtitle && (
             <p className="text-foreground-neutral dark:text-foreground-neutral-weak text-sm font-normal m-0">
               {card.subtitle}

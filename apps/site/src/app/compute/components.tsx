@@ -52,27 +52,21 @@ function Chip({ icon, label, isDanger, hasCost }: ServiceChip) {
     <div
       className={cn(
         "flex border items-center gap-2 px-3 py-2.5 rounded-md bg-background-default",
-        isDanger
-          ? "border-foreground-error-strong/25"
-          : "border-stroke-neutral",
+        isDanger ? "border-foreground-error-strong/25" : "border-stroke-neutral",
       )}
     >
       <i
         className={cn(
           icon,
           "text-[10px] shrink-0",
-          isDanger
-            ? "text-foreground-error-strong"
-            : "text-foreground-neutral-weaker",
+          isDanger ? "text-foreground-error-strong" : "text-foreground-neutral-weaker",
         )}
       />
       <span className="font-mono text-[11px] text-foreground-neutral-weak flex-1 leading-none truncate">
         {label}
       </span>
       {hasCost && (
-        <span className="font-mono text-[10px] text-foreground-neutral-weaker shrink-0">
-          $$
-        </span>
+        <span className="font-mono text-[10px] text-foreground-neutral-weaker shrink-0">$$</span>
       )}
     </div>
   );
@@ -111,15 +105,13 @@ const TEMPLATES = [
   },
   {
     title: "TanStack Start",
-    subtitle:
-      "Modern full-stack TypeScript with Router & Query, wired to Prisma Postgres.",
+    subtitle: "Modern full-stack TypeScript with Router & Query, wired to Prisma Postgres.",
     command: "npx create-tanstack",
     href: "#",
   },
   {
     title: "Hono API",
-    subtitle:
-      "Lightweight API backend. A good starting point that grows into jobs.",
+    subtitle: "Lightweight API backend. A good starting point that grows into jobs.",
     command: "npx create-hono-api",
     href: "#",
   },
@@ -195,9 +187,7 @@ export function TemplateCards() {
           )}
         >
           <CardHeader className="space-y-2 border-b-0">
-            <h3 className="type-title-xl text-foreground-neutral m-0 mb-2">
-              {template.title}
-            </h3>
+            <h3 className="type-title-xl text-foreground-neutral m-0 mb-2">{template.title}</h3>
             <p className="text-sm text-foreground-neutral-weak m-0 font-normal">
               {template.subtitle}
             </p>
@@ -228,9 +218,7 @@ export function ThemFragmentedCard() {
     <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-neutral bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] shadow-box-low">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <span className="type-title-xl text-foreground-neutral">
-          Most TypeScript platforms
-        </span>
+        <span className="type-title-xl text-foreground-neutral">Most TypeScript platforms</span>
         <span className="font-mono text-[11px] text-foreground-neutral-weaker tracking-wide shrink-0">
           SERVERLESS · FRAGMENTED
         </span>
@@ -310,9 +298,7 @@ function UnifiedServiceRow({ icon, label, status }: ServiceRow) {
       <span className="font-mono text-[11px] text-foreground-neutral flex-1 leading-none">
         {label}
       </span>
-      <span className="font-mono text-[10px] text-foreground-success shrink-0">
-        {status}
-      </span>
+      <span className="font-mono text-[10px] text-foreground-success shrink-0">{status}</span>
     </div>
   );
 }
@@ -321,9 +307,7 @@ function TealBadge({ icon, label }: { icon: string; label: string }) {
   return (
     <div className="flex items-center gap-1.5 px-2 py-1 rounded-md border border-stroke-ppg text-foreground-ppg">
       <i className={cn(icon, "text-[10px]")} />
-      <span className="font-mono text-[11px] font-semibold leading-none">
-        {label}
-      </span>
+      <span className="font-mono text-[11px] font-semibold leading-none">{label}</span>
     </div>
   );
 }
@@ -346,9 +330,7 @@ export function UsUnifiedCard() {
     <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-ppg bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg-strong)_262.5%)] shadow-box-low">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
-        <span className="type-title-xl text-foreground-neutral">
-          Prisma Compute
-        </span>
+        <span className="type-title-xl text-foreground-neutral">Prisma Compute</span>
         <span className="font-mono text-[11px] text-foreground-ppg tracking-wide shrink-0">
           LONG-LIVED · UNIFIED
         </span>

@@ -38,23 +38,15 @@ export function hexToRgb01(hex: string): [number, number, number] {
 /** Per-marker tint so cobe uses the colored marker shader path. */
 export const COBE_MARKER_DOT_RGB = (isLight?: boolean) =>
   hexToRgb01(
-    isLight
-      ? light.colorForegroundPpgReverseWeak
-      : dark.colorForegroundPpgReverseWeak,
+    isLight ? light.colorForegroundPpgReverseWeak : dark.colorForegroundPpgReverseWeak,
   ) as [number, number, number];
 
 /** RGB 0–1 for cobe `baseColor`, `markerColor`, `glowColor`, `arcColor`. */
 export const cobeGlobe = (isLight?: boolean) => ({
-  baseColor: hexToRgb01(
-    isLight ? light.colorForegroundPpgWeak : dark.colorForegroundPpgWeak,
-  ),
+  baseColor: hexToRgb01(isLight ? light.colorForegroundPpgWeak : dark.colorForegroundPpgWeak),
   markerColor: COBE_MARKER_DOT_RGB(isLight),
   glowColor: hexToRgb01(
-    isLight
-      ? light.colorForegroundPpgReverseWeak
-      : dark.colorForegroundPpgReverseWeak,
+    isLight ? light.colorForegroundPpgReverseWeak : dark.colorForegroundPpgReverseWeak,
   ),
-  arcColor: hexToRgb01(
-    isLight ? light.colorForegroundPpg : dark.colorForegroundPpg,
-  ),
+  arcColor: hexToRgb01(isLight ? light.colorForegroundPpg : dark.colorForegroundPpg),
 });

@@ -131,8 +131,7 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
     // Tab Visibility API (#5). The RAF stops when either fires and restarts
     // as soon as both are clear.
     let isInView = false; // set true by IO on first intersect
-    let isTabVisible =
-      typeof document !== "undefined" ? !document.hidden : true;
+    let isTabVisible = typeof document !== "undefined" ? !document.hidden : true;
 
     const maybePause = () => {
       if (animationId !== 0) {
@@ -255,9 +254,7 @@ export function CobeGlobe({ showLabels = true }: { showLabels?: boolean }) {
       ro.disconnect();
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibilityChange);
-      container
-        .querySelectorAll(".cobe-marker-label")
-        .forEach((el) => el.remove());
+      container.querySelectorAll(".cobe-marker-label").forEach((el) => el.remove());
       globeRef.current?.destroy();
       globeRef.current = null;
     };

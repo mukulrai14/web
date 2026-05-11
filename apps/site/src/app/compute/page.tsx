@@ -3,12 +3,7 @@ import { Button, Card, Action, Badge } from "@prisma/eclipse";
 import { Card as BentoCard } from "@/components/homepage/bento";
 import { cn } from "@/lib/cn";
 import { CardSection } from "@/components/homepage/card-section/card-section";
-import {
-  ThemFragmentedCard,
-  UsUnifiedCard,
-  TemplateCards,
-  WorkloadCards,
-} from "./components";
+import { ThemFragmentedCard, UsUnifiedCard, TemplateCards, WorkloadCards } from "./components";
 // Heavy client components are dynamically imported with ssr:false.
 // The dynamic() calls with ssr:false must live in a Client Component boundary;
 // client-components.tsx is that boundary.
@@ -28,15 +23,12 @@ const FEATURES = [
           Deploy from your repo
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Connect a GitHub repo. Prisma Compute discovers your services and
-          deploys them in seconds.
+          Connect a GitHub repo. Prisma Compute discovers your services and deploys them in seconds.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>
-            <code className="font-mono text-foreground-ppg-reverse-weak">
-              prisma deploy
-            </code>{" "}
-            from the CLI, or push to a connected branch
+            <code className="font-mono text-foreground-ppg-reverse-weak">prisma deploy</code> from
+            the CLI, or push to a connected branch
           </li>
           <li>No CI/CD pipeline to configure</li>
           <li>No deployment scripts, no dashboard workflows</li>
@@ -64,8 +56,8 @@ const FEATURES = [
           Stateful execution
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Your code runs as a long-lived process. Connections stay open.
-          In-process caches persist across requests.
+          Your code runs as a long-lived process. Connections stay open. In-process caches persist
+          across requests.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>No cold starts</li>
@@ -95,8 +87,7 @@ const FEATURES = [
           Any TypeScript workload
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Standard TypeScript on Bun. No V8 isolate limits. No runtime
-          constraints.
+          Standard TypeScript on Bun. No V8 isolate limits. No runtime constraints.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>Backend APIs and full-stack apps</li>
@@ -127,8 +118,8 @@ const FEATURES = [
           Co-located database
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Pair with Prisma Postgres; compute and database run in the same
-          region, connected automatically.
+          Pair with Prisma Postgres; compute and database run in the same region, connected
+          automatically.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>No connection strings to copy</li>
@@ -226,8 +217,7 @@ const WHY_FEATURES = [
     title: "Any TS workload",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        APIs, background workers, scheduled jobs, WebSockets, AI agents,
-        sandboxes.
+        APIs, background workers, scheduled jobs, WebSockets, AI agents, sandboxes.
       </div>
     ),
     icon: "fa-regular fa-layer-group",
@@ -249,8 +239,7 @@ const WHY_FEATURES = [
     title: "DB connected by default",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        Co-located with Prisma Postgres for ultra-low latency. Works with any
-        database.
+        Co-located with Prisma Postgres for ultra-low latency. Works with any database.
       </div>
     ),
     icon: "fa-regular fa-database",
@@ -261,8 +250,7 @@ const WHY_FEATURES = [
     title: "Reliable by design",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        Automatic scaling, automatic recovery, automatic handling of OOM
-        conditions.
+        Automatic scaling, automatic recovery, automatic handling of OOM conditions.
       </div>
     ),
     icon: "fa-regular fa-shield-check",
@@ -322,35 +310,22 @@ export default async function Page() {
             </h1>
           </div>
           <p className="text-center text-foreground-neutral max-w-3xl mx-auto text-xl">
-            <b>Push code. It runs.</b> Long-running processes, background jobs,
-            APIs, AI agents.
+            <b>Push code. It runs.</b> Long-running processes, background jobs, APIs, AI agents.
           </p>
           <p className="text-2xs uppercase font-medium tracking-[1.1px] text-foreground-neutral-weak text-center mx-auto! -mt-5">
             $1 per million requests. Volume discounts apply.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <Button asChild variant="ppg" size="2xl">
-              <a
-                href="https://prisma.io/apps"
-                className="flex items-center gap-2"
-              >
+              <a href="https://prisma.io/apps" className="flex items-center gap-2">
                 <span>Deploy a template</span>
-                <i
-                  className="flex items-center fa-regular fa-arrow-up-right"
-                  aria-hidden="true"
-                />
+                <i className="flex items-center fa-regular fa-arrow-up-right" aria-hidden="true" />
               </a>
             </Button>
             <Button asChild variant="default-strong" size="2xl">
-              <a
-                href="https://prisma.io/docs/compute"
-                className="flex items-center gap-2"
-              >
+              <a href="https://prisma.io/docs/compute" className="flex items-center gap-2">
                 <span>Read the docs</span>
-                <i
-                  className="flex items-center fa-regular fa-book-open"
-                  aria-hidden="true"
-                />
+                <i className="flex items-center fa-regular fa-book-open" aria-hidden="true" />
               </a>
             </Button>
           </div>
@@ -367,11 +342,7 @@ export default async function Page() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-296 w-full">
           {WHY_FEATURES.map((card) => (
-            <BentoCard
-              key={card.id}
-              card={card}
-              className={cn("h-auto! gap-0! compute-box")}
-            />
+            <BentoCard key={card.id} card={card} className={cn("h-auto! gap-0! compute-box")} />
           ))}
         </div>
       </section>
@@ -425,12 +396,8 @@ export default async function Page() {
                 />
               </div>
               <div>
-                <h3 className="text-foreground-neutral type-title-md m-0 mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-foreground-neutral-weak text-sm m-0">
-                  {item.description}
-                </p>
+                <h3 className="text-foreground-neutral type-title-md m-0 mb-2">{item.title}</h3>
+                <p className="text-foreground-neutral-weak text-sm m-0">{item.description}</p>
               </div>
             </Card>
           ))}
@@ -459,9 +426,7 @@ export default async function Page() {
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             05 / STARTERS
           </span>
-          <h2 className="type-title-4xl text-foreground-neutral m-0 text-center">
-            Starter apps
-          </h2>
+          <h2 className="type-title-4xl text-foreground-neutral m-0 text-center">Starter apps</h2>
         </div>
         <div className="max-w-296 w-full">
           <TemplateCards />
@@ -481,9 +446,7 @@ export default async function Page() {
           <span className="font-mono text-xs text-foreground-ppg uppercase tracking-wider">
             06 / CORE TECHNICAL OVERVIEW
           </span>
-          <h2 className="type-title-4xl text-foreground-neutral m-0 text-center">
-            How it works
-          </h2>
+          <h2 className="type-title-4xl text-foreground-neutral m-0 text-center">How it works</h2>
         </div>
         <div className="max-w-296 w-full">
           <HowItWorks />
@@ -498,34 +461,21 @@ export default async function Page() {
                 Why we built Prisma Compute
               </h2>
               <p className="text-foreground-neutral-weak max-w-154">
-                We wanted a deployment platform that felt as good as the code we
-                were writing. Push a repo, get a URL, and stop thinking about
-                infrastructure.
+                We wanted a deployment platform that felt as good as the code we were writing. Push
+                a repo, get a URL, and stop thinking about infrastructure.
               </p>
             </div>
             <div className="flex flex-col md:flex-row gap-6">
               <Button asChild variant="ppg" size="2xl">
-                <a
-                  href="https://pris.ly/compute-blog"
-                  className="flex gap-2 items-center"
-                >
+                <a href="https://pris.ly/compute-blog" className="flex gap-2 items-center">
                   <span>Read the launch post</span>
-                  <i
-                    className="fa-regular h-auto fa-arrow-right"
-                    aria-hidden="true"
-                  />
+                  <i className="fa-regular h-auto fa-arrow-right" aria-hidden="true" />
                 </a>
               </Button>
               <Button asChild variant="default-strong" size="2xl">
-                <a
-                  href="https://prisma.io/docs/compute"
-                  className="flex gap-2 items-center"
-                >
+                <a href="https://prisma.io/docs/compute" className="flex gap-2 items-center">
                   <span>Read the docs</span>
-                  <i
-                    className="fa-regular h-auto fa-book-open"
-                    aria-hidden="true"
-                  />
+                  <i className="fa-regular h-auto fa-book-open" aria-hidden="true" />
                 </a>
               </Button>
             </div>
