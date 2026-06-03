@@ -1,0 +1,59 @@
+---
+title: Connect to Prisma Postgres
+description: Connect your Compute service to a Prisma Postgres database with a single environment variable.
+url: /prisma-compute/connect-to-prisma-postgres
+badge: early-access
+metaTitle: 'Quickstart: Connect Prisma Compute to Prisma Postgres'
+metaDescription: Create a Prisma Postgres database, set its connection string on your Compute service, and verify the connection.
+---
+
+A Compute service reads its database connection from an environment variable, typically `DATABASE_URL`. In this guide, you will create a [Prisma Postgres](/postgres) database, set its connection string on your service, and verify the connection.
+
+## Prerequisites
+
+- A deployed Compute service. If you don't have one, follow [Deploy your first Compute service](/prisma-compute/deploy).
+
+## 1. Create a database
+
+Create a Prisma Postgres database from the terminal:
+
+```npm
+npx create-db
+```
+
+Copy the `postgres://...` connection string from the output. Alternatively, create the database in [Prisma Console](https://console.prisma.io), open it, and click **Connect to your database** to copy a connection URL.
+
+## 2. Set the connection string
+
+Add the connection string to the scope your service runs in:
+
+```npm
+npx prisma-cli project env add DATABASE_URL=postgres://... --role preview
+```
+
+Use `--role production` instead when configuring your production branch.
+
+## 3. Redeploy
+
+Environment variable changes only apply on the next deploy:
+
+```npm
+npx prisma-cli app deploy
+```
+
+## 4. Verify
+
+Open the app and exercise a code path that queries the database, then check the logs for connection errors:
+
+```npm
+npx prisma-cli app open
+npx prisma-cli app logs
+```
+
+If queries succeed, your service is connected.
+
+## What's next
+
+- [Connect to a Prisma Postgres database](/compute/database/connect-to-prisma-postgres) for scoping options and troubleshooting
+- [Environment variables](/compute/environment-variables) for rules and limits
+- [Prisma Postgres documentation](/postgres)

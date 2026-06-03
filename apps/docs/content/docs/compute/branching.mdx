@@ -1,0 +1,70 @@
+---
+title: Branching
+description: Use production and preview branches to give every line of development its own deployments and configuration.
+url: /compute/branching
+badge: early-access
+metaTitle: Branching | Prisma Compute
+metaDescription: Learn how production and preview branches work in Prisma Compute, and how to create, view, and manage them.
+---
+
+A branch in Prisma Compute groups the resources for one line of development: your compute services, their deployments, and environment variable overrides. Branches follow your Git branch names, so the platform state matches the code you are working on.
+
+## Production and preview branches
+
+Every project has exactly one **production branch** and any number of **preview branches**:
+
+- The first branch in a project becomes the production branch and is set as the default automatically.
+- Branches created after that are preview branches.
+- Production branches serve [production environment variables](/compute/environment-variables) and can have [custom domains](/compute/domains).
+- Preview branches serve preview environment variables, plus any overrides scoped to that specific branch.
+
+## When to use branches
+
+Use a preview branch when you want to test changes against isolated infrastructure before they reach production:
+
+- Feature work that needs its own deployment and configuration.
+- Pull request previews, when combined with the [GitHub integration](/compute/github).
+- Trying configuration changes without touching production environment variables.
+
+## Create a branch
+
+Deploy from a Git branch and the deployment targets the branch with the matching name. You can also target a branch explicitly:
+
+```npm
+npx prisma-cli app deploy --branch feature/my-feature
+```
+
+{/* TODO: Confirm whether deploying to a branch name that does not exist yet creates the platform branch automatically, or whether the branch must exist first (for example, created via the GitHub integration or the Management API). The CLI resolves the branch from the local Git branch with a fallback to `main`, but branch auto-creation is not confirmed in the CLI source. */}
+
+If your project is [connected to a GitHub repository](/compute/github), pushes to a repository branch create deployments for the platform branch with the same name.
+
+## View branches
+
+List the branches for the project resolved from your current directory:
+
+```npm
+npx prisma-cli branch list
+```
+
+## Manage branches
+
+- **Branch names are immutable.** A branch's Git name cannot be changed after creation. Create a new branch instead.
+- **Default branch.** A project has at most one default branch. The default flag can be changed through the [Management API](/management-api).
+- **Deleting branches.** A branch that still has compute services attached cannot be deleted. Remove the app from the branch first:
+
+  ```npm
+  npx prisma-cli app remove
+  ```
+
+  {/* TODO: There is no `branch delete` CLI command in the @prisma/cli beta. Branch deletion exists at the platform level (soft delete; deleted branch names can be reused). Confirm and document the supported user-facing way to delete a branch (Console or Management API) before publishing. */}
+
+## Limitations
+
+- One production branch per project.
+- Production environment variables apply project-wide and cannot be scoped to a single branch. Branch-scoped overrides are available for preview branches only.
+- Custom domains can only be added to the production branch.
+
+## Next steps
+
+- [Manage environment variables per branch](/compute/environment-variables)
+- [Deploy on push with GitHub](/compute/github)

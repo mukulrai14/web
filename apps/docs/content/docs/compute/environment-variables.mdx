@@ -1,0 +1,83 @@
+---
+title: Environment variables
+description: Configure your Compute services with encrypted environment variables scoped to production, preview, or a single branch.
+url: /compute/environment-variables
+badge: early-access
+metaTitle: Environment variables | Prisma Compute
+metaDescription: Add, update, and remove environment variables for Prisma Compute services, with production, preview, and branch scopes.
+---
+
+Environment variables hold the configuration your Compute services read at runtime, such as database connection strings and API keys. Values are encrypted at rest, and the CLI and API never print them back after creation.
+
+## Scopes
+
+Every environment variable belongs to exactly one scope:
+
+- **Production** (`--role production`): applies to services on the production branch.
+- **Preview** (`--role preview`): applies to services on all preview branches.
+- **Branch** (`--branch <git-name>`): overrides the preview value for one specific preview branch.
+
+Write commands require an explicit scope. Passing neither `--role` nor `--branch` is an error, so a command never silently targets production. Passing both together is also rejected.
+
+:::warning
+
+Production variables cannot be scoped to a branch. Branch overrides are available for preview branches only.
+
+:::
+
+## Add a variable
+
+```npm
+npx prisma-cli project env add DATABASE_URL=postgres://... --role preview
+```
+
+If a variable with the same key already exists in the scope, the command fails. Use `project env update` to replace its value.
+
+## Update a variable
+
+```npm
+npx prisma-cli project env update DATABASE_URL=postgres://new-value --role preview
+```
+
+Only the value can change. The key and scope are fixed at creation.
+
+## List variables
+
+```npm
+npx prisma-cli project env list --role preview
+```
+
+This lists variable metadata for a scope. Values are never shown.
+
+## Remove a variable
+
+```npm
+npx prisma-cli project env remove DATABASE_URL --role preview
+```
+
+## Apply changes
+
+Changing environment variables does not redeploy your app. Redeploy to apply the new values:
+
+```npm
+npx prisma-cli app deploy
+```
+
+## Rules and limits
+
+| Rule        | Value                                                            |
+| ----------- | ---------------------------------------------------------------- |
+| Key format  | Uppercase letters, digits, and underscores; must not start with a digit (`[A-Z_][A-Z0-9_]*`) |
+| Key length  | Up to 256 characters                                              |
+| Value size  | Non-empty, up to 8 KB                                             |
+| Uniqueness  | One variable per key per scope                                    |
+
+## Security notes
+
+- Values are stored encrypted and are redacted in API responses and CLI output. Keep your own copy of secrets in a password manager or secret store.
+- Shell history can retain secrets passed on the command line. Rotate a secret if it leaks, update the variable with `project env update`, and redeploy.
+
+## Next steps
+
+- [Connect to a Prisma Postgres database](/compute/database/connect-to-prisma-postgres)
+- [Branching](/compute/branching)

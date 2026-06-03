@@ -1,0 +1,72 @@
+---
+title: Deploy your first Compute service
+description: Take an existing TypeScript app from your terminal to a live URL on Prisma Compute.
+url: /prisma-compute/deploy
+badge: early-access
+metaTitle: 'Quickstart: Deploy your first Prisma Compute service'
+metaDescription: Deploy a TypeScript app to Prisma Compute with the Prisma CLI and verify it at a live URL.
+---
+
+[Prisma Compute](/compute) is serverless TypeScript app hosting in the Prisma platform. In this guide, you will deploy an existing app to Compute and open it at a live URL.
+
+## Prerequisites
+
+- **Node.js 22.12.0 or later**
+- A [Prisma Console](https://console.prisma.io) account
+- An app built with **Next.js**, **Hono**, **TanStack Start**, or a plain **Bun** HTTP server
+
+:::info
+
+Next.js apps must set `output: "standalone"` in their Next.js config before deploying.
+
+:::
+
+## 1. Install the CLI and log in
+
+```npm
+npm install --save-dev @prisma/cli
+npx prisma-cli auth login
+```
+
+The login command opens your browser. After signing in, confirm your session:
+
+```npm
+npx prisma-cli auth whoami
+```
+
+## 2. Deploy
+
+From your app directory:
+
+```npm
+npx prisma-cli app deploy
+```
+
+The first deploy sets up your project, builds your app locally, creates your first deployment, and prints a live URL.
+
+## 3. Verify
+
+Open the deployed app in your browser:
+
+```npm
+npx prisma-cli app open
+```
+
+If something looks off, stream the logs:
+
+```npm
+npx prisma-cli app logs
+```
+
+## Deploy from the Console
+
+You can also start from [Prisma Console](https://console.prisma.io): open your project, go to **Compute**, and create a service. After your service is ready, you can deploy to it with the Prisma CLI using the command shown in the Console, or continue in the Console.
+
+{/* TODO: Confirm the exact Console navigation labels and the onboarding deploy command shown for a newly created service (the Console onboarding currently surfaces an `app deploy --app <serviceId>` command). */}
+
+## What's next
+
+- [Connect your service to Prisma Postgres](/prisma-compute/connect-to-prisma-postgres)
+- [Add environment variables](/compute/environment-variables) for configuration and secrets
+- [Connect a GitHub repository](/compute/github) to deploy on push
+- [Read the full CLI getting-started guide](/compute/getting-started)

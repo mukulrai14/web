@@ -1,0 +1,79 @@
+---
+title: GitHub
+description: Connect a GitHub repository to your project and deploy your Compute service on every push.
+url: /compute/github
+badge: early-access
+metaTitle: GitHub integration | Prisma Compute
+metaDescription: Connect a GitHub repository to Prisma Compute, deploy on push, and map repository branches to platform branches.
+---
+
+The GitHub integration connects a repository to your Prisma project. Once connected, pushes to the repository trigger deployments of your Compute service, so you don't have to run `app deploy` by hand for every change.
+
+## Prerequisites
+
+- A project with a Compute service. See [Get started with `@prisma/cli`](/compute/getting-started).
+- Admin access to the GitHub repository, so you can install the Prisma GitHub App on it.
+
+## Connect a repository
+
+From your app directory, run:
+
+```npm
+npx prisma-cli git connect
+```
+
+You can also pass the repository URL explicitly:
+
+```npm
+npx prisma-cli git connect https://github.com/your-org/your-repo
+```
+
+Connecting installs the Prisma GitHub App for the repository and links the repository to your project. The integration needs read access to the repository contents (to clone and build your code) and receives push webhooks.
+
+{/* TODO: Confirm the exact GitHub App permission list shown during installation, and whether the Console offers a UI flow for connecting a repository in addition to `git connect`. */}
+
+## How deployments are triggered
+
+After the repository is connected:
+
+1. You push a commit to the repository.
+2. The platform receives the push event and creates a deployment for the matching branch.
+3. The deployment runs through `pending` → `running` and finishes as `succeeded`, `failed`, or `cancelled`.
+4. On success, the new version becomes the live deployment for that branch.
+
+You can watch deployments from the CLI:
+
+```npm
+npx prisma-cli app list-deploys
+```
+
+Or inspect a single one, including its logs:
+
+```npm
+npx prisma-cli app show-deploy <deployment-id>
+npx prisma-cli app logs --deployment <deployment-id>
+```
+
+In [Prisma Console](https://console.prisma.io), the service view shows the deployment history with state and timestamps.
+
+## How branches map to deployments
+
+Repository branches map to [platform branches](/compute/branching) by name:
+
+- Pushes to the repository's default branch deploy to your project's **production branch**.
+- Pushes to other repository branches deploy to the **preview branch** with the matching name.
+
+Preview deployments use preview [environment variables](/compute/environment-variables), plus any overrides scoped to the branch.
+
+## Disconnect the repository
+
+```npm
+npx prisma-cli git disconnect
+```
+
+Disconnecting stops push-triggered deployments. Existing deployments and versions are kept, and you can keep deploying manually with `app deploy`.
+
+## Next steps
+
+- [Branching](/compute/branching)
+- [Environment variables](/compute/environment-variables)

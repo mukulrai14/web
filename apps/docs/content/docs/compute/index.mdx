@@ -1,0 +1,61 @@
+---
+title: Prisma Compute
+description: 'Deploy and run serverless TypeScript apps next to your Prisma Postgres database.'
+url: /compute
+badge: early-access
+metaTitle: Overview | Prisma Compute
+metaDescription: Learn what Prisma Compute is, when to use it, and how to deploy your first service.
+---
+
+Prisma Compute is serverless TypeScript app hosting in the Prisma platform. It is designed for low-latency access to [Prisma Postgres](/postgres) and gives you isolated infrastructure for every branch of your project.
+Use this page to understand what Compute does and pick a starting point.
+
+:::info[Early Access]
+
+Prisma Compute is in early access, and the [`@prisma/cli`](/compute/getting-started) package you use to deploy is in beta. Commands and workflows may change.
+
+{/* TODO: Compute access is gated per workspace in the platform (experimental feature policy). Confirm how users request or receive access before publishing. */}
+
+:::
+
+## What's included
+
+- **Service-and-version deployments** — Every deploy creates a new version of your service. You can [list deployments, promote a deployment to production, or roll back](/compute/getting-started#manage-deployments) to a previous one.
+- **Branch-based workflows** — Your project's first branch is the production branch. Other branches are preview branches with their own deployments and environment variable overrides. See [Branching](/compute/branching).
+- **Environment variables** — Encrypted configuration scoped to production or preview, with per-branch overrides. See [Environment variables](/compute/environment-variables).
+- **Custom domains** — Point your own hostname at a service. TLS certificates are provisioned for you. See [Add a domain](/compute/domains).
+- **GitHub integration** — Connect a repository and deploy on push. See [GitHub](/compute/github).
+- **Logs** — Stream logs for the current deployment with `prisma-cli app logs`.
+
+## When to use Compute
+
+Compute is a good fit when you:
+
+- Build TypeScript apps with **Next.js**, **Hono**, **TanStack Start**, or a **Bun** HTTP server.
+- Use Prisma Postgres and want your app to run close to your database.
+- Want preview deployments per branch without setting up separate hosting infrastructure.
+
+If you only need a managed database, start with [Prisma Postgres](/postgres) instead.
+
+## Getting started
+
+<Cards>
+  <Card href="/compute/getting-started" title="Get started with @prisma/cli">
+    Install the CLI, log in, and deploy your app from the terminal.
+  </Card>
+  <Card href="/prisma-compute/deploy" title="Deploy your first Compute service">
+    A short end-to-end walkthrough from app directory to live URL.
+  </Card>
+  <Card href="/prisma-compute/connect-to-prisma-postgres" title="Connect to Prisma Postgres">
+    Give your service a database by setting a connection string.
+  </Card>
+</Cards>
+
+## Manage
+
+- [Branching](/compute/branching)
+- [Connect to a Prisma Postgres database](/compute/database/connect-to-prisma-postgres)
+- [Environment variables](/compute/environment-variables)
+- [Add a domain](/compute/domains)
+- [GitHub integration](/compute/github)
+- [FAQ and limitations](/compute/faq)

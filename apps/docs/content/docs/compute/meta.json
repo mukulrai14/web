@@ -1,0 +1,19 @@
+{
+  "title": "Compute",
+  "root": true,
+  "icon": "Cpu",
+  "pages": [
+    "---Introduction---",
+    "index",
+    "getting-started",
+    "---Features---",
+    "branching",
+    "...database",
+    "environment-variables",
+    "domains",
+    "---Integrations---",
+    "github",
+    "---More---",
+    "faq"
+  ]
+}

@@ -1,0 +1,170 @@
+---
+title: Get started with @prisma/cli
+description: Install the @prisma/cli beta package, log in, and deploy an app to Prisma Compute.
+url: /compute/getting-started
+badge: early-access
+metaTitle: 'Get started with Prisma Compute via @prisma/cli'
+metaDescription: Install the @prisma/cli beta package, authenticate, and deploy your first app to Prisma Compute from the terminal.
+---
+
+[`@prisma/cli`](https://github.com/prisma/prisma-cli) is the beta package for deploying and managing apps on [Prisma Compute](/compute). In this guide, you will install the CLI, log in, deploy an app, and verify that it runs.
+
+:::note
+
+During the beta, the package exposes the `prisma-cli` binary instead of `prisma`, so it can coexist with the [Prisma ORM CLI](/cli) in the same project.
+
+:::
+
+## Prerequisites
+
+- **Node.js 22.12.0 or later**
+- An app built with **Next.js**, **Hono**, **TanStack Start**, or a plain **Bun** HTTP server
+- A [Prisma Console](https://console.prisma.io) account
+
+:::warning
+
+Next.js apps must set `output: "standalone"` in `next.config.js` (or `next.config.ts`) before deploying.
+
+:::
+
+## 1. Install the CLI
+
+Install `@prisma/cli` as a development dependency:
+
+```npm
+npm install --save-dev @prisma/cli
+```
+
+Confirm it runs:
+
+```npm
+npx prisma-cli --help
+```
+
+You should see the available command groups, including `app`, `project`, `branch`, `git`, and `auth`.
+
+## 2. Log in
+
+```npm
+npx prisma-cli auth login
+```
+
+This opens your browser to sign in to your Prisma account. After you complete the flow, the CLI stores your credentials locally.
+
+Verify your session:
+
+```npm
+npx prisma-cli auth whoami
+```
+
+You should see your authenticated user and workspace.
+
+:::info
+
+In CI or other non-interactive environments, set the `PRISMA_SERVICE_TOKEN` environment variable instead of logging in through the browser.
+
+:::
+
+## 3. Deploy your app
+
+From your app directory, run:
+
+```npm
+npx prisma-cli app deploy
+```
+
+On the first deploy, the CLI:
+
+1. Resolves or creates a project for the directory and pins it in a gitignored `.prisma/local.json` file.
+2. Resolves the branch from your current Git branch (falling back to `main`).
+3. Detects your framework, builds the app locally, and uploads the build artifact.
+4. Creates a deployment and prints a summary with the app's URL.
+
+Open the URL and confirm your app responds. You can also run:
+
+```npm
+npx prisma-cli app open
+```
+
+### Deploy options
+
+| Flag                      | Description                                                            |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `--app <name>`            | Target a specific app                                                  |
+| `--project <id-or-name>`  | Target a specific project                                              |
+| `--create-project <name>` | Create and link a new project before deploying                         |
+| `--branch <name>`         | Deploy to a specific branch                                            |
+| `--framework <name>`      | Override framework detection: `nextjs`, `hono`, `tanstack-start`, `bun` |
+| `--entry <path>`          | Entry point for Bun apps                                               |
+| `--http-port <port>`      | HTTP port your app listens on                                          |
+| `--env <KEY=value>`       | Set an environment variable for the deployment (repeatable)            |
+| `--prod`                  | Confirm intent to deploy to production                                 |
+
+## 4. Add environment variables
+
+If your app needs configuration, such as a database connection string, add it with `project env add` and scope it with `--role`:
+
+```npm
+npx prisma-cli project env add DATABASE_URL=postgresql://... --role preview
+```
+
+Environment variable changes do not redeploy your app automatically. Redeploy to apply them:
+
+```npm
+npx prisma-cli app deploy
+```
+
+See [Environment variables](/compute/environment-variables) for scoping rules and limits.
+
+## 5. Check logs
+
+Stream logs for the current deployment:
+
+```npm
+npx prisma-cli app logs
+```
+
+## Manage deployments
+
+| Command                          | Description                                                          |
+| -------------------------------- | -------------------------------------------------------------------- |
+| `app list-deploys`               | List deployments for the app                                          |
+| `app show-deploy <deployment>`   | Show a deployment in detail                                           |
+| `app promote <deployment>`       | Promote a deployment to production, rebuilding with production env vars |
+| `app rollback --to <deployment>` | Roll back production to a previous deployment                         |
+| `app remove`                     | Remove the app from the current branch                                |
+
+:::warning
+
+Once an app has a live production deployment, deploying to production again requires the `--prod` flag. In non-interactive environments, pass `--prod --yes`.
+
+:::
+
+## Command reference
+
+| Command group | Commands                                              | Description                                       |
+| ------------- | ------------------------------------------------------ | ------------------------------------------------- |
+| `auth`        | `login`, `logout`, `whoami`                            | Manage authentication                             |
+| `app`         | `build`, `run`, `deploy`, `show`, `open`, `logs`, `list-deploys`, `show-deploy`, `promote`, `rollback`, `remove` | Manage apps and deployments |
+| `app domain`  | `add`, `show`, `remove`, `retry`, `wait`               | Manage [custom domains](/compute/domains)         |
+| `project`     | `list`, `show`, `create`, `link`                       | Manage projects and directory bindings            |
+| `project env` | `add`, `update`, `list`, `remove`                      | Manage [environment variables](/compute/environment-variables) |
+| `branch`      | `list`                                                 | List platform branches for the resolved project   |
+| `git`         | `connect`, `disconnect`                                | Manage the [GitHub integration](/compute/github)  |
+
+All commands support global flags such as `--json` (machine-readable output), `--yes` (skip confirmations), and `--no-interactive`.
+
+## Troubleshooting
+
+- **Auth errors**: Run `npx prisma-cli auth whoami`. If it shows no session, run `npx prisma-cli auth login` again.
+- **An environment variable did not apply**: Redeploy after adding or updating environment variables.
+- **Wrong environment variable value**: Run `npx prisma-cli project env update KEY=newvalue --role preview`, then redeploy.
+- **Production deploy rejected**: Add the `--prod` flag to confirm you intend to deploy to production.
+- **Next.js build fails on deploy**: Make sure `output: "standalone"` is set in your Next.js config.
+
+## Next steps
+
+- [Connect your service to Prisma Postgres](/compute/database/connect-to-prisma-postgres)
+- [Work with branches](/compute/branching)
+- [Add a custom domain](/compute/domains)
+- [Deploy on push with GitHub](/compute/github)
