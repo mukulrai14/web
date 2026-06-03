@@ -9,6 +9,8 @@ metaDescription: Learn what Prisma Compute is, how its resource model works, and
 
 Prisma Compute runs your app next to your [Prisma Postgres](/postgres) database. Push a branch and you get a live preview URL, backed by its own isolated app and resources. Merge to production when it's ready.
 
+Compute is the app-hosting layer of the Prisma platform. Model your data with [Prisma ORM](/orm), store it in [Prisma Postgres](/postgres), and run your app on Compute: one platform for schema, database, and hosting instead of separate vendors to stitch together. Co-locating app and database keeps app-to-database latency low.
+
 :::info[Public Beta]
 
 Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta) and is CLI-first: you deploy and manage apps with the [`@prisma/cli`](/compute/getting-started) beta package. The [Prisma Console](https://console.prisma.io) is there when you'd rather see your resources than type a command.
@@ -65,9 +67,10 @@ Use the **Console** when you want to look rather than type: inspect projects, br
 
 - [Branching](/compute/branching) — how branches isolate work and map to Git.
 - [Deployments](/compute/deployments) — build, deploy, logs, promote, roll back.
-- [Connect to a Prisma Postgres database](/compute/database/connect-to-prisma-postgres) — wire an app to a database.
+- [CLI reference](/compute/cli-reference) — every command, flag, and error code.
+- [Connect to Prisma Postgres](/compute/database/connect-to-prisma-postgres) — wire an app to a database.
 - [Environment variables](/compute/environment-variables) — production, preview, and per-branch overrides.
 - [GitHub integration](/compute/github) — connect a repo and deploy on push.
-- [Add a domain](/compute/domains) — point a custom domain at production.
+- [Domains](/compute/domains) — point a custom domain at production.
 - [Limitations](/compute/limitations) — what the beta does and doesn't do.
 - [FAQ](/compute/faq) — quick answers for people and agents.
