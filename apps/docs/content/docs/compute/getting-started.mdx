@@ -6,15 +6,25 @@ metaTitle: 'Get started with Prisma Compute via @prisma/cli'
 metaDescription: Install the @prisma/cli beta package, deploy an app to Prisma Compute, and learn the variations for frameworks, production, and CI.
 ---
 
-The CLI is the fastest way to get an app running on [Prisma Compute](/compute). This guide takes you from your code to a live URL, then shows the variations you'll reach for next. For every command, flag, and error code, see the [CLI reference](/compute/cli-reference).
+Deploy an app to [Prisma Compute](/compute) in two commands: sign in, then `app deploy`. This guide takes you from your code to a live URL, then shows the variations you'll reach for next. For every command, flag, and error code, see the [CLI reference](/compute/cli-reference).
 
-The beta package is [`@prisma/cli`](https://github.com/prisma/prisma-cli). It installs an executable called `prisma-cli`.
+Install nothing up front: run the [`@prisma/cli`](https://github.com/prisma/prisma-cli) beta package directly with `npx`. The package installs an executable called `prisma-cli`.
 
 ## Prerequisites
 
 - A JavaScript runtime. The commands below run with `npx` or `pnpm` on Node.js 22.12 or newer, or with `bunx` (Bun).
 - A Prisma developer platform account ([console.prisma.io](https://console.prisma.io)).
 - An app directory to deploy.
+
+## Sign in
+
+Deploys fail without a session, so authenticate first:
+
+```npm
+npx @prisma/cli@latest auth login
+```
+
+This opens a browser to sign you in, then stores a session that every later command inherits, including any coding agent working in your directory. The browser step needs a human; in CI or other headless environments, use a [service token](#automation-and-ci) instead. To check who you're signed in as, run `auth whoami`.
 
 ## Deploy your app
 
@@ -24,7 +34,7 @@ From your app directory, run:
 npx @prisma/cli@latest app deploy
 ```
 
-That's it. If you're not signed in yet, the CLI walks you through it, then sets up the project, builds your app, and deploys it. When it finishes, you get a live URL.
+Then the CLI sets up the project, builds your app, and deploys it. After it finishes, you get a live URL.
 
 Want to see what your app is doing? Stream its logs:
 
@@ -112,13 +122,17 @@ npx @prisma/cli@latest app run --port 3000
 
 ## Deploy to production
 
-Your first deployment is promoted to production automatically. After that, deploying to the production branch is an explicit choice: pass `--prod`:
+Your first deployment is promoted to production automatically. After that, the CLI asks you to confirm before it deploys to the production branch, so you don't ship by accident.
+
+To deploy to production, target your production branch and confirm the prompt:
 
 ```npm
-npx @prisma/cli@latest app deploy --prod
+npx @prisma/cli@latest app deploy --branch main
 ```
 
-Preview deploys never need it. See [Deployments](/compute/deployments) for promotion and rollback.
+Pass `-y` / `--yes` to accept the confirmation up front, which is what scripts and CI need. In non-interactive mode, a production deploy without `--yes` fails with the error code `CONFIRMATION_REQUIRED`.
+
+Preview deploys never ask for confirmation. To learn about promotion and rollback, see the [Deployments docs](/compute/deployments).
 
 ## Automation and CI
 
@@ -147,14 +161,16 @@ Pass targets explicitly so nothing depends on a prompt. `--json` gives you struc
 npx @prisma/cli@latest app deploy --create-project my-app --app web
 ```
 
-When a command fails in `--json` mode, branch on the error code rather than the message. The common ones:
+In `--json` mode, every result is an envelope with an `ok` flag. On failure, `error.code` identifies the problem, `error.fix` says what to do about it, and `nextSteps` lists the exact commands to run next. Branch on the error code rather than the message. The common ones:
 
-| Code                       | Meaning                                                                  |
-| -------------------------- | ------------------------------------------------------------------------ |
-| `PROJECT_SETUP_REQUIRED`   | No project resolved. Pass `--project` or `--create-project`.              |
-| `APP_AMBIGUOUS`            | More than one app matched. Pass `--app <name>`.                           |
-| `PROD_DEPLOY_REQUIRES_FLAG`| Deploying to production after the first time. Pass `--prod`.              |
-| `FEATURE_UNAVAILABLE`      | The platform can't serve this yet (e.g. logs for some deployments).       |
+| Code                     | Meaning                                                              |
+| ------------------------ | --------------------------------------------------------------------- |
+| `PROJECT_SETUP_REQUIRED` | No project resolved. Pass `--project` or `--create-project`.           |
+| `APP_AMBIGUOUS`          | More than one app matched. Pass `--app <name>`.                        |
+| `CONFIRMATION_REQUIRED`  | The command needs a confirmation, like a production deploy. Pass `--yes`. |
+| `FEATURE_UNAVAILABLE`    | The platform can't serve this yet (e.g. logs for some deployments).    |
+
+For the full list, see the [error codes reference](/compute/cli-reference#error-codes).
 
 ## Console
 
@@ -162,8 +178,8 @@ Prefer to look rather than type? Use the [Prisma Console](https://console.prisma
 
 ## Next steps
 
-- [CLI reference](/compute/cli-reference) — every command, flag, and error code.
-- [Deployments](/compute/deployments) — inspect, promote, roll back, remove.
-- [Connect your app to Prisma Postgres](/compute/database/connect-to-prisma-postgres)
-- [Branching](/compute/branching)
-- [GitHub integration](/compute/github) — deploy on push.
+- [CLI reference](/compute/cli-reference): every command, flag, and error code.
+- [Deployments](/compute/deployments): inspect, promote, roll back, remove.
+- [Environment variables](/compute/environment-variables): give your app a database connection string and other config.
+- [Branching](/compute/branching): how branches isolate work and map to Git.
+- [GitHub integration](/compute/github): deploy on push.

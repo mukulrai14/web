@@ -45,7 +45,9 @@ npx @prisma/cli@latest app domain show shop.acme.com --app web
 npx @prisma/cli@latest app domain retry shop.acme.com --app web
 ```
 
-A domain moves through states like `pending_dns`, `verifying`, `provisioning_tls`, and `active`, with `failed` if something goes wrong. `show` gives you the exact state, certificate details, and any DNS hints. `retry` restarts stuck provisioning; if a domain isn't in a retryable state, it returns `DOMAIN_RETRY_NOT_ELIGIBLE`.
+`show` gives you the exact state, certificate details, and any DNS hints. `retry` restarts stuck provisioning; if a domain isn't in a retryable state, it returns `DOMAIN_RETRY_NOT_ELIGIBLE`.
+
+A domain moves through these states:
 
 | Status             | Meaning                                                       |
 | ------------------ | ------------------------------------------------------------- |
@@ -67,10 +69,10 @@ Removing detaches the domain from the app; pass `--yes` to skip the confirmation
 
 - Custom domains are production-only.
 - DNS uses CNAME records.
-- Up to 3 custom domains per app.
+- Up to 3 custom domains per app; more returns `DOMAIN_QUOTA_EXCEEDED`.
 - There's no workspace-wide domain list in the CLI.
 
 ## Next steps
 
-- [Deployments](/compute/deployments) — promote a deployment to production first.
-- [Limitations](/compute/limitations)
+- [Deployments](/compute/deployments): promote a deployment to production first.
+- [Limitations](/compute/limitations): everything the beta does and doesn't do.

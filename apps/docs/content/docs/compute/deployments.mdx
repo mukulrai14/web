@@ -18,9 +18,9 @@ npx @prisma/cli@latest app deploy
 
 The CLI resolves your project, branch, and app, builds the code, and returns a live URL. What it resolves:
 
-- **Project** — from your linked directory, or `--project` / `--create-project`.
-- **Branch** — `--branch`, then your active Git branch, then `main`.
-- **App** — `--app`, or inferred from your `package.json` name or directory. If more than one app matches in non-interactive mode, the deploy fails with `APP_AMBIGUOUS`; pass `--app`.
+- **Project**: from your linked directory, or `--project` / `--create-project`.
+- **Branch**: `--branch`, then your active Git branch, then `main`.
+- **App**: `--app`, or inferred from your `package.json` name or directory. If more than one app matches in non-interactive mode, the deploy fails with `APP_AMBIGUOUS`; pass `--app`.
 
 You can pass values straight into a deploy:
 
@@ -29,7 +29,7 @@ npx @prisma/cli@latest app deploy --framework hono --entry src/index.ts --http-p
 npx @prisma/cli@latest app deploy --env DATABASE_URL=postgresql://example
 ```
 
-`--env` is for one-off values at deploy time. For variables that should persist across deploys, set them on the project. See [Environment variables](/compute/environment-variables).
+`--env` is for one-off values at deploy time. For variables that should persist across deploys, set them on the project. To learn more, see the [Environment variables docs](/compute/environment-variables).
 
 ## Build and run locally
 
@@ -44,13 +44,15 @@ npx @prisma/cli@latest app run --port 3000
 
 ## Deploy to production
 
-Your first deployment is promoted to production automatically. After that, targeting the production branch is an explicit choice:
+Your first deployment is promoted to production automatically. After that, the CLI asks you to confirm before deploying to the production branch, so you don't ship by accident.
+
+Target your production branch and confirm the prompt:
 
 ```npm
-npx @prisma/cli@latest app deploy --prod
+npx @prisma/cli@latest app deploy --branch main
 ```
 
-`--yes` skips the confirmation prompt, but only after `--prod`; it never stands in for it. Preview deploys need neither.
+Pass `-y` / `--yes` to accept the confirmation up front; in non-interactive mode, a production deploy without it fails with `CONFIRMATION_REQUIRED`. Preview deploys never ask.
 
 ## Inspect deployments
 
@@ -103,6 +105,6 @@ This removes the app from the current branch. Pass `--yes` to skip the confirmat
 
 ## Next steps
 
-- [Environment variables](/compute/environment-variables)
-- [GitHub integration](/compute/github) — deploy on push instead of by hand.
-- [Domains](/compute/domains)
+- [Environment variables](/compute/environment-variables): persist config across deploys.
+- [GitHub integration](/compute/github): deploy on push instead of by hand.
+- [Domains](/compute/domains): point a custom domain at production.

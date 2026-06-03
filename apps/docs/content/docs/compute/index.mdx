@@ -9,7 +9,7 @@ metaDescription: Learn what Prisma Compute is, how its resource model works, and
 
 Prisma Compute runs your app next to your [Prisma Postgres](/postgres) database. Push a branch and you get a live preview URL, backed by its own isolated app and resources. Merge to production when it's ready.
 
-Compute is the app-hosting layer of the Prisma platform. Model your data with [Prisma ORM](/orm), store it in [Prisma Postgres](/postgres), and run your app on Compute: one platform for schema, database, and hosting instead of separate vendors to stitch together. Co-locating app and database keeps app-to-database latency low.
+Compute is the app-hosting layer of the Prisma platform. Model your data with [Prisma ORM](/orm), store it in [Prisma Postgres](/postgres), and run your app on Compute: one platform for schema, database, and hosting instead of separate vendors to stitch together. Running app and database side by side keeps queries fast.
 
 :::info[Public Beta]
 
@@ -19,7 +19,7 @@ Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta) a
 
 ## The model
 
-Everything in Compute hangs off four resources:
+Compute organizes everything into four resources:
 
 ```text
 workspace → project → branch → { apps, databases }
@@ -27,21 +27,21 @@ workspace → project → branch → { apps, databases }
 
 - A **workspace** owns access, billing, and integrations.
 - A **project** groups one product or codebase.
-- A **branch** is an isolated infrastructure boundary for one line of work. A platform branch maps to your Git branch, but it's a real resource that owns the apps and databases for that work.
+- A **branch** is an isolated environment for one line of work. It usually matches a Git branch name, but in Prisma it is a real resource that owns its own apps and databases.
 - An **app** is an HTTP service. Each built version of an app is a **deployment**.
 
 One branch is your production branch (usually `main`). Every other branch is a preview: its own app deployments and resources, with zero effect on production.
 
 ## Your first deploy
 
-From your code to a live URL:
+To go from your code to a live URL, run one command from your app directory:
 
 ```npm
 cd my-app
 npx @prisma/cli@latest app deploy
 ```
 
-`app deploy` handles the rest: it signs you in if you're not already, sets up the project, builds your app, and prints the live URL. [Get started with `@prisma/cli`](/compute/getting-started) walks through it properly, including frameworks, linking an existing project, and deploying to production.
+`app deploy` sets up the project, builds your app, and prints the live URL. For the full walkthrough, including signing in, frameworks, linking an existing project, and deploying to production, see [Get started with `@prisma/cli`](/compute/getting-started).
 
 ## CLI and Console
 
@@ -58,19 +58,18 @@ Use the **Console** when you want to look rather than type: inspect projects, br
   <Card href="/prisma-compute/deploy" title="Deploy your first app">
     A short walkthrough from app directory to live URL.
   </Card>
-  <Card href="/prisma-compute/connect-to-prisma-postgres" title="Connect to Prisma Postgres">
+  <Card href="/compute/environment-variables" title="Environment variables">
     Give your app a database by setting a connection string.
   </Card>
 </Cards>
 
 ## What to read next
 
-- [Branching](/compute/branching) — how branches isolate work and map to Git.
-- [Deployments](/compute/deployments) — build, deploy, logs, promote, roll back.
-- [CLI reference](/compute/cli-reference) — every command, flag, and error code.
-- [Connect to Prisma Postgres](/compute/database/connect-to-prisma-postgres) — wire an app to a database.
-- [Environment variables](/compute/environment-variables) — production, preview, and per-branch overrides.
-- [GitHub integration](/compute/github) — connect a repo and deploy on push.
-- [Domains](/compute/domains) — point a custom domain at production.
-- [Limitations](/compute/limitations) — what the beta does and doesn't do.
-- [FAQ](/compute/faq) — quick answers for people and agents.
+- [Branching](/compute/branching): how branches isolate work and map to Git.
+- [Deployments](/compute/deployments): build, deploy, logs, promote, roll back.
+- [CLI reference](/compute/cli-reference): every command, flag, and error code.
+- [Environment variables](/compute/environment-variables): production, preview, and per-branch overrides.
+- [GitHub integration](/compute/github): connect a repo and deploy on push.
+- [Domains](/compute/domains): point a custom domain at production.
+- [Limitations](/compute/limitations): what the beta does and doesn't do.
+- [FAQ](/compute/faq): quick answers for people and agents.

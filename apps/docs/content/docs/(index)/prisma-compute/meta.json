@@ -1,5 +1,5 @@
 {
   "title": "Prisma Compute",
   "defaultOpen": true,
-  "pages": ["deploy", "connect-to-prisma-postgres"]
+  "pages": ["deploy"]
 }

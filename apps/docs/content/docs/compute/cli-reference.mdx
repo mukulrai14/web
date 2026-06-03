@@ -58,7 +58,8 @@ Manage apps and deployments for a project.
 | `--entry <path>`          | Entry point, required for `bun` and useful when detection needs a hand       |
 | `--http-port <port>`      | HTTP port your app listens on                                                |
 | `--env <KEY=value>`       | Set a one-off variable for this deployment (repeatable)                      |
-| `--prod`                  | Confirm intent to deploy to production                                       |
+
+Deploys that target the production branch ask for confirmation after the first one. Pass `-y` / `--yes` to accept it; in non-interactive mode, the deploy fails with `CONFIRMATION_REQUIRED` without it.
 
 ### `app build` and `app run` options
 
@@ -75,11 +76,11 @@ Manage apps and deployments for a project.
 | `--app`, `--project`  | all inspection and deploy commands | Select the app or project explicitly |
 | `--deployment <id>`   | `app logs`                       | Stream logs for a specific deployment |
 | `--to <deployment>`   | `app rollback`                   | Roll back to a specific deployment    |
-| `--yes`               | `app remove`, `app deploy --prod` | Skip the confirmation prompt          |
+| `--yes`               | `app remove`, production deploys | Accept the confirmation prompt        |
 
 ## `app domain`
 
-Manage custom domains for an app. All commands take a `<hostname>` argument plus `--app` / `--project`. Domains target the production branch; see [Domains](/compute/domains).
+Manage custom domains for an app. All commands take a `<hostname>` argument plus `--app` / `--project`. Domains target the production branch; to learn more, see the [Domains docs](/compute/domains).
 
 | Command                       | Description                                                    |
 | ----------------------------- | --------------------------------------------------------------- |
@@ -106,7 +107,7 @@ Linking writes `.prisma/local.json`, a gitignored local pin of the workspace and
 
 ## `project env`
 
-Manage environment variables for the active project. Writes require an explicit scope: exactly one of `--role <production|preview>` or `--branch <git-name>`. See [Environment variables](/compute/environment-variables).
+Manage environment variables for the active project. Writes require an explicit scope: exactly one of `--role <production|preview>` or `--branch <git-name>`. To learn more, see the [Environment variables docs](/compute/environment-variables).
 
 | Command                          | Description                                                |
 | -------------------------------- | ----------------------------------------------------------- |
@@ -119,17 +120,17 @@ Values are write-only: encrypted at rest and never returned by any surface. They
 
 ## `branch`
 
-Inspect platform branches for the resolved project. These commands don't create remote state. See [Branching](/compute/branching).
+Inspect platform branches for the resolved project. These commands don't create remote state. To learn more, see the [Branching docs](/compute/branching).
 
 | Command            | Description                                              |
 | ------------------ | --------------------------------------------------------- |
 | `branch list`      | List platform branches for the resolved project            |
-| `branch show`      | Show the resolved branch                                   |
-| `branch use <name>`| Switch your local branch context without creating anything |
+| `branch show`      | Show the platform branch matching your current Git branch  |
+| `branch use [name]`| Switch your local branch context without creating anything |
 
 ## `git`
 
-Manage the GitHub repository connection. See [GitHub integration](/compute/github).
+Manage the GitHub repository connection. To learn more, see the [GitHub integration docs](/compute/github).
 
 | Command                  | Description                                                      |
 | ------------------------ | ----------------------------------------------------------------- |
@@ -148,12 +149,24 @@ In `--json` / `--no-interactive` mode, `git connect` returns an install URL inst
 
 | Flag                                | Description                                        |
 | ----------------------------------- | --------------------------------------------------- |
-| `--json`                            | Machine-readable output (not supported by `app run`) |
-| `-y`, `--yes`                       | Skip confirmation prompts                            |
+| `--json`                            | Emit structured JSON output                          |
+| `-y`, `--yes`                       | Accept supported confirmation prompts                |
 | `-q`, `--quiet` / `-v`, `--verbose` | Adjust output verbosity                              |
+| `--trace`                           | Show deeper diagnostics for failures                 |
 | `--interactive` / `--no-interactive`| Force or disable prompts; non-interactive fails instead of asking |
 | `--color` / `--no-color`            | Control colored output                               |
 | `--version`                         | Print the CLI version                                |
+
+## JSON output
+
+In `--json` mode, every command returns an envelope you can branch on:
+
+- `ok`: `true` or `false`.
+- `result`: the command's data, when `ok` is `true`.
+- `error.code`, `error.summary`, `error.why`, `error.fix`: what failed and what to do about it.
+- `nextSteps` and `nextActions`: exact follow-up commands, useful for agents.
+
+Branch on `error.code`, not the message text.
 
 ## Environment variables
 
@@ -165,18 +178,62 @@ In `--json` / `--no-interactive` mode, `git connect` returns an install URL inst
 
 ## Error codes
 
-In `--json` mode, branch on the error code rather than the message.
+The common codes, grouped by area:
 
-| Code                        | Meaning                                                                  |
-| --------------------------- | -------------------------------------------------------------------------|
-| `PROJECT_SETUP_REQUIRED`    | No project resolved. Pass `--project` or `--create-project`.              |
-| `APP_AMBIGUOUS`             | More than one app matched. Pass `--app <name>`.                           |
-| `PROD_DEPLOY_REQUIRES_FLAG` | Deploying to production after the first time. Pass `--prod`.              |
-| `NO_PREVIOUS_DEPLOYMENT`    | Nothing to roll back to.                                                  |
-| `BRANCH_NOT_DEPLOYABLE`     | Domain commands targeted a non-production branch.                         |
-| `DOMAIN_RETRY_NOT_ELIGIBLE` | The domain isn't in a retryable state.                                    |
-| `REPO_PROVIDER_UNSUPPORTED` | `git connect` with a non-GitHub provider.                                 |
-| `FEATURE_UNAVAILABLE`       | The platform can't serve this yet (e.g. logs for some deployments).       |
+**General**
+
+| Code                    | Meaning                                                              |
+| ----------------------- | --------------------------------------------------------------------- |
+| `AUTH_REQUIRED`         | No session or service token. Run `auth login` or set `PRISMA_SERVICE_TOKEN`. |
+| `CONFIRMATION_REQUIRED` | The command needs a confirmation, like a production deploy. Pass `--yes`. |
+| `USAGE_ERROR`           | Invalid arguments or flags. Check the command's `--help`.              |
+| `FEATURE_UNAVAILABLE`   | The platform can't serve this yet (e.g. logs for some deployments).    |
+
+**Projects and apps**
+
+| Code                     | Meaning                                                             |
+| ------------------------ | -------------------------------------------------------------------- |
+| `PROJECT_SETUP_REQUIRED` | No project resolved. Pass `--project` or `--create-project`.          |
+| `PROJECT_NOT_FOUND`      | The named project doesn't exist or isn't visible to you.              |
+| `APP_AMBIGUOUS`          | More than one app matched. Pass `--app <name>`.                       |
+| `FRAMEWORK_NOT_DETECTED` | The CLI couldn't detect your framework. Pass `--framework`.           |
+
+**Deployments**
+
+| Code                     | Meaning                                          |
+| ------------------------ | ------------------------------------------------- |
+| `BUILD_FAILED`           | The app failed to build. Check the build output.   |
+| `DEPLOY_FAILED`          | The deployment failed after the build.             |
+| `DEPLOYMENT_NOT_FOUND`   | The deployment id doesn't exist for this app.      |
+| `NO_PREVIOUS_DEPLOYMENT` | Nothing to roll back to.                           |
+
+**Environment variables**
+
+| Code                          | Meaning                                            |
+| ----------------------------- | --------------------------------------------------- |
+| `ENV_VARIABLE_ALREADY_EXISTS` | The key exists in this scope. Use `update` instead.  |
+| `ENV_VARIABLE_NOT_FOUND`      | No variable with that key in this scope.             |
+| `ENV_BRANCH_SCOPE_IS_PRODUCTION` | Branch overrides can't target the production branch. |
+
+**Domains**
+
+| Code                          | Meaning                                              |
+| ----------------------------- | ----------------------------------------------------- |
+| `BRANCH_NOT_DEPLOYABLE`       | Domain commands targeted a non-production branch.      |
+| `DOMAIN_ALREADY_REGISTERED`   | The hostname is already registered.                    |
+| `DOMAIN_DNS_NOT_CONFIGURED`   | The CNAME record isn't visible yet.                    |
+| `DOMAIN_VERIFICATION_FAILED`  | DNS verification or TLS provisioning failed.           |
+| `DOMAIN_QUOTA_EXCEEDED`       | The app already has 3 custom domains.                  |
+| `DOMAIN_RETRY_NOT_ELIGIBLE`   | The domain isn't in a retryable state.                 |
+
+**GitHub**
+
+| Code                        | Meaning                                              |
+| --------------------------- | ----------------------------------------------------- |
+| `REPO_NOT_CONNECTED`        | No repository connected. Run `git connect` first.      |
+| `REPO_ALREADY_CONNECTED`    | The project is already connected to a repository.      |
+| `REPO_INSTALLATION_REQUIRED`| The Prisma GitHub App isn't installed in the workspace. |
+| `REPO_PROVIDER_UNSUPPORTED` | `git connect` with a non-GitHub provider.               |
 
 ## Related
 

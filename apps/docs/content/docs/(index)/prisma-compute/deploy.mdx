@@ -20,7 +20,17 @@ Next.js apps must set `output: "standalone"` in their Next.js config before depl
 
 :::
 
-## 1. Deploy
+## 1. Sign in
+
+Deploys fail without a session, so authenticate first:
+
+```npm
+npx @prisma/cli@latest auth login
+```
+
+This opens a browser to sign you in and stores a session that every later command inherits. Check it any time with `auth whoami`.
+
+## 2. Deploy
 
 From your app directory:
 
@@ -28,9 +38,9 @@ From your app directory:
 npx @prisma/cli@latest app deploy
 ```
 
-If you're not signed in yet, the CLI walks you through it, then sets up the project, builds your app, and deploys it. When it finishes, you get a live URL. Your first deployment is promoted to production automatically.
+Then the CLI sets up the project, builds your app, and deploys it. After it finishes, you get a live URL. Your first deployment is promoted to production automatically.
 
-## 2. Verify
+## 3. Verify
 
 Open the deployed app in your browser:
 
@@ -44,25 +54,19 @@ If something looks off, stream the logs:
 npx @prisma/cli@latest app logs
 ```
 
-## 3. Keep shipping
+## 4. Keep shipping
 
 After your app is live, you can keep deploying with the Prisma CLI or inspect your resources in the [Prisma Console](https://console.prisma.io): projects, branches, apps, deployments, integrations, and domains.
 
-Deploys from a Git feature branch create isolated [preview deployments](/compute/branching); deploying to production again is explicit:
+Deploys from a Git feature branch create isolated [preview deployments](/compute/branching). Deploying to production again asks for a confirmation; target your production branch and pass `--yes` to accept it:
 
 ```npm
-npx @prisma/cli@latest app deploy --prod
+npx @prisma/cli@latest app deploy --branch main --yes
 ```
 
 ## Hand it to your agent
 
-You can also let your coding agent do the deploying. Sign in once yourself, because the browser step needs a human:
-
-```npm
-npx @prisma/cli@latest auth login
-```
-
-After that, anything running in your environment inherits the session, including your agent. Paste this into your agent and fill in the blanks:
+You can also let your coding agent do the deploying. Sign in once yourself ([step 1](#1-sign-in)), because the browser step needs a human. After that, anything running in your environment inherits the session, including your agent. Paste this into your agent and fill in the blanks:
 
 ```text
 Build [what you want] in [framework] and deploy it to Prisma Compute using `npx @prisma/cli@latest`.
@@ -83,7 +87,6 @@ Notes worth giving your agent:
 
 ## What's next
 
-- [Connect your app to Prisma Postgres](/prisma-compute/connect-to-prisma-postgres)
-- [Add environment variables](/compute/environment-variables) for configuration and secrets
+- [Add environment variables](/compute/environment-variables) for configuration, secrets, and your database connection string
 - [Connect a GitHub repository](/compute/github) to deploy on push
 - [Read the full CLI getting-started guide](/compute/getting-started)

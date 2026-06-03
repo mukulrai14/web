@@ -16,7 +16,7 @@ npx @prisma/cli@latest app deploy
 
 ## Why `prisma-cli` and not `prisma`?
 
-So it doesn't shadow the `prisma` binary from [Prisma ORM](/orm), which many projects already have installed. Want a shorter command? Add your own package script; see [Get started with `@prisma/cli`](/compute/getting-started#a-shorter-command).
+So it doesn't shadow the `prisma` binary from [Prisma ORM](/orm), which many projects already have installed. Want a shorter command? Add your own package script; see [A shorter command](/compute/getting-started#a-shorter-command) in the getting started guide.
 
 ## What's the difference between a project and an app?
 
@@ -28,11 +28,11 @@ workspace → project → branch → { apps, databases }
 
 ## What's a branch?
 
-An isolated infrastructure boundary. It usually follows a Git branch name, but it's a real Prisma resource that owns the apps and databases for one line of work. See [Branching](/compute/branching).
+An isolated environment for one line of work. It usually matches a Git branch name, but in Prisma it is a real resource that owns its own apps and databases. To learn more, see the [Branching docs](/compute/branching).
 
 ## Does `git connect` deploy my app?
 
-No. It links a project to a GitHub repo and enables automation for future branch and push events. To deploy now, run `app deploy`. See [GitHub integration](/compute/github).
+No. It links a project to a GitHub repo and enables automation for future branch and push events. To deploy now, run `app deploy`. To set up the connection, see the [GitHub integration docs](/compute/github).
 
 ## What does a GitHub push do?
 
@@ -40,16 +40,18 @@ For a connected project, it creates or resolves the matching branch and builds t
 
 ## Why can't I read my environment variable values back?
 
-They're encrypted and never returned, by any surface, in beta. `project env list` shows keys and metadata only. Keep your own copy in a secret manager. See [Environment variables](/compute/environment-variables#values-are-write-only).
+They're encrypted and never returned, by any surface, in beta. `project env list` shows keys and metadata only. Keep your own copy in a secret manager. To learn more, see [Values are write-only](/compute/environment-variables#values-are-write-only).
 
 ## How do I rotate a secret?
 
-Update it, then redeploy:
+Update it, then redeploy to production:
 
 ```npm
 npx @prisma/cli@latest project env update DATABASE_URL=postgresql://new --role production
-npx @prisma/cli@latest app deploy --prod
+npx @prisma/cli@latest app deploy --branch main --yes
 ```
+
+The `--yes` accepts the production-deploy confirmation.
 
 ## Does changing a variable redeploy my app?
 
@@ -68,9 +70,9 @@ PRISMA_SERVICE_TOKEN=... npx @prisma/cli@latest app deploy \
   --no-interactive
 ```
 
-## Why did my production deploy fail with `PROD_DEPLOY_REQUIRES_FLAG`?
+## Why did my production deploy fail with `CONFIRMATION_REQUIRED`?
 
-Your first deploy is promoted to production automatically. After that, deploying to the production branch is explicit; pass `--prod`.
+Your first deploy is promoted to production automatically. After that, deploying to the production branch needs a confirmation. Pass `-y` / `--yes` to accept it, which is required in non-interactive mode.
 
 ## Why `PROJECT_SETUP_REQUIRED`?
 
@@ -89,7 +91,7 @@ npx @prisma/cli@latest app domain add shop.acme.com --app web
 npx @prisma/cli@latest app domain wait shop.acme.com --app web
 ```
 
-Add the CNAME record the command returns at your DNS provider. See [Domains](/compute/domains).
+Add the CNAME record the command returns at your DNS provider. To learn more, see the [Domains docs](/compute/domains).
 
 ## Can preview branches have custom domains?
 

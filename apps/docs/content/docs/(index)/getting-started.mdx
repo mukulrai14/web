@@ -6,7 +6,7 @@ metaTitle: Prisma getting started
 metaDescription: Choose a Prisma quickstart for new or existing projects and get from schema to first query quickly.
 ---
 
-Prisma gives you a few good starting points depending on whether you need a database, already have one, or want the smallest possible local setup.
+Prisma gives you a few good starting points depending on whether you need a database, already have one, want the smallest possible local setup, or are ready to deploy your app.
 
 ## Choose your path
 
@@ -21,7 +21,7 @@ Prisma gives you a few good starting points depending on whether you need a data
 ### Deploy your app
 
 - [Deploy your first app](/prisma-compute/deploy) on [Prisma Compute](/compute), currently in Public Beta, to run it next to your Prisma Postgres database
-- [Connect Prisma Compute to Prisma Postgres](/prisma-compute/connect-to-prisma-postgres) once your app is deployed
+- [Set environment variables](/compute/environment-variables) to connect your deployed app to a database
 
 ### Add Prisma to an existing project
 
@@ -39,6 +39,13 @@ No matter which guide you choose, the flow is usually the same:
 2. Install Prisma CLI and [Prisma Client](/orm/prisma-client).
 3. Run `prisma generate` to create a type-safe client for your schema.
 4. Create or introspect your database, then start sending queries from your application.
+
+If you're deploying to [Prisma Compute](/compute), the equivalent flow is:
+
+1. Sign in with `npx @prisma/cli@latest auth login`.
+2. Run `npx @prisma/cli@latest app deploy` from your app directory to get a live URL.
+3. Set your database connection string and other config as [environment variables](/compute/environment-variables).
+4. Redeploy to apply them, then keep shipping from the CLI or [connect GitHub](/compute/github) to deploy on push.
 
 ## Next steps
 
