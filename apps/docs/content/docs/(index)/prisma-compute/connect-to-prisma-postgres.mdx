@@ -1,17 +1,16 @@
 ---
 title: Connect to Prisma Postgres
-description: Connect your Compute service to a Prisma Postgres database with a single environment variable.
+description: Connect your Compute app to a Prisma Postgres database with a single environment variable.
 url: /prisma-compute/connect-to-prisma-postgres
-badge: early-access
 metaTitle: 'Quickstart: Connect Prisma Compute to Prisma Postgres'
-metaDescription: Create a Prisma Postgres database, set its connection string on your Compute service, and verify the connection.
+metaDescription: Create a Prisma Postgres database, set its connection string on your Compute app, and verify the connection.
 ---
 
-A Compute service reads its database connection from an environment variable, typically `DATABASE_URL`. In this guide, you will create a [Prisma Postgres](/postgres) database, set its connection string on your service, and verify the connection.
+An app on Compute reads its database connection from an environment variable, typically `DATABASE_URL`. In this guide, you will create a [Prisma Postgres](/postgres) database, set its connection string on your app, and verify the connection.
 
 ## Prerequisites
 
-- A deployed Compute service. If you don't have one, follow [Deploy your first Compute service](/prisma-compute/deploy).
+- A deployed app on Compute. If you don't have one, follow [Deploy your first app](/prisma-compute/deploy).
 
 ## 1. Create a database
 
@@ -25,20 +24,20 @@ Copy the `postgres://...` connection string from the output. Alternatively, crea
 
 ## 2. Set the connection string
 
-Add the connection string to the scope your service runs in:
+Add the connection string to the scope your app runs in:
 
 ```npm
-npx prisma-cli project env add DATABASE_URL=postgres://... --role preview
+npx @prisma/cli@latest project env add DATABASE_URL=postgres://... --role preview
 ```
 
 Use `--role production` instead when configuring your production branch.
 
-## 3. Redeploy
+## 3. Deploy
 
-Environment variable changes only apply on the next deploy:
+Variables are resolved at deploy time, so they apply on the next deploy:
 
 ```npm
-npx prisma-cli app deploy
+npx @prisma/cli@latest app deploy
 ```
 
 ## 4. Verify
@@ -46,14 +45,14 @@ npx prisma-cli app deploy
 Open the app and exercise a code path that queries the database, then check the logs for connection errors:
 
 ```npm
-npx prisma-cli app open
-npx prisma-cli app logs
+npx @prisma/cli@latest app open
+npx @prisma/cli@latest app logs
 ```
 
-If queries succeed, your service is connected.
+If queries succeed, your app is connected.
 
 ## What's next
 
-- [Connect to a Prisma Postgres database](/compute/database/connect-to-prisma-postgres) for scoping options and troubleshooting
-- [Environment variables](/compute/environment-variables) for rules and limits
+- [Connect to a Prisma Postgres database](/compute/database/connect-to-prisma-postgres) for per-branch databases and troubleshooting
+- [Environment variables](/compute/environment-variables) for scopes, write-only behavior, and limits
 - [Prisma Postgres documentation](/postgres)

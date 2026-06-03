@@ -8,12 +8,14 @@
     "getting-started",
     "---Features---",
     "branching",
+    "deployments",
     "...database",
     "environment-variables",
     "domains",
     "---Integrations---",
     "github",
     "---More---",
-    "faq"
+    "faq",
+    "limitations"
   ]
 }

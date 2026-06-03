@@ -1,17 +1,16 @@
 ---
 title: Connect to a Prisma Postgres database
-description: Give your Compute service access to a Prisma Postgres database with a connection string environment variable.
+description: Give your app access to a Prisma Postgres database with a connection string environment variable.
 url: /compute/database/connect-to-prisma-postgres
-badge: early-access
 metaTitle: Connect Prisma Compute to Prisma Postgres
-metaDescription: Set a Prisma Postgres connection string as an environment variable on your Compute service and verify the connection.
+metaDescription: Set a Prisma Postgres connection string as an environment variable on your Compute app and verify the connection.
 ---
 
-A Compute service connects to [Prisma Postgres](/postgres) the same way it connects to any database: through a connection string in an environment variable. There is no separate linking step. You set the variable for the scope you want, redeploy, and your app reads it at runtime.
+An app on Compute connects to [Prisma Postgres](/postgres) the same way it connects to any database: through a connection string in an environment variable. There is no separate linking step. You set the variable for the scope you want, deploy, and your app reads it at runtime.
 
 ## Prerequisites
 
-- A deployed Compute service. If you don't have one yet, follow [Get started with `@prisma/cli`](/compute/getting-started).
+- A deployed app. If you don't have one yet, follow [Get started with `@prisma/cli`](/compute/getting-started).
 - A Prisma Postgres database. Create one in [Prisma Console](https://console.prisma.io) or from the terminal:
 
   ```npm
@@ -26,36 +25,36 @@ See [Connecting to your database](/postgres/database/connecting-to-your-database
 
 ## 2. Set the environment variable
 
-Add the connection string to the scope your service runs in. For a preview branch:
+Add the connection string to the scope your app runs in. For preview branches:
 
 ```npm
-npx prisma-cli project env add DATABASE_URL=postgres://... --role preview
+npx @prisma/cli@latest project env add DATABASE_URL=postgres://... --role preview
 ```
 
 For production:
 
 ```npm
-npx prisma-cli project env add DATABASE_URL=postgres://... --role production
+npx @prisma/cli@latest project env add DATABASE_URL=postgres://... --role production
 ```
 
 To override the value for one specific preview branch, use `--branch` instead of `--role`:
 
 ```npm
-npx prisma-cli project env add DATABASE_URL=postgres://... --branch feature/my-feature
+npx @prisma/cli@latest project env add DATABASE_URL=postgres://... --branch feature/search
 ```
 
 :::note
 
-Use a different database per branch if you want preview deployments isolated from production data. Set the production database's connection string with `--role production` and a separate database's connection string with `--role preview` or `--branch`.
+Use a different database per scope if you want preview deployments isolated from production data. Don't assume production data is copied into preview branches, and don't assume migrations run automatically on deploy — run them yourself against the right database.
 
 :::
 
-## 3. Redeploy
+## 3. Deploy
 
-Environment variable changes do not apply to running deployments. Redeploy your app:
+Variables are resolved at deploy time and baked into the deployment, so changing one doesn't affect deployments that already exist. Deploy to pick up the value:
 
 ```npm
-npx prisma-cli app deploy
+npx @prisma/cli@latest app deploy
 ```
 
 ## 4. Verify
@@ -63,25 +62,25 @@ npx prisma-cli app deploy
 Open the app and exercise a code path that queries the database:
 
 ```npm
-npx prisma-cli app open
+npx @prisma/cli@latest app open
 ```
 
 Then check the logs for connection errors:
 
 ```npm
-npx prisma-cli app logs
+npx @prisma/cli@latest app logs
 ```
 
-If your app starts and queries succeed, the service is connected.
+If your app starts and queries succeed, it's connected. Values are write-only, so verifying behavior is the way to confirm a variable is set; the platform never returns values back.
 
 ## Troubleshooting
 
-- **`DATABASE_URL` is undefined at runtime**: Confirm the variable exists in the right scope with `npx prisma-cli project env list --role preview` (or `--role production`), then redeploy.
-- **The new value did not apply**: Updating an environment variable requires a redeploy. Run `npx prisma-cli app deploy` after `project env update`.
-- **Authentication or connection errors in logs**: Copy a fresh connection string from Prisma Console and update the variable with `npx prisma-cli project env update DATABASE_URL=... --role preview`, then redeploy.
+- **`DATABASE_URL` is undefined at runtime**: Confirm the key exists in the right scope with `npx @prisma/cli@latest project env list --role preview` (or `--role production`), then redeploy.
+- **The new value did not apply**: Values resolve at deploy time. Run `npx @prisma/cli@latest app deploy` after `project env update`.
+- **Authentication or connection errors in logs**: Copy a fresh connection string from Prisma Console, update the variable with `npx @prisma/cli@latest project env update DATABASE_URL=... --role preview`, and redeploy.
 
 ## Next steps
 
-- [Environment variables](/compute/environment-variables) for scoping rules and limits
-- [Prisma Postgres documentation](/postgres)
+- [Environment variables](/compute/environment-variables) for scopes, write-only behavior, and limits
 - [Branching](/compute/branching) to pair preview branches with separate databases
+- [Prisma Postgres documentation](/postgres)

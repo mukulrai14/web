@@ -1,0 +1,79 @@
+---
+title: Limitations
+description: What the Prisma Compute beta does and doesn't do, in one place.
+url: /compute/limitations
+metaTitle: Limitations | Prisma Compute
+metaDescription: Known limits of the Prisma Compute beta across the CLI, branches, frameworks, environment variables, GitHub, domains, and logs.
+---
+
+Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta). Here's what the current surface does and doesn't do, in one place.
+
+## CLI
+
+- The package is `@prisma/cli`; the executable is `prisma-cli`.
+- The quickest way to run it is `npx @prisma/cli@latest <command>` (or `bunx`/`pnpm dlx`). Node.js 22.12 or newer is required for `npx` and `pnpm`.
+- Command groups: `auth`, `project`, `project env`, `git`, `branch`, `app`, and `version`.
+- No `init`, `schema`, `database`, `migrate`, or product-branded `compute` namespace.
+- Resolution never reads or writes committed config files. `.prisma/local.json` is a gitignored local pin; `PRISMA_PROJECT_ID` / `PRISMA_APP_ID` override it for CI.
+
+## Projects and branches
+
+- Project setup is explicit: `--yes` won't create or choose a project for you.
+- The first branch in a project is production; the rest are preview by default.
+- `branch list` / `branch show` inspect branches; they don't create remote state.
+- GitHub branch deletion can tear down non-production, non-default branches. Production and default branches are left alone.
+
+## Frameworks and runtimes
+
+- `app deploy --framework`: `nextjs`, `hono`, `tanstack-start`, `bun`.
+- `app build --build-type`: `auto`, `bun`, `nextjs`, `nuxt`, `astro`, `tanstack-start`.
+- `app run --build-type`: `auto`, `bun`, `nextjs`.
+- Use `--entry` for Bun, or whenever detection needs a hand.
+- Something missing? [Request framework support](https://prisma.io/compute/framework-request).
+
+## Environment variables
+
+- Values are write-only: never returned after they're saved, by any surface.
+- No command to pull values into a local `.env`.
+- `project env list` returns keys and metadata only.
+- Values resolve at deploy time; changing one doesn't mutate existing deployments or trigger a redeploy.
+- Production variables can't be branch-scoped.
+- Keys must match `[A-Z_][A-Z0-9_]*`; values are non-empty, up to 8 KB.
+
+## GitHub
+
+- GitHub is the only supported provider.
+- A project connects to one repository.
+- Auto-deploy is single-app; use CI with a service token for monorepos.
+- The webhook path is branch- and push-driven. No PR comments or PR status automation.
+
+## Domains
+
+- Production-only, CNAME-based.
+- Up to 3 per app.
+- No workspace-wide domain list in the CLI.
+
+## Logs
+
+- `app logs` streams the live deployment or a specific one.
+- Returns `FEATURE_UNAVAILABLE` when the platform can't serve logs for the resolved deployment.
+- Logs stream in time-bounded segments; direct API clients should expect to reconnect.
+
+## Runtime
+
+- This release focuses on HTTP apps. WebSockets, cron or background jobs, a persistent filesystem, and edge runtimes are not part of it.
+- No multi-region deployments.
+- Not yet recommended for mission-critical or heavy production workloads.
+- Exact limits, pricing, retention policies, and runtime guardrails can still change before general availability.
+
+## Databases and migrations
+
+- These docs cover app deploy and runtime config only: not database creation, schema migrations, or data cloning.
+- Don't assume production data is copied into preview branches.
+- Don't assume production migrations run automatically on deploy.
+- Pass database URLs and other runtime config through [environment variables](/compute/environment-variables).
+
+## Next steps
+
+- [FAQ](/compute/faq)
+- [Get started with `@prisma/cli`](/compute/getting-started)

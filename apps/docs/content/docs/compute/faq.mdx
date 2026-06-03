@@ -1,64 +1,116 @@
 ---
 title: FAQ
-description: Frequently asked questions and current limitations of Prisma Compute.
+description: Quick answers about Prisma Compute, for people and agents.
 url: /compute/faq
-badge: early-access
 metaTitle: FAQ | Prisma Compute
-metaDescription: Answers to common questions about Prisma Compute, plus known limitations during early access.
+metaDescription: Answers to common questions about Prisma Compute, the @prisma/cli beta package, branches, environment variables, and domains.
 ---
 
-## Frequently asked questions
+## Which package do I install?
 
-### What is Prisma Compute?
+[`@prisma/cli`](/compute/getting-started). The executable is `prisma-cli`. The quickest way to run it without installing is:
 
-Prisma Compute is serverless TypeScript app hosting in the Prisma platform. It is designed for low-latency access to [Prisma Postgres](/postgres) and uses a service-and-version deployment model: every deploy creates a new version, which you can promote to production or roll back.
+```npm
+npx @prisma/cli@latest app deploy
+```
 
-### Do I need Prisma Postgres to use Compute?
+## Why `prisma-cli` and not `prisma`?
 
-No. Compute does not require Prisma Postgres. Your app connects to a database through a connection string you set as an [environment variable](/compute/environment-variables), such as `DATABASE_URL`. Compute and Prisma Postgres are designed to work well together, and running both in the Prisma platform keeps your app close to your database.
+So it doesn't shadow the `prisma` binary from [Prisma ORM](/orm), which many projects already have installed. Want a shorter command? Add your own package script; see [Get started with `@prisma/cli`](/compute/getting-started#a-shorter-command).
 
-### Which frameworks can I deploy?
+## What's the difference between a project and an app?
 
-`app deploy` supports **Next.js**, **Hono**, **TanStack Start**, and plain **Bun** HTTP servers. Next.js apps must set `output: "standalone"` in their Next.js config.
+A project groups the resources for one product or codebase. An app is a single HTTP service inside a project's branch. The full hierarchy:
 
-### Which regions does Compute run in?
+```text
+workspace → project → branch → { apps, databases }
+```
 
-Each service runs in a single region, chosen when the service is created. If you don't specify a region, the default is `us-east-1`. The region cannot be changed after creation.
+## What's a branch?
 
-{/* TODO: Confirm and list the full set of supported regions (defined in the platform's regions helper) before publishing. */}
+An isolated infrastructure boundary. It usually follows a Git branch name, but it's a real Prisma resource that owns the apps and databases for one line of work. See [Branching](/compute/branching).
 
-### How do preview deployments work?
+## Does `git connect` deploy my app?
 
-Deployments from preview branches get their own infrastructure, separate from production. Preview branches use preview [environment variables](/compute/environment-variables) with optional per-branch overrides. See [Branching](/compute/branching).
+No. It links a project to a GitHub repo and enables automation for future branch and push events. To deploy now, run `app deploy`. See [GitHub integration](/compute/github).
 
-### How do I deploy to production?
+## What does a GitHub push do?
 
-Promote a deployment with `npx prisma-cli app promote <deployment>`, which rebuilds it with production environment variables. Once an app has a live production deployment, new production deploys require the `--prod` flag as confirmation.
+For a connected project, it creates or resolves the matching branch and builds the pushed commit.
 
-### Can I use the Prisma ORM CLI (`prisma`) to deploy to Compute?
+## Why can't I read my environment variable values back?
 
-No. Compute is managed through the separate [`@prisma/cli`](/compute/getting-started) beta package, which exposes the `prisma-cli` binary so the two CLIs can coexist in one project.
+They're encrypted and never returned, by any surface, in beta. `project env list` shows keys and metadata only. Keep your own copy in a secret manager. See [Environment variables](/compute/environment-variables#values-are-write-only).
 
-{/* TODO: Pricing for Prisma Compute is not documented in the sources available to this page. Add a pricing question once pricing is public. */}
+## How do I rotate a secret?
 
-## Limitations
+Update it, then redeploy:
 
-Prisma Compute is in early access. The following limitations are current as of this writing:
+```npm
+npx @prisma/cli@latest project env update DATABASE_URL=postgresql://new --role production
+npx @prisma/cli@latest app deploy --prod
+```
 
-- **Workspace access**: Compute access is enabled per workspace during early access. {/* TODO: Confirm how users request access. */}
-- **One region per service**: A service is pinned to a single region at creation and cannot move.
-- **One production branch per project**, and custom domains can only be added to the production branch.
-- **Production environment variables cannot be branch-scoped.** Branch overrides exist for preview branches only.
-- **Branch names are immutable** after creation.
-- **Environment variables**: keys must match `[A-Z_][A-Z0-9_]*` (up to 256 characters); values are limited to 8 KB and are never displayed after creation.
-- **Service names** are limited to 256 characters; **custom domain hostnames** to 253 characters.
-- **No scaffolding command**: the CLI deploys an existing app; it does not generate one. Create your app with your framework's tooling first.
-- **CLI requirements**: Node.js 22.12.0 or later. During the beta, the binary is `prisma-cli`, not `prisma`.
-- **No dry-run mode** for deploys.
+## Does changing a variable redeploy my app?
 
-{/* TODO: Runtime resource limits (memory, CPU, request timeouts, request body size) and quotas on the number of services per project were not found in the platform codebase. Confirm with the Compute team and document them here. */}
+No. Variables resolve at deploy time. Redeploy to pick up a new value.
 
-## Next steps
+## How do I deploy from CI?
 
-- [Get started with `@prisma/cli`](/compute/getting-started)
-- [Deploy your first Compute service](/prisma-compute/deploy)
+Use a service token and explicit targets:
+
+```bash
+PRISMA_SERVICE_TOKEN=... npx @prisma/cli@latest app deploy \
+  --project my-app \
+  --app web \
+  --branch "$GITHUB_HEAD_REF" \
+  --json \
+  --no-interactive
+```
+
+## Why did my production deploy fail with `PROD_DEPLOY_REQUIRES_FLAG`?
+
+Your first deploy is promoted to production automatically. After that, deploying to the production branch is explicit; pass `--prod`.
+
+## Why `PROJECT_SETUP_REQUIRED`?
+
+The CLI couldn't resolve a project. Run `project create` or `project link`, or pass `--project` / `--create-project`.
+
+## Why `APP_AMBIGUOUS`?
+
+More than one app matched. Pass `--app <name>`.
+
+## How do I add a custom domain?
+
+Promote a production app, then:
+
+```npm
+npx @prisma/cli@latest app domain add shop.acme.com --app web
+npx @prisma/cli@latest app domain wait shop.acme.com --app web
+```
+
+Add the CNAME record the command returns at your DNS provider. See [Add a domain](/compute/domains).
+
+## Can preview branches have custom domains?
+
+Not in beta; custom domains are production-only.
+
+## Does Prisma clone my production database for previews?
+
+Don't assume so. These docs cover app deployment and runtime config only. Pass database URLs through [environment variables](/compute/environment-variables) and manage data and migrations yourself.
+
+## Do I need Prisma Postgres to use Compute?
+
+No. Your app connects to a database through a connection string you set as an environment variable, such as `DATABASE_URL`. Compute and [Prisma Postgres](/postgres) are designed to work well together, and running both keeps your app next to your database.
+
+## Can I use the Console instead?
+
+Yes. Use it to inspect projects, branches, apps, deployments, integrations, env var names, and domain status. Keep scripted setup in the CLI.
+
+## What does Public Beta mean for Compute?
+
+The core model and documented happy paths are stable enough for evaluation, staging, internal tools, and low-risk apps; details like limits, pricing, and some CLI, API, and Console behavior can still change before general availability. See [Public Beta](/console/more/feature-maturity#public-beta) on the feature maturity page.
+
+## What are the current limits?
+
+See [Limitations](/compute/limitations) for the full list of what the beta does and doesn't do.

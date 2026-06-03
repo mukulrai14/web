@@ -1,61 +1,73 @@
 ---
 title: Prisma Compute
-description: 'Deploy and run serverless TypeScript apps next to your Prisma Postgres database.'
+description: 'Run your app next to your Prisma Postgres database, with an isolated preview for every branch.'
 url: /compute
-badge: early-access
+badge: beta
 metaTitle: Overview | Prisma Compute
-metaDescription: Learn what Prisma Compute is, when to use it, and how to deploy your first service.
+metaDescription: Learn what Prisma Compute is, how its resource model works, and how to deploy your first app.
 ---
 
-Prisma Compute is serverless TypeScript app hosting in the Prisma platform. It is designed for low-latency access to [Prisma Postgres](/postgres) and gives you isolated infrastructure for every branch of your project.
-Use this page to understand what Compute does and pick a starting point.
+Prisma Compute runs your app next to your [Prisma Postgres](/postgres) database. Push a branch and you get a live preview URL, backed by its own isolated app and resources. Merge to production when it's ready.
 
-:::info[Early Access]
+:::info[Public Beta]
 
-Prisma Compute is in early access, and the [`@prisma/cli`](/compute/getting-started) package you use to deploy is in beta. Commands and workflows may change.
-
-{/* TODO: Compute access is gated per workspace in the platform (experimental feature policy). Confirm how users request or receive access before publishing. */}
+Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta) and is CLI-first: you deploy and manage apps with the [`@prisma/cli`](/compute/getting-started) beta package. The [Prisma Console](https://console.prisma.io) is there when you'd rather see your resources than type a command.
 
 :::
 
-## What's included
+## The model
 
-- **Service-and-version deployments** — Every deploy creates a new version of your service. You can [list deployments, promote a deployment to production, or roll back](/compute/getting-started#manage-deployments) to a previous one.
-- **Branch-based workflows** — Your project's first branch is the production branch. Other branches are preview branches with their own deployments and environment variable overrides. See [Branching](/compute/branching).
-- **Environment variables** — Encrypted configuration scoped to production or preview, with per-branch overrides. See [Environment variables](/compute/environment-variables).
-- **Custom domains** — Point your own hostname at a service. TLS certificates are provisioned for you. See [Add a domain](/compute/domains).
-- **GitHub integration** — Connect a repository and deploy on push. See [GitHub](/compute/github).
-- **Logs** — Stream logs for the current deployment with `prisma-cli app logs`.
+Everything in Compute hangs off four resources:
 
-## When to use Compute
+```text
+workspace → project → branch → { apps, databases }
+```
 
-Compute is a good fit when you:
+- A **workspace** owns access, billing, and integrations.
+- A **project** groups one product or codebase.
+- A **branch** is an isolated infrastructure boundary for one line of work. A platform branch maps to your Git branch, but it's a real resource that owns the apps and databases for that work.
+- An **app** is an HTTP service. Each built version of an app is a **deployment**.
 
-- Build TypeScript apps with **Next.js**, **Hono**, **TanStack Start**, or a **Bun** HTTP server.
-- Use Prisma Postgres and want your app to run close to your database.
-- Want preview deployments per branch without setting up separate hosting infrastructure.
+One branch is your production branch (usually `main`). Every other branch is a preview: its own app deployments and resources, with zero effect on production.
 
-If you only need a managed database, start with [Prisma Postgres](/postgres) instead.
+## Your first deploy
+
+From your code to a live URL:
+
+```npm
+cd my-app
+npx @prisma/cli@latest app deploy
+```
+
+`app deploy` handles the rest: it signs you in if you're not already, sets up the project, builds your app, and prints the live URL. [Get started with `@prisma/cli`](/compute/getting-started) walks through it properly, including frameworks, linking an existing project, and deploying to production.
+
+## CLI and Console
+
+Use the **CLI** for anything you want to repeat: local development, CI, and agent workflows. Every command supports `--json`.
+
+Use the **Console** when you want to look rather than type: inspect projects, branches, apps, and deployments, install workspace integrations, or check domain status.
 
 ## Getting started
 
 <Cards>
   <Card href="/compute/getting-started" title="Get started with @prisma/cli">
-    Install the CLI, log in, and deploy your app from the terminal.
+    Your first deploy, end to end: frameworks, project linking, production, and CI.
   </Card>
-  <Card href="/prisma-compute/deploy" title="Deploy your first Compute service">
-    A short end-to-end walkthrough from app directory to live URL.
+  <Card href="/prisma-compute/deploy" title="Deploy your first app">
+    A short walkthrough from app directory to live URL.
   </Card>
   <Card href="/prisma-compute/connect-to-prisma-postgres" title="Connect to Prisma Postgres">
-    Give your service a database by setting a connection string.
+    Give your app a database by setting a connection string.
   </Card>
 </Cards>
 
-## Manage
+## What to read next
 
-- [Branching](/compute/branching)
-- [Connect to a Prisma Postgres database](/compute/database/connect-to-prisma-postgres)
-- [Environment variables](/compute/environment-variables)
-- [Add a domain](/compute/domains)
-- [GitHub integration](/compute/github)
-- [FAQ and limitations](/compute/faq)
+- [Branching](/compute/branching) — how branches isolate work and map to Git.
+- [Deployments](/compute/deployments) — build, deploy, logs, promote, roll back.
+- [Connect to a Prisma Postgres database](/compute/database/connect-to-prisma-postgres) — wire an app to a database.
+- [Environment variables](/compute/environment-variables) — production, preview, and per-branch overrides.
+- [GitHub integration](/compute/github) — connect a repo and deploy on push.
+- [Add a domain](/compute/domains) — point a custom domain at production.
+- [Limitations](/compute/limitations) — what the beta does and doesn't do.
+- [FAQ](/compute/faq) — quick answers for people and agents.

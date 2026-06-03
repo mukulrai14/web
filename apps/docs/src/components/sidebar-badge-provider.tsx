@@ -4,7 +4,7 @@ import type * as PageTree from "fumadocs-core/page-tree";
 import { SidebarItem } from "@/components/layout/notebook/sidebar";
 import { Badge } from "@prisma/eclipse";
 
-export type BadgeType = "early-access" | "deprecated" | "preview";
+export type BadgeType = "early-access" | "beta" | "deprecated" | "preview";
 
 const BadgeContext = createContext<Record<string, BadgeType>>({});
 
@@ -20,12 +20,14 @@ export function BadgeProvider({
 
 const BADGE_LABEL: Record<BadgeType, string> = {
   "early-access": "Early Access",
+  beta: "Beta",
   preview: "Preview",
   deprecated: "Deprecated",
 };
 
 const BADGE_COLOR: Record<BadgeType, "ppg" | "warning" | "neutral"> = {
   "early-access": "ppg",
+  beta: "neutral",
   preview: "neutral",
   deprecated: "warning",
 };

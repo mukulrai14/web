@@ -1,70 +1,71 @@
 ---
 title: Branching
-description: Use production and preview branches to give every line of development its own deployments and configuration.
+description: Branches are isolated infrastructure boundaries that map to your Git branches, so preview work never touches production.
 url: /compute/branching
-badge: early-access
 metaTitle: Branching | Prisma Compute
-metaDescription: Learn how production and preview branches work in Prisma Compute, and how to create, view, and manage them.
+metaDescription: How production and preview branches work in Prisma Compute, how the CLI picks a branch, and how branches are created and cleaned up.
 ---
 
-A branch in Prisma Compute groups the resources for one line of development: your compute services, their deployments, and environment variable overrides. Branches follow your Git branch names, so the platform state matches the code you are working on.
+A branch is an isolated infrastructure boundary. Every branch in a project gets its own apps, databases, and deployments, so work on a preview never touches production.
 
-## Production and preview branches
+A platform branch maps to a Git branch, but it's more than a name: it's a real resource that owns the infrastructure for one line of work.
 
-Every project has exactly one **production branch** and any number of **preview branches**:
-
-- The first branch in a project becomes the production branch and is set as the default automatically.
-- Branches created after that are preview branches.
-- Production branches serve [production environment variables](/compute/environment-variables) and can have [custom domains](/compute/domains).
-- Preview branches serve preview environment variables, plus any overrides scoped to that specific branch.
-
-## When to use branches
-
-Use a preview branch when you want to test changes against isolated infrastructure before they reach production:
-
-- Feature work that needs its own deployment and configuration.
-- Pull request previews, when combined with the [GitHub integration](/compute/github).
-- Trying configuration changes without touching production environment variables.
-
-## Create a branch
-
-Deploy from a Git branch and the deployment targets the branch with the matching name. You can also target a branch explicitly:
-
-```npm
-npx prisma-cli app deploy --branch feature/my-feature
+```text
+workspace → project → branch → { apps, databases }
 ```
 
-{/* TODO: Confirm whether deploying to a branch name that does not exist yet creates the platform branch automatically, or whether the branch must exist first (for example, created via the GitHub integration or the Management API). The CLI resolves the branch from the local Git branch with a fallback to `main`, but branch auto-creation is not confirmed in the CLI source. */}
+## Production and preview
 
-If your project is [connected to a GitHub repository](/compute/github), pushes to a repository branch create deployments for the platform branch with the same name.
+Every branch has a role.
 
-## View branches
+- The **first branch** in a project is your production branch, usually `main`. It's protected and durable.
+- **Every other branch** is a preview by default: disposable infrastructure for testing changes before they merge.
 
-List the branches for the project resolved from your current directory:
+Production deploys get a guardrail; previews don't. See [Deployments](/compute/deployments).
+
+## How the CLI picks a branch
+
+When you deploy, the CLI resolves the branch in this order:
+
+1. `--branch <name>`, if you pass it.
+2. Your active Git branch.
+3. `main`.
+
+So inside a Git repo, deploying from `feature/search` targets the `feature/search` branch automatically. To be explicit:
 
 ```npm
-npx prisma-cli branch list
+npx @prisma/cli@latest app deploy --branch feature/search
 ```
 
-## Manage branches
+Inspect platform branches:
 
-- **Branch names are immutable.** A branch's Git name cannot be changed after creation. Create a new branch instead.
-- **Default branch.** A project has at most one default branch. The default flag can be changed through the [Management API](/management-api).
-- **Deleting branches.** A branch that still has compute services attached cannot be deleted. Remove the app from the branch first:
+```npm
+npx @prisma/cli@latest branch list
+npx @prisma/cli@latest branch show
+```
 
-  ```npm
-  npx prisma-cli app remove
-  ```
+`branch use` switches your local branch context without creating anything remote:
 
-  {/* TODO: There is no `branch delete` CLI command in the @prisma/cli beta. Branch deletion exists at the platform level (soft delete; deleted branch names can be reused). Confirm and document the supported user-facing way to delete a branch (Console or Management API) before publishing. */}
+```npm
+npx @prisma/cli@latest branch use feature/search
+```
 
-## Limitations
+Listing a branch doesn't expand the apps and databases inside it. Use the `app` commands to inspect those.
 
-- One production branch per project.
-- Production environment variables apply project-wide and cannot be scoped to a single branch. Branch-scoped overrides are available for preview branches only.
-- Custom domains can only be added to the production branch.
+## Creating branches
+
+You rarely create branches by hand. They appear when work needs them:
+
+- **On deploy** — `app deploy --branch feature/search` creates the branch if it doesn't exist.
+- **From GitHub** — when a repo is connected, branch and push events create or update the matching platform branch automatically. See [GitHub integration](/compute/github).
+
+Connecting GitHub doesn't create branches retroactively; it wires up automation for future events.
+
+## Cleaning up
+
+When GitHub is connected, deleting a Git branch tears down the matching platform branch, as long as it isn't your production or default branch. Those are always left alone.
 
 ## Next steps
 
-- [Manage environment variables per branch](/compute/environment-variables)
-- [Deploy on push with GitHub](/compute/github)
+- [Environment variables](/compute/environment-variables) — preview values and per-branch overrides.
+- [GitHub integration](/compute/github) — keep platform branches in sync with your repo.
