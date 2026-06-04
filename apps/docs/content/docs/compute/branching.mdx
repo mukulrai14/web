@@ -10,18 +10,16 @@ A branch is an isolated environment for one line of work. Every branch in a proj
 
 A platform branch usually matches a Git branch name, but in Prisma it is a real resource that owns its own apps and databases:
 
-```text
-workspace → project → branch → { apps, databases }
-```
+<ConceptAnimation name="compute-model" />
 
 ## Production and preview
 
 Every branch has a role:
 
-- The **first branch** in a project is your production branch, usually `main`. It's protected and durable.
-- **Every other branch** is a preview by default: disposable resources for testing changes before they merge.
+- The **first branch** in a project is your production branch, usually `main`. It's protected and durable: deploys to it ask for confirmation, and automated cleanup never touches it.
+- **Every other branch** is a preview by default: disposable resources for testing changes before they merge. Preview deploys never ask for confirmation.
 
-Production deploys ask for confirmation; previews don't. To learn more, see the [Deployments docs](/compute/deployments).
+To learn more, see the [Deployments docs](/compute/deployments).
 
 ## How the CLI picks a branch
 
@@ -44,7 +42,7 @@ npx @prisma/cli@latest branch list
 npx @prisma/cli@latest branch show
 ```
 
-`branch use` switches your local branch context without creating anything remote:
+`branch use` changes which branch your later commands target, without creating anything remote:
 
 ```npm
 npx @prisma/cli@latest branch use feature/search

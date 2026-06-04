@@ -166,7 +166,17 @@ In `--json` mode, every command returns an envelope you can branch on:
 - `error.code`, `error.summary`, `error.why`, `error.fix`: what failed and what to do about it.
 - `nextSteps` and `nextActions`: exact follow-up commands, useful for agents.
 
-Branch on `error.code`, not the message text.
+Branch on `error.code`, not the message text: codes are a stable contract, while message wording can change between releases.
+
+## Agent skills
+
+The CLI ships agent skills for guided deploys. Install them into a repo with:
+
+```bash
+pnpm dlx skills@latest add prisma/prisma-cli/skills --all
+```
+
+This adds the `prisma-cli`, `prisma-cli-deploy-nextjs`, and `prisma-cli-feedback` skills to `.agents/skills/`. To learn more, see [Agent skills](/compute/getting-started#agent-skills) in the getting started guide.
 
 ## Environment variables
 
@@ -238,5 +248,5 @@ The common codes, grouped by area:
 ## Related
 
 - [Get started with `@prisma/cli`](/compute/getting-started)
-- [Limitations](/compute/limitations)
+- [Known limitations](/compute/limitations)
 - [Prisma ORM CLI reference](/cli) for the `prisma` binary

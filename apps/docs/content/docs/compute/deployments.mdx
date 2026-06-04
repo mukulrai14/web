@@ -84,9 +84,9 @@ Promote an earlier deployment to production:
 npx @prisma/cli@latest app promote dep_123 --app web
 ```
 
-Promotion rebuilds with your production environment variables.
+Promotion rebuilds the deployment with your production environment variables. The rebuild is necessary because values are baked in at deploy time: a preview build still carries preview config, so it can't serve production as-is.
 
-Roll back to the previous deployment, or a specific one, without rebuilding:
+Roll back to the previous deployment, or a specific one. Unlike `promote`, rollback reuses an existing build, so there is no rebuild step between you and a known-good state:
 
 ```npm
 npx @prisma/cli@latest app rollback --app web

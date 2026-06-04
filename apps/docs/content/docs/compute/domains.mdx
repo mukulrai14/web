@@ -63,7 +63,7 @@ A domain moves through these states:
 npx @prisma/cli@latest app domain remove shop.acme.com --app web
 ```
 
-Removing detaches the domain from the app; pass `--yes` to skip the confirmation prompt. Delete the DNS record at your provider once you no longer need it.
+Removing detaches the domain from the app; pass `--yes` to skip the confirmation prompt. Prisma can't touch your DNS, so the CNAME record stays behind: delete it at your provider once you no longer need it.
 
 ## Limits
 
@@ -75,4 +75,4 @@ Removing detaches the domain from the app; pass `--yes` to skip the confirmation
 ## Next steps
 
 - [Deployments](/compute/deployments): promote a deployment to production first.
-- [Limitations](/compute/limitations): everything the beta does and doesn't do.
+- [Known limitations](/compute/limitations): what the beta can and can't do.

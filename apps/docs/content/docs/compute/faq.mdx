@@ -1,6 +1,6 @@
 ---
 title: FAQ
-description: Quick answers about Prisma Compute, for people and agents.
+description: Quick answers to common questions about Prisma Compute.
 url: /compute/faq
 metaTitle: FAQ | Prisma Compute
 metaDescription: Answers to common questions about Prisma Compute, the @prisma/cli beta package, branches, environment variables, and domains.
@@ -22,9 +22,7 @@ So it doesn't shadow the `prisma` binary from [Prisma ORM](/orm), which many pro
 
 A project groups the resources for one product or codebase. An app is a single HTTP service inside a project's branch. The full hierarchy:
 
-```text
-workspace → project → branch → { apps, databases }
-```
+<ConceptAnimation name="compute-model" />
 
 ## What's a branch?
 
@@ -69,6 +67,8 @@ PRISMA_SERVICE_TOKEN=... npx @prisma/cli@latest app deploy \
   --json \
   --no-interactive
 ```
+
+Passing every target explicitly keeps the run self-contained; `--json` makes the result parseable, and `--no-interactive` turns any would-be prompt into a structured error.
 
 ## Why did my production deploy fail with `CONFIRMATION_REQUIRED`?
 
@@ -115,4 +115,4 @@ The core model and documented happy paths are stable enough for evaluation, stag
 
 ## What are the current limits?
 
-See [Limitations](/compute/limitations) for the full list of what the beta does and doesn't do.
+See [Known limitations](/compute/limitations) for what the beta can and can't do.

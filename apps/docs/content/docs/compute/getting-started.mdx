@@ -161,7 +161,25 @@ Pass targets explicitly so nothing depends on a prompt. `--json` gives you struc
 npx @prisma/cli@latest app deploy --create-project my-app --app web
 ```
 
-In `--json` mode, every result is an envelope with an `ok` flag. On failure, `error.code` identifies the problem, `error.fix` says what to do about it, and `nextSteps` lists the exact commands to run next. Branch on the error code rather than the message. The common ones:
+### Agent skills
+
+If a coding agent does your deploying, install the Prisma CLI agent skills into your repo:
+
+```bash
+pnpm dlx skills@latest add prisma/prisma-cli/skills --all
+```
+
+This installs three skills into `.agents/skills/`, where supported agents pick them up automatically:
+
+- `prisma-cli`: routes broad deploy prompts to the right workflow.
+- `prisma-cli-deploy-nextjs`: a guided Next.js deploy, from auth check to live URL.
+- `prisma-cli-feedback`: files bugs and feedback with the Prisma team.
+
+To match the skills to a specific CLI version, add `#cli-v<version>` to the source, for example `prisma/prisma-cli/skills#cli-v3.0.0-beta.3`, so the instructions your agent follows match the CLI version your project actually runs.
+
+### Structured output
+
+In `--json` mode, every result is an envelope with an `ok` flag. On failure, `error.code` identifies the problem, `error.fix` says what to do about it, and `nextSteps` lists the exact commands to run next. Branch on the error code rather than the message: codes are a stable contract, while message wording can change between releases. The common ones:
 
 | Code                     | Meaning                                                              |
 | ------------------------ | --------------------------------------------------------------------- |

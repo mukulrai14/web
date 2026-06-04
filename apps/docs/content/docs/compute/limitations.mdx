@@ -1,18 +1,18 @@
 ---
-title: Limitations
-description: What the Prisma Compute beta does and doesn't do, in one place.
+title: Known limitations
+description: What the Prisma Compute beta can and can't do.
 url: /compute/limitations
-metaTitle: Limitations | Prisma Compute
+metaTitle: Known limitations | Prisma Compute
 metaDescription: Known limits of the Prisma Compute beta across the CLI, branches, frameworks, environment variables, GitHub, domains, and logs.
 ---
 
-Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta). This page lists what the current surface does and doesn't do, in one place.
+Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta). This page lists what the beta can and can't do.
 
 ## CLI
 
 - The package is `@prisma/cli`; the executable is `prisma-cli`. The quickest way to run it is `npx @prisma/cli@latest <command>` (or `bunx`/`pnpm dlx`), with Node.js 22.12 or newer for `npx` and `pnpm`.
 - The command groups are `auth`, `project`, `project env`, `git`, `branch`, `app`, and `version`. There is no `init`, `schema`, `database`, or `migrate` command, and no product-branded `compute` namespace.
-- Resolution never reads or writes committed config files. `.prisma/local.json` is a gitignored local pin, and `PRISMA_PROJECT_ID` / `PRISMA_APP_ID` override it for CI.
+- Project and app resolution never reads or writes committed config files. `.prisma/local.json` is a gitignored local pin, and `PRISMA_PROJECT_ID` / `PRISMA_APP_ID` override it for CI.
 
 ## Projects and branches
 
@@ -71,5 +71,5 @@ Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta). 
 
 ## Next steps
 
-- [FAQ](/compute/faq): quick answers for people and agents.
-- [Get started with `@prisma/cli`](/compute/getting-started): your first deploy, end to end.
+- [FAQ](/compute/faq): quick answers to common questions.
+- [Get started with `@prisma/cli`](/compute/getting-started): your first deploy.

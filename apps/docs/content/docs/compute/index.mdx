@@ -9,7 +9,7 @@ metaDescription: Learn what Prisma Compute is, how its resource model works, and
 
 Prisma Compute runs your app next to your [Prisma Postgres](/postgres) database. Push a branch and you get a live preview URL, backed by its own isolated app and resources. Merge to production when it's ready.
 
-Compute is the app-hosting layer of the Prisma platform. Model your data with [Prisma ORM](/orm), store it in [Prisma Postgres](/postgres), and run your app on Compute: one platform for schema, database, and hosting instead of separate vendors to stitch together. Running app and database side by side keeps queries fast.
+Compute is serverless TypeScript app hosting, designed for low-latency access to Prisma Postgres. Model your data with [Prisma ORM](/orm), store it in [Prisma Postgres](/postgres), and run your app on Compute: one platform for schema, database, and hosting instead of separate vendors to stitch together. Running app and database side by side keeps app-to-database latency low.
 
 :::info[Public Beta]
 
@@ -21,9 +21,7 @@ Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta) a
 
 Compute organizes everything into four resources:
 
-```text
-workspace → project → branch → { apps, databases }
-```
+<ConceptAnimation name="compute-model" />
 
 - A **workspace** owns access, billing, and integrations.
 - A **project** groups one product or codebase.
@@ -45,7 +43,7 @@ npx @prisma/cli@latest app deploy
 
 ## CLI and Console
 
-Use the **CLI** for anything you want to repeat: local development, CI, and agent workflows. Every command supports `--json`.
+Use the **CLI** for anything you want to repeat: local development, CI, and agent workflows. Every command supports a `--json` flag that switches its output to machine-readable JSON, so scripts and agents can parse results instead of scraping terminal text.
 
 Use the **Console** when you want to look rather than type: inspect projects, branches, apps, and deployments, install workspace integrations, or check domain status.
 
@@ -53,7 +51,7 @@ Use the **Console** when you want to look rather than type: inspect projects, br
 
 <Cards>
   <Card href="/compute/getting-started" title="Get started with @prisma/cli">
-    Your first deploy, end to end: frameworks, project linking, production, and CI.
+    Your first deploy: frameworks, project linking, production, and CI.
   </Card>
   <Card href="/prisma-compute/deploy" title="Deploy your first app">
     A short walkthrough from app directory to live URL.
@@ -71,5 +69,5 @@ Use the **Console** when you want to look rather than type: inspect projects, br
 - [Environment variables](/compute/environment-variables): production, preview, and per-branch overrides.
 - [GitHub integration](/compute/github): connect a repo and deploy on push.
 - [Domains](/compute/domains): point a custom domain at production.
-- [Limitations](/compute/limitations): what the beta does and doesn't do.
-- [FAQ](/compute/faq): quick answers for people and agents.
+- [Known limitations](/compute/limitations): what the beta can and can't do.
+- [FAQ](/compute/faq): quick answers to common questions.
