@@ -199,7 +199,7 @@ export const metadata = createPageMetadata({
 
 const homeStructuredData = createCollectionPageStructuredData({
   path: "/",
-  name: "A Database Platform for TypeScript Developers",
+  name: "One Platform for Your TypeScript App",
   description: SITE_HOME_DESCRIPTION,
   items: [
     {
@@ -253,15 +253,14 @@ export default function SiteHome() {
         <div className="content relative z-2 flex flex-col gap-8">
           <div className="flex flex-col gap-4 items-center text-center">
             <h1 className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto">
-              A Database Platform for
+              One Platform for
               <br />
-              TypeScript Developers
+              Your TypeScript App
             </h1>
           </div>
           <p className="text-center text-foreground-neutral-weak max-w-4xl mx-auto text-xl">
             Most TypeScript backends are stitched together from separate database, ORM, and hosting
-            tools. Prisma brings Prisma ORM, Prisma Postgres, and Prisma Compute into one platform
-            that takes you from schema to production.
+            tools. Prisma brings all three into one platform, from schema to production.
           </p>
           <div className="flex flex-col gap-6 items-center justify-center">
             <Button asChild variant="ppg" size="3xl" className="font-sans-display! font-[650]">

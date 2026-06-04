@@ -164,13 +164,13 @@ const LINES: TerminalLine[] = [
   {
     type: "service",
     name: "api",
-    value: "https://api-h8e2.prisma.run",
+    value: "https://api-h8e2.iad1.prisma.build",
     isLink: true,
   },
   {
     type: "service",
     name: "agent",
-    value: "https://agent-h8e2.prisma.run",
+    value: "https://agent-h8e2.iad1.prisma.build",
     isLink: true,
   },
   {
@@ -399,7 +399,7 @@ const DEPLOY_STEPS: Array<{
     delay: 600,
     stage: "table",
   },
-  { type: "url", text: "api → https://your-app.prisma.run", delay: 600 },
+  { type: "url", text: "api → https://your-app.iad1.prisma.build", delay: 600 },
   {
     type: "done",
     text: "deployed in 4.8s · app is live",
@@ -522,7 +522,9 @@ function WbDeployReplay() {
                   {step.type === "url" ? (
                     <>
                       api {"      "}→{" "}
-                      <span className="text-foreground-ppg">https://your-app.prisma.run</span>
+                      <span className="text-foreground-ppg">
+                        https://your-app.iad1.prisma.build
+                      </span>
                     </>
                   ) : (
                     step.text
@@ -552,7 +554,7 @@ function WbDeployReplay() {
               <>
                 <i className="fa-regular fa-lock text-[8px] text-foreground-neutral-weaker" />
                 <span className="font-mono text-[9px] text-foreground-neutral">
-                  your-app.prisma.run
+                  your-app.iad1.prisma.build
                 </span>
                 {has("live") && (
                   <span className="ml-auto flex items-center gap-0.5 font-mono text-[8px] text-foreground-ppg">
@@ -677,7 +679,7 @@ function WbDeployReplay() {
             "rendering data"
           ) : (
             <>
-              <span className="text-foreground-ppg">● </span>live · your-app.prisma.run
+              <span className="text-foreground-ppg">● </span>live · your-app.iad1.prisma.build
             </>
           )}
         </div>
