@@ -194,7 +194,7 @@ function NavigationMenuContent({
     <NavigationMenuPrimitive.Content
       data-slot="navigation-menu-content"
       className={cn(
-        "data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-open:animate-in group-data-[viewport=false]/navigation-menu:data-closed:animate-out group-data-[viewport=false]/navigation-menu:data-closed:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-open:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-open:fade-in-0 group-data-[viewport=false]/navigation-menu:data-closed:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-2 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-none group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300 data-ending-style:data-activation-direction=left:translate-x-[50%] data-ending-style:data-activation-direction=right:translate-x-[-50%] data-starting-style:data-activation-direction=left:translate-x-[-50%] data-starting-style:data-activation-direction=right:translate-x-[50%] h-full w-auto transition-[opacity,transform,translate] duration-[0.35s] data-ending-style:opacity-0 data-starting-style:opacity-0 **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none rounded-square",
+        "data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-background-default group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-open:animate-in group-data-[viewport=false]/navigation-menu:data-closed:animate-out group-data-[viewport=false]/navigation-menu:data-closed:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-open:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-open:fade-in-0 group-data-[viewport=false]/navigation-menu:data-closed:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-2 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-none group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300 data-ending-style:data-activation-direction=left:translate-x-[50%] data-ending-style:data-activation-direction=right:translate-x-[-50%] data-starting-style:data-activation-direction=left:translate-x-[-50%] data-starting-style:data-activation-direction=right:translate-x-[50%] h-full w-auto transition-[opacity,transform,translate] duration-[0.35s] data-ending-style:opacity-0 data-starting-style:opacity-0 **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none rounded-square",
         className,
       )}
       {...props}
@@ -223,7 +223,7 @@ function NavigationMenuPositioner({
         )}
         {...props}
       >
-        <NavigationMenuPrimitive.Popup className="bg-popover text-popover-foreground ring-foreground/10 rounded-square shadow shadow-box-high outline-none data-ending-style:scale-90 data-ending-style:opacity-0 data-ending-style:duration-150 data-starting-style:scale-90 data-starting-style:opacity-0 data-[ending-style]:easing-[ease] xs:w-(--popup-width) relative h-(--popup-height) w-(--popup-width) origin-(--transform-origin) transition-[opacity,transform,width,height,scale,translate] duration-[0.35s] ease-[cubic-bezier(0.22,1,0.36,1)]">
+        <NavigationMenuPrimitive.Popup className="bg-background-default text-popover-foreground ring-foreground/10 rounded-square shadow shadow-box-high outline-none data-ending-style:scale-90 data-ending-style:opacity-0 data-ending-style:duration-150 data-starting-style:scale-90 data-starting-style:opacity-0 data-[ending-style]:easing-[ease] xs:w-(--popup-width) relative h-(--popup-height) w-(--popup-width) origin-(--transform-origin) transition-[opacity,transform,width,height,scale,translate] duration-[0.35s] ease-[cubic-bezier(0.22,1,0.36,1)]">
           <NavigationMenuPrimitive.Viewport className="relative size-full overflow-hidden" />
         </NavigationMenuPrimitive.Popup>
       </NavigationMenuPrimitive.Positioner>
@@ -461,7 +461,7 @@ function NavigationMobileMenu({
   buttonVariant?: "ppg" | "orm";
 }) {
   return (
-    <div className="fixed px-0 md:hidden w-screen h-screen pt-22 top-0 left-0 -z-1 bg-background-default flex flex-col justify-between">
+    <div className="fixed px-0 md:hidden w-screen h-dvh pt-22 top-0 left-0 -z-1 bg-background-default flex flex-col justify-between">
       <div className="list pb-[130px] overflow-scroll">
         {links.map((link) =>
           link.url ? (
@@ -482,7 +482,7 @@ function NavigationMobileMenu({
           ) : null,
         )}
       </div>
-      <div className="h-min-content mx-auto w-full absolute bottom-0 left-0 py-6 px-4 bg-background-default justify-center items-center gap-6 flex flex-col">
+      <div className="h-min-content mx-auto w-full absolute bottom-0 left-0 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] px-4 bg-background-default justify-center items-center gap-6 flex flex-col">
         <Socials className="flex items-center justify-center" include="all" />
         <div className="grid gap-2 grid-cols-2 w-full">
           <NavigationMenuItem className="w-full">

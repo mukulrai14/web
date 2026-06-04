@@ -51,6 +51,12 @@ const excludedLLMsProducts: LLMsExcludedProduct[] = [
 
 export const commonQueries: LLMsLink[] = [
   {
+    title: "Check the Prisma changelog for recent changes",
+    href: "https://www.prisma.io/changelog.md",
+    description:
+      "Prisma changes frequently. Fetch this machine-readable changelog before implementing any Prisma feature to check for breaking changes, API updates, or new conventions.",
+  },
+  {
     title: "Start a new Prisma ORM project",
     href: "/prisma-orm/quickstart/prisma-postgres",
     description: "Set up Prisma ORM, Prisma Client, and Prisma Postgres in a new TypeScript app.",
@@ -120,6 +126,26 @@ export const commonQueries: LLMsLink[] = [
     href: "https://www.prisma.io/pricing",
     description:
       "Compare Prisma plans and pricing for Prisma Postgres and Prisma platform features.",
+  },
+  {
+    title: "Use Prisma Postgres with Next.js",
+    href: "/guides/frameworks/nextjs",
+    description: "Set up Prisma ORM and Prisma Postgres in a Next.js app with App Router.",
+  },
+  {
+    title: "Use Prisma Postgres with SvelteKit",
+    href: "/guides/frameworks/sveltekit",
+    description: "Set up Prisma ORM and Prisma Postgres in a SvelteKit application.",
+  },
+  {
+    title: "Use Prisma Postgres with Nuxt",
+    href: "/guides/frameworks/nuxt",
+    description: "Set up Prisma ORM and Prisma Postgres in a Nuxt application.",
+  },
+  {
+    title: "Use Prisma Postgres with Hono on Cloudflare Workers",
+    href: "/guides/frameworks/hono",
+    description: "Set up Prisma ORM and Prisma Postgres in a Hono app deployed to Cloudflare Workers.",
   },
 ];
 

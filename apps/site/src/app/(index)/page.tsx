@@ -419,32 +419,6 @@ export default function SiteHome() {
         <CardSection cardSection={twoCol} />
       </section>
 
-      {/* Pricing CTA Section */}
-      <section
-        className={`bg-background-default px-6 ${sectionSpacing} shadow-[0_1px_2px_0_rgba(0,0,0,0.04)] bg-[linear-gradient(180deg,var(--color-background-default)_-177.75%,var(--color-background-ppg)_100%)] md:px-8`}
-      >
-        <div className="web-cta mx-auto flex w-fit flex-col items-center gap-3 md:flex-row md:gap-12 lg:p-4">
-          <h3 className="text-2xl text-center font-sans-display font-bold text-foreground-neutral md:text-left">
-            Run TypeScript
-            <br />
-            the way it actually works.
-          </h3>
-          <div className="content flex flex-col items-center gap-3 md:items-start lg:flex-row lg:items-center lg:gap-12">
-            <p className="max-w-94 w-full text-center text-md text-foreground-neutral-weak md:text-left">
-              Prisma Compute is built for APIs, background jobs, AI agents, and other long-lived
-              workloads. No cold starts, no timeouts, and no extra infrastructure to stitch
-              together.
-            </p>
-            <Button asChild variant="ppg" size="2xl">
-              <a href="/docs">
-                Read the docs
-                <i className="fa-regular fa-arrow-right" />
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Testimonials Section */}
       {review?.testimonials?.length > 0 && (
         <section className={sectionSpacing}>
@@ -483,21 +457,9 @@ export default function SiteHome() {
               </div>
               <div className="flex flex-col gap-6 md:flex-row">
                 <Button asChild variant="ppg" size="2xl">
-                  <a href="/orm">
-                    Explore Prisma ORM
+                  <a href="https://pris.ly/pdp?utm_source=site&utm_campaign=home&utm_term=devrel">
+                    Try it out in the Console
                     <i className="fa-regular fa-arrow-right ml-2" />
-                  </a>
-                </Button>
-                <Button asChild variant="default-strong" size="2xl">
-                  <a href="/postgres">
-                    Explore Prisma Postgres
-                    <i className="fa-regular fa-arrow-right" />
-                  </a>
-                </Button>
-                <Button asChild variant="default-strong" size="2xl">
-                  <a href="/compute">
-                    Explore Prisma Compute
-                    <i className="fa-regular fa-arrow-right" />
                   </a>
                 </Button>
               </div>

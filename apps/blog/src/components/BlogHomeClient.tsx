@@ -14,6 +14,7 @@ import {
 } from "@prisma/eclipse";
 import { LargeSearchToggle } from "@/components/search-toggle";
 import { withBlogBasePath } from "@/lib/url";
+import type { ReactNode } from "react";
 
 const SHOW_ALL = "show-all";
 const PAGE_SIZE = 12;
@@ -67,9 +68,10 @@ function getPaginationSequence(totalPages: number, currentPage: number) {
 interface BlogHomeClientProps {
   items: BlogCardItem[];
   uniqueTags: string[];
+  seriesShelf?: ReactNode;
 }
 
-export function BlogHomeClient({ items, uniqueTags }: BlogHomeClientProps) {
+export function BlogHomeClient({ items, uniqueTags, seriesShelf }: BlogHomeClientProps) {
   const searchParams = useSearchParams();
 
   const tagFromQuery = searchParams.get("tag") ?? undefined;
@@ -94,14 +96,16 @@ export function BlogHomeClient({ items, uniqueTags }: BlogHomeClientProps) {
 
   return (
     <div className="pt-6 pb-12 mt-10">
-      <div className="flex justify-between items-center gap-4 mb-8">
+      <div className="flex justify-between items-center gap-4 mb-4">
         <CategoryTagFilter
           uniqueTags={uniqueTags}
           currentCategory={currentCategory}
-          className="flex justify-center flex-wrap gap-1"
+          className="flex justify-start flex-wrap gap-1"
         />
         <LargeSearchToggle className="w-20 h-full md:w-52" />
       </div>
+
+      {seriesShelf}
 
       <BlogGrid
         items={postsToRender}

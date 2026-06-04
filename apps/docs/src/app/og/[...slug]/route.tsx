@@ -1,5 +1,7 @@
 import { getPageImage, source } from "@/lib/source";
 import { getPageTitleText } from "@/lib/page-title";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
 
@@ -10,7 +12,6 @@ const SECTION_BADGE_COLOR = "#71e8df";
 const LONG_TITLE_FONT_SIZE = "3.5rem";
 const DEFAULT_TITLE_FONT_SIZE = "5rem";
 const API_PATH_SEGMENT_REGEX = /(\{[^}]+\})/;
-const GOOGLE_FONT_RESOURCE_REGEX = /src: url\((.+)\) format\('(opentype|truetype)'\)/;
 const BADGE_HORIZONTAL_PADDING = 24;
 const BADGE_VERTICAL_PADDING = 12;
 const BADGE_FONT_SIZE = 24;
@@ -52,9 +53,9 @@ type ApiPathSegment = {
 };
 
 const FONT_DEFINITIONS = [
-  { name: "Barlow", family: "Barlow", weight: 700 },
-  { name: "Inter", family: "Inter", weight: 400 },
-  { name: "JetBrains Mono", family: "JetBrains+Mono", weight: 400 },
+  { name: "Barlow", file: "Barlow-Bold.ttf", weight: 700 },
+  { name: "Inter", file: "Inter-Regular.ttf", weight: 400 },
+  { name: "JetBrains Mono", file: "JetBrainsMono-Regular.ttf", weight: 400 },
 ] as const;
 
 type FontWeight = (typeof FONT_DEFINITIONS)[number]["weight"];
@@ -67,6 +68,10 @@ type LoadedFont = {
 };
 
 let fontCache: Promise<LoadedFont[]> | undefined;
+
+function bufferToArrayBuffer(buffer: Buffer) {
+  return Uint8Array.from(buffer).buffer;
+}
 
 function getMethodColor(method?: string) {
   if (!method) {
@@ -276,29 +281,18 @@ function PrismaOGImage({
   );
 }
 
-async function loadGoogleFont(font: string, weight: number) {
-  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@${weight}`;
-  const css = await (await fetch(url, { cache: "force-cache" })).text();
-  const resource = css.match(GOOGLE_FONT_RESOURCE_REGEX);
-
-  if (resource) {
-    const response = await fetch(resource[1], { cache: "force-cache" });
-    if (response.status == 200) {
-      return await response.arrayBuffer();
-    }
-  }
-
-  throw new Error(`failed to load font data for ${font}:${weight}`);
-}
-
 function getFonts() {
   fontCache ??= Promise.all(
-    FONT_DEFINITIONS.map(async ({ name, family, weight }) => ({
-      name,
-      data: await loadGoogleFont(family, weight),
-      weight,
-      style: "normal" as const,
-    })),
+    FONT_DEFINITIONS.map(async ({ name, file, weight }) => {
+      const fontBuffer = await readFile(path.join(process.cwd(), "public", "fonts", file));
+
+      return {
+        name,
+        data: bufferToArrayBuffer(fontBuffer),
+        weight,
+        style: "normal" as const,
+      };
+    }),
   ).catch((err) => {
     fontCache = undefined;
     throw err;

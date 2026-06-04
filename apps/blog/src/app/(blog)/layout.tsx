@@ -110,7 +110,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         utm={{ source: "website", medium: "blog" }}
       />
       {children}
-      <Footer />
+      <Footer basePath="/blog" />
     </ThemeProvider>
   );
 }

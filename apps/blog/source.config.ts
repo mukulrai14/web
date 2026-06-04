@@ -1,5 +1,9 @@
 import remarkDirective from "remark-directive";
-import { remarkDirectiveAdmonition, remarkMdxFiles } from "fumadocs-core/mdx-plugins";
+import {
+  remarkDirectiveAdmonition,
+  remarkMdxFiles,
+  remarkMdxMermaid,
+} from "fumadocs-core/mdx-plugins";
 import { remarkImage } from "fumadocs-core/mdx-plugins";
 import { defineCollections, defineConfig, frontmatterSchema } from "fumadocs-mdx/config";
 import lastModified from "fumadocs-mdx/plugins/last-modified";
@@ -15,12 +19,10 @@ export const blogPosts = defineCollections({
     date: z.coerce.date(),
     heroImagePath: z.string().optional(),
     metaImagePath: z.string().optional(),
-    series: z
-      .object({
-        title: z.string(),
-      })
-      .optional(),
+    series: z.string().optional(),
     seriesIndex: z.number().int().positive().optional(),
+    prev: z.string().optional(),
+    next: z.string().optional(),
     tags: z
       .array(
         z.enum([
@@ -28,12 +30,10 @@ export const blogPosts = defineCollections({
           "ai",
           "studio",
           "announcement",
-          "data-platform",
+          "platform",
           "orm",
-          "serverless",
-          "release",
           "education",
-          "user-success-story",
+          "case-study",
         ]),
       )
       .optional(),
@@ -54,6 +54,7 @@ export default defineConfig({
       remarkDirectiveAdmonition,
       [remarkImage, { useImport: false }],
       remarkMdxFiles,
+      remarkMdxMermaid,
     ],
     remarkCodeTabOptions: { parseMdx: true },
     remarkNpmOptions: {

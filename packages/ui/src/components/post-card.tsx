@@ -10,6 +10,7 @@ export type PostCardItem = {
   date: string;
   excerpt?: string | null;
   author?: AuthorProfile | null;
+  authors?: AuthorProfile[] | null;
   imageSrc?: string | null;
   imageAlt?: string | null;
   badge?: string | null;
@@ -45,10 +46,7 @@ export function PostCard({
   );
 
   const titleClassName = cn(
-    "text-foreground-neutral font-mona-sans mt-4 mb-2",
-    isFeatured
-      ? "text-2xl font-bold"
-      : "text-md md:text-lg font-[650] sm:font-bold",
+    "text-foreground-neutral mt-4 mb-2 type-heading-xl",
   );
   const excerptClassName = cn(
     "text-sm text-foreground-neutral-weak line-clamp-2",
@@ -79,12 +77,17 @@ export function PostCard({
         {post.title && <h2 className={titleClassName}>{post.title}</h2>}
         {post.excerpt && <p className={excerptClassName}>{post.excerpt}</p>}
       </div>
-      {post.author && (
-        <AuthorAvatarGroup
-          authors={[post.author]}
-          className={authorClassName}
-        />
-      )}
+      {(() => {
+        const authors =
+          post.authors && post.authors.length > 0
+            ? post.authors
+            : post.author
+              ? [post.author]
+              : [];
+        return authors.length > 0 ? (
+          <AuthorAvatarGroup authors={authors} className={authorClassName} />
+        ) : null;
+      })()}
     </>
   );
 

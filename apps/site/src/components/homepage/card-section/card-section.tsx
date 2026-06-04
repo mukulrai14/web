@@ -175,7 +175,13 @@ const ImageVisual = ({ item, isLcpImage }: ImageVisualProps) => {
   );
 };
 
-const SectionVisual = ({ item, isLcpImage }: { item: TwoColumnItem; isLcpImage: boolean }) => {
+const SectionVisual = ({
+  item,
+  isLcpImage,
+}: {
+  item: TwoColumnItem;
+  isLcpImage: boolean;
+}) => {
   if (item.visualType === "other") {
     return item.other ? <>{item.other}</> : null;
   }
@@ -259,7 +265,8 @@ export const CardSection = ({ cardSection, className }: CardSectionProps) => {
         if (!containerRef.current) return;
 
         const container = containerRef.current;
-        const position = container.getBoundingClientRect().y * -1 + window.innerHeight * 0.8;
+        const position =
+          container.getBoundingClientRect().y * -1 + window.innerHeight * 0.8;
 
         setProgressHeight(position);
 
