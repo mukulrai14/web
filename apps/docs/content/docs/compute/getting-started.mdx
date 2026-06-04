@@ -1,12 +1,12 @@
 ---
 title: '@prisma/cli'
-description: Deploy your first app to Prisma Compute with the @prisma/cli beta package, then pick up the variations you'll need next.
+description: Deploy your first app to Prisma Compute with the @prisma/cli beta package, then learn the variations you'll need next.
 url: /compute/getting-started
 metaTitle: 'Get started with Prisma Compute via @prisma/cli'
 metaDescription: Install the @prisma/cli beta package, deploy an app to Prisma Compute, and learn the variations for frameworks, production, and CI.
 ---
 
-Deploy an app to [Prisma Compute](/compute) in two commands: sign in, then `app deploy`. This guide takes you from your code to a live URL, then shows the variations you'll reach for next. For every command, flag, and error code, see the [CLI reference](/compute/cli-reference).
+Deploy an app to [Prisma Compute](/compute) in two commands: sign in, then `app deploy`. This guide takes you from your code to a live URL, then covers the variations you'll need next. For every command, flag, and error code, see the [CLI reference](/compute/cli-reference).
 
 Install nothing up front: run the [`@prisma/cli`](https://github.com/prisma/prisma-cli) beta package directly with `npx`. The package installs an executable called `prisma-cli`.
 
@@ -36,25 +36,25 @@ npx @prisma/cli@latest app deploy
 
 Then the CLI sets up the project, builds your app, and deploys it. After it finishes, you get a live URL.
 
-Want to see what your app is doing? Stream its logs:
+To stream the app's logs:
 
 ```npm
 npx @prisma/cli@latest app logs
 ```
 
-Or open the live URL in your browser:
+To open the live URL in your browser:
 
 ```npm
 npx @prisma/cli@latest app open
 ```
 
-That's the core loop. Everything below is a variation on it.
+That is the core deploy loop. The sections below cover variations on it.
 
 ## A shorter command
 
 The binary is `prisma-cli`, not `prisma`. That's deliberate: many projects already have the `prisma` binary from [Prisma ORM](/orm), and the beta package doesn't shadow it.
 
-If you'd rather not type `npx @prisma/cli@latest` each time, install the package and add a script of your own:
+To avoid typing `npx @prisma/cli@latest` each time, install the package and add your own script:
 
 ```npm
 npm install --save-dev @prisma/cli
@@ -103,7 +103,7 @@ You can also deploy a plain Bun server by pointing `--entry` at your server file
 npx @prisma/cli@latest app deploy --framework bun --entry src/server.ts
 ```
 
-Running something else? [Request framework support](https://prisma.io/compute/framework-request) and say what you're building.
+To deploy another framework, [request framework support](https://prisma.io/compute/framework-request) and describe what you are building.
 
 :::note
 
@@ -192,7 +192,7 @@ For the full list, see the [error codes reference](/compute/cli-reference#error-
 
 ## Console
 
-Prefer to look rather than type? Use the [Prisma Console](https://console.prisma.io) to inspect projects, branches, apps, deployments, integrations, and domains. Keep scripted setup in the CLI.
+To inspect resources visually instead of running commands, use the [Prisma Console](https://console.prisma.io) for projects, branches, apps, deployments, integrations, and domains. Keep scripted setup in the CLI.
 
 ## Next steps
 

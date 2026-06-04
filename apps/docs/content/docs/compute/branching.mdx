@@ -29,7 +29,7 @@ When you deploy, the CLI resolves the branch in this order:
 2. Your active Git branch.
 3. `main`.
 
-So inside a Git repo, deploying from `feature/search` targets the `feature/search` branch automatically. To be explicit:
+Inside a Git repo, deploying from `feature/search` targets the `feature/search` branch automatically. To target a branch explicitly:
 
 ```npm
 npx @prisma/cli@latest app deploy --branch feature/search
@@ -52,7 +52,7 @@ Listing a branch doesn't expand the apps and databases inside it. Use the `app` 
 
 ## Creating branches
 
-You rarely create branches by hand. They appear when work needs them:
+You rarely create branches manually. They appear when work needs them:
 
 - **On deploy**: `app deploy --branch feature/search` creates the branch if it doesn't exist.
 - **From GitHub**: when a repo is connected, branch and push events create or update the matching platform branch automatically. To set this up, see the [GitHub integration docs](/compute/github).

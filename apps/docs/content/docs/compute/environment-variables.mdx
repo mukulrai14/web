@@ -18,7 +18,7 @@ There are three layers:
 
 <ConceptAnimation name="env-layers" />
 
-A preview deploy gets the preview variables, with any branch overrides layered on top. Overrides are handy when one branch needs a different API key, database URL, or feature flag than the rest.
+A preview deploy gets the preview variables, with any branch overrides layered on top. Overrides help when one branch needs a different API key, database URL, or feature flag than the rest.
 
 Values are resolved at deploy time and baked into the deployment. Changing a variable doesn't touch deployments that already exist and doesn't trigger a redeploy; the new value applies the next time you deploy.
 
