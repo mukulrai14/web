@@ -259,9 +259,9 @@ export default function SiteHome() {
             </h1>
           </div>
           <p className="text-center text-foreground-neutral-weak max-w-4xl mx-auto text-xl">
-            Prisma gives TypeScript and Node.js teams a type-safe ORM, managed Postgres, and
-            serverless TypeScript compute. Prisma ORM, Prisma Postgres, and Prisma Compute take you
-            from schema to production.
+            Most TypeScript backends are stitched together from separate database, ORM, and hosting
+            tools. Prisma brings Prisma ORM, Prisma Postgres, and Prisma Compute into one platform
+            that takes you from schema to production.
           </p>
           <div className="flex flex-col gap-6 items-center justify-center">
             <Button asChild variant="ppg" size="3xl" className="font-sans-display! font-[650]">
@@ -270,23 +270,6 @@ export default function SiteHome() {
                 <i className="fa-regular fa-arrow-right ml-2" />
               </a>
             </Button>
-            <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center justify-center text-foreground-neutral-weak">
-              <a href="/orm" className="hover:text-foreground-neutral underline underline-offset-2">
-                Prisma ORM
-              </a>
-              <a
-                href="/postgres"
-                className="hover:text-foreground-neutral underline underline-offset-2"
-              >
-                Prisma Postgres
-              </a>
-              <a
-                href="/compute"
-                className="hover:text-foreground-neutral underline underline-offset-2"
-              >
-                Prisma Compute
-              </a>
-            </div>
           </div>
         </div>
       </section>

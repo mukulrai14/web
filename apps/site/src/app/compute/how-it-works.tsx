@@ -149,7 +149,7 @@ type TerminalLine =
   | { type: "service"; name: string; value: string; isLink: boolean };
 
 const LINES: TerminalLine[] = [
-  { type: "command", cmd: "prisma deploy" },
+  { type: "command", cmd: "@prisma/cli@latest app deploy" },
   { type: "step", prefix: "├", label: "Detecting services", detail: "3 found" },
   {
     type: "step",
@@ -311,7 +311,7 @@ export function DeployTerminal() {
   }, [paused]);
 
   function handleCopy() {
-    void navigator.clipboard.writeText("prisma deploy");
+    void navigator.clipboard.writeText("@prisma/cli@latest app deploy");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -367,7 +367,7 @@ const DEPLOY_STEPS: Array<{
   delay: number;
   stage?: string;
 }> = [
-  { type: "cmd", text: "prisma deploy", delay: 250, stage: "frame" },
+  { type: "cmd", text: "@prisma/cli@latest app deploy", delay: 250, stage: "frame" },
   {
     type: "dim",
     text: "→ detected prisma.config.ts · commit a7f3c11",
@@ -1226,9 +1226,10 @@ const TABS = [
     Visual: WbDeployReplay,
     description: (
       <>
-        Connect a repo and run <code className="font-mono text-foreground-ppg">prisma deploy</code>.{" "}
-        Prisma Compute builds your application, discovers your services, and brings them live with
-        URLs attached.
+        Connect a repo and run{" "}
+        <code className="font-mono text-foreground-ppg">@prisma/cli@latest app deploy</code>. Prisma
+        Compute builds your application, discovers your services, and brings them live with URLs
+        attached.
         <br />
         <br />
         No build pipeline to configure. No deployment scripts to maintain. No dashboard state that

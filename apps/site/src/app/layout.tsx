@@ -90,6 +90,12 @@ function baseOptions() {
         text: "Products",
         sub: [
           {
+            text: "Compute",
+            url: "/compute",
+            desc: "Deploy TypeScript to production",
+            icon: "fa-regular fa-microchip",
+          },
+          {
             text: "Postgres",
             url: "/postgres",
             desc: "Managed Postgres for global workloads",
@@ -98,7 +104,7 @@ function baseOptions() {
           {
             text: "ORM",
             url: "/orm",
-            desc: "Managed Postgres for global workloads",
+            desc: "Type-safe ORM for TypeScript and Node.js",
             icon: "fa-regular fa-database",
           },
           {
@@ -106,12 +112,6 @@ function baseOptions() {
             icon: "fa-regular fa-table",
             url: "/studio",
             desc: "Explore and manipulate your data",
-          },
-          {
-            text: "Compute",
-            url: "/compute",
-            desc: "Deploy TypeScript to production",
-            icon: "fa-regular fa-microchip",
           },
         ],
       },

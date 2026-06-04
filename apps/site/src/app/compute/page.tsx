@@ -27,8 +27,10 @@ const FEATURES = [
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>
-            <code className="font-mono text-foreground-ppg-reverse-weak">prisma deploy</code> from
-            the CLI, or push to a connected branch
+            <code className="font-mono text-foreground-ppg-reverse-weak">
+              @prisma/cli@latest app deploy
+            </code>{" "}
+            from the CLI, or push to a connected branch
           </li>
           <li>No CI/CD pipeline to configure</li>
           <li>No deployment scripts, no dashboard workflows</li>
@@ -431,7 +433,7 @@ export default async function Page() {
           <p className="text-left text-sm mt-6 text-foreground-neutral-weak">
             Already have a codebase?{" "}
             <a
-              href="https://prisma.io/docs/compute"
+              href="https://pris.ly/compute-docs?utm_source=site&utm_campaign=compute&utm_term=devrel"
               className="underline text-foreground-ppg-strong underline-offset-2"
             >
               Connect your GitHub repo →
@@ -466,13 +468,19 @@ export default async function Page() {
             </div>
             <div className="flex flex-col md:flex-row gap-6">
               <Button asChild variant="ppg" size="2xl">
-                <a href="https://pris.ly/compute-blog" className="flex gap-2 items-center">
+                <a
+                  href="https://pris.ly/compute-blog-pb?utm_source=site&utm_campaign=compute&utm_term=devrel"
+                  className="flex gap-2 items-center"
+                >
                   <span>Read the launch post</span>
                   <i className="fa-regular h-auto fa-arrow-right" aria-hidden="true" />
                 </a>
               </Button>
               <Button asChild variant="default-strong" size="2xl">
-                <a href="https://prisma.io/docs/compute" className="flex gap-2 items-center">
+                <a
+                  href="https://pris.ly/compute-docs?utm_source=site&utm_campaign=compute&utm_term=devrel"
+                  className="flex gap-2 items-center"
+                >
                   <span>Read the docs</span>
                   <i className="fa-regular h-auto fa-book-open" aria-hidden="true" />
                 </a>
