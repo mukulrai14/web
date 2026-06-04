@@ -58,8 +58,9 @@ Manage apps and deployments for a project.
 | `--entry <path>`          | Entry point, required for `bun` and useful when detection needs a hand       |
 | `--http-port <port>`      | HTTP port your app listens on                                                |
 | `--env <KEY=value>`       | Set a one-off variable for this deployment (repeatable)                      |
+| `--prod`                  | Confirm intent to deploy to the production branch                            |
 
-Deploys that target the production branch ask for confirmation after the first one. Pass `-y` / `--yes` to accept it; in non-interactive mode, the deploy fails with `CONFIRMATION_REQUIRED` without it.
+After the first production deploy, every later production deploy needs `--prod`; without it the deploy fails with `PROD_DEPLOY_REQUIRES_FLAG`. With `--prod`, the CLI asks for confirmation; pass `-y` / `--yes` to accept it up front. In non-interactive mode, a `--prod` deploy without `--yes` fails with `CONFIRMATION_REQUIRED`. The first production deploy is auto-promoted and needs neither flag.
 
 ### `app build` and `app run` options
 
@@ -76,7 +77,7 @@ Deploys that target the production branch ask for confirmation after the first o
 | `--app`, `--project`  | all inspection and deploy commands | Select the app or project explicitly |
 | `--deployment <id>`   | `app logs`                       | Stream logs for a specific deployment |
 | `--to <deployment>`   | `app rollback`                   | Roll back to a specific deployment    |
-| `--yes`               | `app remove`, production deploys | Accept the confirmation prompt        |
+| `--yes`               | `app remove`, `--prod` deploys   | Accept the confirmation prompt        |
 
 ## `app domain`
 
@@ -195,7 +196,7 @@ The common codes, grouped by area:
 | Code                    | Meaning                                                              |
 | ----------------------- | --------------------------------------------------------------------- |
 | `AUTH_REQUIRED`         | No session or service token. Run `auth login` or set `PRISMA_SERVICE_TOKEN`. |
-| `CONFIRMATION_REQUIRED` | The command needs a confirmation, like a production deploy. Pass `--yes`. |
+| `CONFIRMATION_REQUIRED` | A confirmation prompt can't run here (e.g. a `--prod` deploy in non-interactive mode, or `app remove`). Pass `--yes`. |
 | `USAGE_ERROR`           | Invalid arguments or flags. Check the command's `--help`.              |
 | `FEATURE_UNAVAILABLE`   | The platform can't serve this yet (e.g. logs for some deployments).    |
 
@@ -212,6 +213,7 @@ The common codes, grouped by area:
 
 | Code                     | Meaning                                          |
 | ------------------------ | ------------------------------------------------- |
+| `PROD_DEPLOY_REQUIRES_FLAG` | A production deploy is missing explicit intent. Re-run with `--prod`. |
 | `BUILD_FAILED`           | The app failed to build. Check the build output.   |
 | `DEPLOY_FAILED`          | The deployment failed after the build.             |
 | `DEPLOYMENT_NOT_FOUND`   | The deployment id doesn't exist for this app.      |

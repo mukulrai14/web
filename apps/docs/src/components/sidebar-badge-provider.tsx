@@ -3,8 +3,9 @@ import { createContext, use, type FC, type ReactNode } from "react";
 import type * as PageTree from "fumadocs-core/page-tree";
 import { SidebarItem } from "@/components/layout/notebook/sidebar";
 import { Badge } from "@prisma/eclipse";
+import type { BadgeType } from "@/lib/badge-types";
 
-export type BadgeType = "early-access" | "beta" | "deprecated" | "preview";
+export type { BadgeType };
 
 const BadgeContext = createContext<Record<string, BadgeType>>({});
 

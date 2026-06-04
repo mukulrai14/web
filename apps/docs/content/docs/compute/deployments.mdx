@@ -44,15 +44,21 @@ npx @prisma/cli@latest app run --port 3000
 
 ## Deploy to production
 
-Your first deployment is promoted to production automatically. After that, the CLI asks you to confirm before deploying to the production branch, so you don't ship by accident.
-
-Target your production branch and confirm the prompt:
+Your first deployment is promoted to production automatically. After that, every production deploy needs an explicit `--prod` flag, so you don't ship to production by accident:
 
 ```npm
-npx @prisma/cli@latest app deploy --branch main
+npx @prisma/cli@latest app deploy --prod
 ```
 
-Pass `-y` / `--yes` to accept the confirmation up front; in non-interactive mode, a production deploy without it fails with `CONFIRMATION_REQUIRED`. Preview deploys never ask.
+Without `--prod`, a deploy that resolves to the production branch and already has a live production deployment fails with `PROD_DEPLOY_REQUIRES_FLAG`. With `--prod`, the CLI shows the current live deployment and asks you to confirm before replacing it.
+
+For scripts and CI, pass both flags so nothing waits on a prompt:
+
+```npm
+npx @prisma/cli@latest app deploy --prod --yes
+```
+
+In non-interactive mode, a `--prod` deploy without `--yes` fails with `CONFIRMATION_REQUIRED`. Preview deploys never need `--prod` and never ask.
 
 ## Inspect deployments
 

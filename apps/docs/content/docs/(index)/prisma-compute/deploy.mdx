@@ -58,10 +58,10 @@ npx @prisma/cli@latest app logs
 
 After your app is live, you can keep deploying with the Prisma CLI or inspect your resources in the [Prisma Console](https://console.prisma.io): projects, branches, apps, deployments, integrations, and domains.
 
-Deploys from a Git feature branch create isolated [preview deployments](/compute/branching). Deploying to production again asks for a confirmation; target your production branch and pass `--yes` to accept it:
+Deploys from a Git feature branch create isolated [preview deployments](/compute/branching). After your first production deploy, deploying to production again needs an explicit `--prod` flag; add `--yes` to accept the confirmation up front in scripts and CI:
 
 ```npm
-npx @prisma/cli@latest app deploy --branch main --yes
+npx @prisma/cli@latest app deploy --prod --yes
 ```
 
 ## Hand it to your agent
@@ -82,8 +82,8 @@ Notes worth giving your agent:
 
 - Run every CLI command as `npx @prisma/cli@latest <command>`, and add `--json` for structured output.
 - Check login state with `npx @prisma/cli@latest auth whoami`.
-- On the first deploy, the CLI creates the project and prints a live URL. Open it and confirm the app responds.
-- If the app needs config or secrets, add them with `npx @prisma/cli@latest project env add KEY=value --role preview`, then redeploy. Variables apply on the next deploy.
+- On the first deploy, the CLI creates the project and prints a live URL. Open it and confirm the app responds. The first deploy is promoted to production automatically.
+- If the app needs config or secrets, scope them to the environment you're deploying. Use `--role production` for production deploys and `--role preview` for preview branches, then redeploy: `npx @prisma/cli@latest project env add KEY=value --role production` (or `--role preview`). Don't write production config to the preview scope. For the full scoping rules, see [Environment variables](/compute/environment-variables).
 
 ## What's next
 

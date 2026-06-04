@@ -46,10 +46,10 @@ Update it, then redeploy to production:
 
 ```npm
 npx @prisma/cli@latest project env update DATABASE_URL=postgresql://new --role production
-npx @prisma/cli@latest app deploy --branch main --yes
+npx @prisma/cli@latest app deploy --prod --yes
 ```
 
-The `--yes` accepts the production-deploy confirmation.
+`--prod` signals intent to deploy to production, and `--yes` accepts the confirmation up front.
 
 ## Does changing a variable redeploy my app?
 
@@ -70,9 +70,13 @@ PRISMA_SERVICE_TOKEN=... npx @prisma/cli@latest app deploy \
 
 Passing every target explicitly keeps the run self-contained; `--json` makes the result parseable, and `--no-interactive` turns any would-be prompt into a structured error.
 
+## Why did my production deploy fail with `PROD_DEPLOY_REQUIRES_FLAG`?
+
+Your first deploy is promoted to production automatically. After that, deploying to the production branch needs an explicit `--prod` flag. Re-run with `npx @prisma/cli@latest app deploy --prod`, or deploy from a preview branch instead.
+
 ## Why did my production deploy fail with `CONFIRMATION_REQUIRED`?
 
-Your first deploy is promoted to production automatically. After that, deploying to the production branch needs a confirmation. Pass `-y` / `--yes` to accept it, which is required in non-interactive mode.
+A `--prod` deploy asks you to confirm before replacing the live deployment, and that prompt can't run in non-interactive mode. Pass both flags, `--prod --yes`, to accept the confirmation up front. (`app remove` uses the same `--yes` confirmation.)
 
 ## Why `PROJECT_SETUP_REQUIRED`?
 
