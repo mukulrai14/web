@@ -45,14 +45,3 @@ If a product or feature is labeled as **Public Beta**:
 - We don't recommend it yet for mission-critical or heavy production workloads.
 
 Public Beta is the final stress-test phase before general availability. Expect some rough edges, and tell us about them in [Discord](https://pris.ly/discord?utm_source=docs&utm_medium=inline_text); your feedback directly shapes the release.
-
-### Prisma Compute in Public Beta
-
-[Prisma Compute](/compute) is currently in Public Beta. For this release, that means:
-
-- You can deploy supported TypeScript HTTP apps through the documented [CLI](/compute/getting-started) and [GitHub](/compute/github) paths, get a live URL and deployment state, and manage [environment variables](/compute/environment-variables). The [Console](/console) shows your projects, branches, apps, and deployments.
-- The resource model is stable: workspace → project → branch → apps and deployments. [Branch-based](/compute/branching) preview and production workflows work end to end for the supported paths.
-- This release focuses on HTTP apps. WebSockets, cron or background jobs, a persistent filesystem, edge runtimes, and multi-region deployments are not part of it.
-- Preview branches are disposable by default; production is the durable path.
-
-See [Limitations](/compute/limitations) for the full list of what the Compute beta does and doesn't do.
