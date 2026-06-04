@@ -87,7 +87,7 @@ const FEATURES = [
           Any TypeScript workload
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Standard TypeScript on Bun. No V8 isolate limits. No runtime constraints.
+          Standard TypeScript on Bun, not a constrained edge runtime. No V8 isolate limits.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>Backend APIs and full-stack apps</li>
@@ -118,14 +118,14 @@ const FEATURES = [
           Co-located database
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Pair with Prisma Postgres; compute and database run in the same region, connected
+          Pair with Prisma Postgres so compute and database run in the same region, connected
           automatically.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>No connection strings to copy</li>
           <li>No networking to configure</li>
           <li>Built-in connection pooling for long-lived processes</li>
-          <li>Works with any database — no lock-in</li>
+          <li>Works with any database, no lock-in</li>
         </ul>
       </>
     ),
@@ -155,21 +155,21 @@ const DOES_IT_WORK = [
   {
     title: "Running a Hono, Express, or Fastify API?",
     description:
-      "Long-lived processes are the default. No workarounds for WebSockets or streaming. Sockets stay open. Streams flow uninterrupted.",
+      "Long-lived processes are the default, so WebSockets and streaming work without workarounds. Sockets stay open and streams run uninterrupted.",
     icon: "fa-regular fa-rocket",
     badgeColor: "success" as const,
   },
   {
     title: "Running background jobs or workers?",
     description:
-      "They run as long-lived processes alongside your API. Same repo, same runtime, same bill — no separate worker tier to pay for.",
+      "They run as long-lived processes alongside your API. Same repo, same runtime, same bill, with no separate worker tier to pay for.",
     icon: "fa-regular fa-clock-rotate-left",
     badgeColor: "success" as const,
   },
   {
     title: "Building an AI agent?",
     description:
-      "Per-session sandboxes, long-lived runtimes, co-located memory. See the AI workloads section above for the full take.",
+      "Per-session sandboxes, long-lived runtimes, and in-process memory, on the same runtime that serves your API.",
     icon: "fa-regular fa-stars",
     badgeColor: "ppg" as const,
   },
@@ -239,7 +239,7 @@ const WHY_FEATURES = [
     title: "DB connected by default",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        Co-located with Prisma Postgres for ultra-low latency. Works with any database.
+        Co-located with Prisma Postgres for low-latency access. Works with any database.
       </div>
     ),
     icon: "fa-regular fa-database",
@@ -250,7 +250,7 @@ const WHY_FEATURES = [
     title: "Reliable by design",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        Automatic scaling, automatic recovery, automatic handling of OOM conditions.
+        Automatic scaling, recovery, and OOM handling.
       </div>
     ),
     icon: "fa-regular fa-shield-check",
@@ -260,13 +260,13 @@ const WHY_FEATURES = [
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Prisma Compute",
+    title: "Prisma Compute: Deploy TypeScript apps to production",
     description:
-      "Deploy TypeScript to production. Push code, it runs. Long-running processes, background jobs, APIs, and AI agents — no cold starts, no timeouts.",
+      "Deploy TypeScript apps from your repo. APIs, background jobs, and AI agents run as long-lived processes on Bun, with no cold starts or timeouts.",
     openGraph: {
-      title: "Prisma Compute",
+      title: "Prisma Compute: Deploy TypeScript apps to production",
       description:
-        "Deploy TypeScript to production. Push code, it runs. Long-running processes, background jobs, APIs, and AI agents — no cold starts, no timeouts.",
+        "Deploy TypeScript apps from your repo. APIs, background jobs, and AI agents run as long-lived processes on Bun, with no cold starts or timeouts.",
       url: "https://www.prisma.io/compute",
       type: "website",
       siteName: "Prisma",
@@ -275,7 +275,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: "/og/og-compute.png",
           width: 1200,
           height: 630,
-          alt: "Prisma Compute",
+          alt: "Prisma Compute: Deploy TypeScript apps to production",
         },
       ],
     },
@@ -310,7 +310,8 @@ export default async function Page() {
             </h1>
           </div>
           <p className="text-center text-foreground-neutral max-w-3xl mx-auto text-xl">
-            <b>Push code. It runs.</b> Long-running processes, background jobs, APIs, AI agents.
+            <b>Push code, it runs.</b> APIs, background jobs, and AI agents run as long-lived
+            TypeScript on Bun, with no cold starts.
           </p>
           <p className="text-2xs uppercase font-medium tracking-[1.1px] text-foreground-neutral-weak text-center mx-auto! -mt-5">
             $1 per million requests. Volume discounts apply.
@@ -337,7 +338,7 @@ export default async function Page() {
             01 / WHY-PRISMA-COMPUTE
           </span>
           <h2 className="type-title-4xl text-foreground-neutral m-0">
-            Built for the way TypeScript actually runs.
+            Built for the way TypeScript runs.
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-296 w-full">
@@ -409,7 +410,7 @@ export default async function Page() {
             04 / WHAT MAKES IT UNIQUE
           </span>
           <h2 className="type-title-4xl text-foreground-neutral m-0 text-left">
-            Compute keeps it all together.
+            One service for your app, assets, and jobs.
           </h2>
         </div>
         <div className="flex flex-col lg:flex-row items-center gap-6 max-w-296 w-full">
@@ -461,8 +462,9 @@ export default async function Page() {
                 Why we built Prisma Compute
               </h2>
               <p className="text-foreground-neutral-weak max-w-154">
-                We wanted a deployment platform that felt as good as the code we were writing. Push
-                a repo, get a URL, and stop thinking about infrastructure.
+                We wanted to ship TypeScript apps without stitching together separate build,
+                hosting, and database tools. Push a repo, get a URL, and keep working in your
+                codebase.
               </p>
             </div>
             <div className="flex flex-col md:flex-row gap-6">

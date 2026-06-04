@@ -1265,7 +1265,7 @@ const TABS = [
         processes.
         <br />
         <br />
-        Works with any database — no lock-in.
+        Works with any database, no lock-in.
       </>
     ),
   },
