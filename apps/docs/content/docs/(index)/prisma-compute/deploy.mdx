@@ -2,18 +2,20 @@
 title: Deploy your first app
 description: Take an existing TypeScript app from your terminal to a live URL on Prisma Compute.
 url: /prisma-compute/deploy
-metaTitle: 'Quickstart: Deploy your first app on Prisma Compute'
+metaTitle: "Quickstart: Deploy your first app on Prisma Compute"
 metaDescription: Deploy a TypeScript app to Prisma Compute with the @prisma/cli beta package and verify it at a live URL.
 ---
 
-[Prisma Compute](/compute) runs your app next to your Prisma Postgres database. In this guide, you will deploy an existing app to Compute, open it at a live URL, and connect it to GitHub so every push deploys on its own. Each step explains what the CLI does on your behalf, so nothing happens behind your back.
+[Prisma Compute](/compute) deploys and runs your app next to your Prisma Postgres database.
+
+In this guide, you will deploy an existing app to Compute, open it at a live URL, and connect it to GitHub so every push deploys on its own. Each step explains what the CLI does on your behalf, so nothing happens behind your back.
 
 If you are new to how Compute fits together, the [resource model](/compute#the-model) is worth a quick look first: a workspace holds projects, a project holds branches, and each branch owns its own app and database.
 
 ## Prerequisites
 
 - A JavaScript runtime: Node.js 22.12 or newer for `npx`/`pnpm`, or Bun for `bunx`.
-- A Prisma developer platform account ([console.prisma.io](https://console.prisma.io)).
+- A [Prisma Data Platform account](https://pris.ly/pdp).
 - An app built with **Next.js**, **Hono**, **TanStack Start**, or a plain **Bun** HTTP server.
 
 :::info
@@ -30,19 +32,19 @@ A deploy needs an authenticated session, so sign in before anything else:
 npx @prisma/cli@latest auth login
 ```
 
-This opens your browser, signs you in to your Prisma developer platform account, and stores a session on your machine. Every later command reads that session automatically, so you sign in only once. Anything else running in the same environment inherits it too, including a coding agent working in your project directory.
+This opens your browser, signs you in to your Prisma Data Platform account, and stores a session on your machine. Every later command reads that session automatically, so you sign in only once. Anything else running in the same environment inherits it too, including a coding agent working in your project directory.
 
-Confirm who you are signed in as at any time:
+Confirm who you are signed in as:
 
 ```npm
 npx @prisma/cli@latest auth whoami
 ```
 
-The browser step needs a human, so it does not work in CI or other headless environments. There, authenticate with a [service token](/compute/getting-started#automation-and-ci) instead.
+The browser step needs a human, so it does not work in CI or other headless environments. If you are in a headless environment, authenticate with a [service token](/compute/getting-started#automation-and-ci) instead.
 
-## 2. Deploy
+## 2. Deploy your app
 
-From your app directory, run a single command:
+From your app directory, run:
 
 ```npm
 npx @prisma/cli@latest app deploy
@@ -57,7 +59,7 @@ There is no black box here. In one pass, the CLI:
 
 Your first deploy is promoted to production automatically, so the URL you get back is your production URL. To see how projects, branches, and apps relate, see [The model](/compute#the-model).
 
-## 3. Verify
+## 3. Verify the deployment
 
 Open the deployed app in your browser:
 
@@ -89,7 +91,7 @@ In scripts and CI, add `--yes` to accept the production confirmation up front:
 npx @prisma/cli@latest app deploy --prod --yes
 ```
 
-You can also inspect everything you have deployed in the [Prisma Console](https://console.prisma.io): projects, branches, apps, deployments, integrations, and domains.
+You can also inspect everything you have deployed in the [Console](https://pris.ly/pdp): projects, branches, apps, deployments, integrations, and domains.
 
 ## 5. Connect GitHub
 
@@ -121,7 +123,7 @@ For example:
 Build a Hono API with a /todos endpoint backed by an in-memory list. Deploy it to Prisma Compute using `npx @prisma/cli@latest`.
 ```
 
-Notes worth giving your agent:
+Notes for your agent:
 
 - Run every CLI command as `npx @prisma/cli@latest <command>`, and add `--json` for structured output.
 - Check login state with `npx @prisma/cli@latest auth whoami`.

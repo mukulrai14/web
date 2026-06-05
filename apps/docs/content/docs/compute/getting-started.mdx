@@ -13,7 +13,7 @@ Install nothing up front: run the [`@prisma/cli`](https://github.com/prisma/pris
 ## Prerequisites
 
 - A JavaScript runtime. The commands below run with `npx` or `pnpm` on Node.js 22.12 or newer, or with `bunx` (Bun).
-- A Prisma developer platform account ([console.prisma.io](https://console.prisma.io)).
+- A [Prisma Data Platform account](https://pris.ly/pdp).
 - An app directory to deploy.
 
 ## Sign in
@@ -97,7 +97,7 @@ npx @prisma/cli@latest app deploy --framework hono --entry src/index.ts
 npx @prisma/cli@latest app deploy --framework tanstack-start
 ```
 
-You can also deploy a plain Bun server by pointing `--entry` at your server file:
+Deploy a plain Bun server by pointing `--entry` at your server file:
 
 ```npm
 npx @prisma/cli@latest app deploy --framework bun --entry src/server.ts
@@ -146,7 +146,7 @@ Preview deploys never need `--prod` and never ask for confirmation. To learn abo
 
 The CLI is built for agents and CI, not just terminals.
 
-If you've already signed in with `auth login`, anything running in that environment inherits your session, including an agent working in your directory. Check the session at any time:
+If you've already signed in with `auth login`, anything running in that environment inherits your session, including an agent working in your directory. Check the session:
 
 ```npm
 npx @prisma/cli@latest auth whoami
@@ -183,7 +183,7 @@ This installs three skills into `.agents/skills/`, where supported agents pick t
 - `prisma-cli-deploy-nextjs`: a guided Next.js deploy, from auth check to live URL.
 - `prisma-cli-feedback`: files bugs and feedback with the Prisma team.
 
-To match the skills to a specific CLI version, add `#cli-v<version>` to the source, for example `prisma/prisma-cli/skills#cli-v3.0.0-beta.3`, so the instructions your agent follows match the CLI version your project actually runs.
+To match the skills to a specific CLI version, add `#cli-v<version>` to the source, for example `prisma/prisma-cli/skills#cli-v3.0.0-beta.3`, so the instructions your agent follows match the CLI version your project runs.
 
 ### Structured output
 
@@ -201,7 +201,7 @@ For the full list, see the [error codes reference](/compute/cli-reference#error-
 
 ## Console
 
-To inspect resources visually instead of running commands, use the [Prisma Console](https://console.prisma.io) for projects, branches, apps, deployments, integrations, and domains. Keep scripted setup in the CLI.
+To view your resources instead of running commands, use the [Console](https://pris.ly/pdp) for projects, branches, apps, deployments, integrations, and domains. It shows them in a visual way and lets you manage them with buttons instead of commands.
 
 ## Next steps
 
