@@ -9,6 +9,8 @@ import type { CSSProperties } from "react";
  * Wrap tokens in `[[...]]` to emphasize them in the current step.
  */
 export interface ConceptStep {
+  /** Short label for this state, shown in the stepper so readers can jump to it. */
+  title: string;
   code: string;
   caption: string;
 }
@@ -20,36 +22,92 @@ export interface ConceptPreset {
 
 export const CONCEPT_PRESETS = {
   "compute-model": {
-    label: "How Compute organizes resources",
+    label: "How Compute organizes resources and isolates branches",
     steps: [
       {
-        code: "[[workspace]]",
-        caption: "A workspace owns access, billing, and integrations.",
+        title: "1. First deploy",
+        code:
+          "$ [[npx @prisma/cli@latest app deploy]]\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "project: my-app\n" +
+          "└─ branch: main  (production)  → app + database",
+        caption:
+          "Run from your project directory, your first app deploy creates everything: the project (my-app), its production branch, and the app and database that run it. Nothing exists before this command.",
       },
       {
-        code: "workspace → [[project]]",
-        caption: "A project groups one product or codebase.",
+        title: "2. Preview branch",
+        code:
+          "$ [[npx @prisma/cli@latest app deploy --branch feature/login]]\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "project: my-app\n" +
+          "├─ branch: main           (production)  → app + database\n" +
+          "└─ branch: feature/login  (preview)     → app + database  [[← new copy]]",
+        caption:
+          "Deploy with a new branch name and Compute provisions a full copy of the infrastructure: feature/login gets its own app, database, and URL. Production stays untouched.",
       },
       {
-        code: "workspace → project → [[branch]]",
-        caption: "A branch is an isolated environment for one line of work.",
+        title: "3. Connect GitHub",
+        code:
+          "$ [[npx @prisma/cli@latest git connect]]\n" +
+          "$ [[git push]]   # push feature/login\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "project: my-app  (connected → acme/shop)\n" +
+          "├─ branch: main           ← git: main\n" +
+          "└─ branch: feature/login  ← git: feature/login  [[deploys]]",
+        caption:
+          "Connect the repo once and you stop deploying by hand. Each Git branch maps to a branch by name, so pushing feature/login builds and deploys just that preview automatically.",
       },
       {
-        code: "workspace → project → branch → [[{ apps, databases }]]",
-        caption: "Each branch owns its own apps and databases.",
+        title: "4. Ship to production",
+        code:
+          "$ [[git push]]   # merge to main\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "project: my-app\n" +
+          "└─ branch: main  (production)  [[deployed]]",
+        caption:
+          "Merging to your default branch pushes to main and deploys to production. The merged preview branch is cleaned up, so only production keeps running.",
       },
     ],
   },
   "github-connection": {
-    label: "How the GitHub connection is layered",
+    label: "How a GitHub connection deploys on push",
     steps: [
       {
-        code: "[[workspace  →  installs the Prisma GitHub App]]\nproject    →  maps to one repository",
-        caption: "The workspace owns the GitHub App installation.",
+        title: "1. Install the app",
+        code:
+          "$ [[npx @prisma/cli@latest git connect]]\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "workspace\n" +
+          "└─ Prisma GitHub App installed",
+        caption:
+          "The first time you run git connect, the workspace installs the Prisma GitHub App. That installation is what lets Prisma see your repositories.",
       },
       {
-        code: "workspace  →  installs the Prisma GitHub App\n[[project    →  maps to one repository]]",
-        caption: "Each project points at a single repository.",
+        title: "2. Connect a repo",
+        code:
+          "$ [[npx @prisma/cli@latest git connect]]\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "workspace\n" +
+          "└─ Prisma GitHub App installed\n" +
+          "project: my-app  →  github.com/acme/shop",
+        caption:
+          "The same command connects this project to a single repository, so Prisma knows that github.com/acme/shop belongs to my-app.",
+      },
+      {
+        title: "3. Push to deploy",
+        code:
+          "$ [[git push]]   # push feature/x\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "project: my-app  →  deploys branch [[feature/x]]",
+        caption:
+          "After that, every push builds the commit and deploys the matching branch, so your previews always track your Git branches.",
       },
     ],
   },
@@ -57,16 +115,41 @@ export const CONCEPT_PRESETS = {
     label: "How environment variables resolve",
     steps: [
       {
-        code: "deploy --branch [[main]]\nvalues: [[production]] variables",
-        caption: "Production deploys get the production variables.",
+        title: "1. Production",
+        code:
+          "$ npx @prisma/cli@latest project env add \\\n" +
+          "    DATABASE_URL=postgres://prod [[--role production]]\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "branch main resolves:\n" +
+          "   DATABASE_URL = postgres://prod",
+        caption:
+          "Variables added with --role production apply to every production deploy, so the main branch resolves to exactly these values.",
       },
       {
-        code: "deploy --branch [[feature/search]]\nvalues: [[preview]] variables",
-        caption: "Every preview deploy gets the preview variables.",
+        title: "2. Preview",
+        code:
+          "$ npx @prisma/cli@latest project env add \\\n" +
+          "    DATABASE_URL=postgres://preview [[--role preview]]\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "branch feature/search resolves:\n" +
+          "   DATABASE_URL = postgres://preview",
+        caption:
+          "Preview-scoped variables apply to every preview branch, so test traffic stays off production data. Any branch other than main resolves to this set.",
       },
       {
-        code: "deploy --branch [[feature/search]]\nvalues: preview variables [[+ branch overrides]]",
-        caption: "An override replaces a preview value for one specific branch.",
+        title: "3. Branch override",
+        code:
+          "$ npx @prisma/cli@latest project env add \\\n" +
+          "    FEATURE_FLAG=on [[--branch feature/search]]\n" +
+          "  │\n" +
+          "  ▼\n" +
+          "branch feature/search resolves:\n" +
+          "   DATABASE_URL = postgres://preview\n" +
+          "   FEATURE_FLAG = on   [[← override]]",
+        caption:
+          "A branch override adds or replaces a value for one branch. feature/search keeps the shared preview DATABASE_URL but also gets FEATURE_FLAG=on, which no other branch sees.",
       },
     ],
   },

@@ -9,37 +9,44 @@ metaDescription: Learn what Prisma Compute is, how it runs your app alongside Pr
 
 Prisma Compute deploys and runs your TypeScript app on the same platform as [Prisma Postgres](/postgres). You model your data with [Prisma ORM](/orm), store it in Prisma Postgres, and deploy your app to Prisma Compute, so your schema, database, and hosting are managed together instead of across separate providers.
 
-Compute is serverless TypeScript app hosting. Running your app next to Prisma Postgres keeps app-to-database traffic within one platform, which reduces latency. Push a branch and Compute builds it and deploys a preview URL backed by an isolated app with its own resources. Merge to production when the branch is ready.
-
 :::info[Public Beta]
 
 Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta) and is CLI-first: you deploy and manage apps with the [`@prisma/cli`](/compute/getting-started) beta package. Use the [Prisma Console](https://console.prisma.io) when you prefer to view your resources instead of running a command.
 
 :::
 
+## Get started
+
+The best way to understand Compute is to deploy an app. The quickstart gets a TypeScript app to a live URL in a few minutes, then connects GitHub so every push deploys automatically.
+
+<Cards>
+  <Card href="/prisma-compute/deploy" title="Deploy your first app">
+    The quickstart: sign in, deploy, verify, and connect GitHub.
+  </Card>
+</Cards>
+
+Want to see how it works first? [The model](#the-model) below shows how each branch gets an isolated copy of your app and database, so previews never touch production.
+
 ## The model
 
-Compute organizes everything into four resources:
+Compute organizes everything into a few resources:
+
+- A **project** groups one product or codebase.
+- A **branch** maps to a Git branch in the linked repository, and gets its own isolated app and deployments.
+- An **app** is an HTTP service, such as a frontend or backend, and can have multiple **deployments**.
+
+The branch is the idea that ties Compute together, because each branch owns its own app, database, and URL. When you create a branch, Compute provisions a full copy of that infrastructure, so preview work runs in complete isolation and never touches production.
+
+- **Production**: the default Git branch is your production branch, with its own resources and environment variables.
+- **Preview**: every other branch is a preview branch, with its own isolated resources and environment variables scoped to **preview**.
+
+After you [connect a GitHub repository](/compute/github), pushing to a Git branch builds and deploys its preview automatically.
+
+The animation below walks the whole flow, from your first deploy to shipping to production. Step through it, or let it play:
 
 <ConceptAnimation name="compute-model" />
 
-- A **workspace** owns access, billing, and integrations.
-- A **project** groups one product or codebase.
-- A **branch** is an isolated environment for one line of work. It usually matches a Git branch name, but in Prisma it is a real resource that owns its own apps and databases.
-- An **app** is an HTTP service. Each built version of an app is a **deployment**.
-
-One branch is your production branch (usually `main`). Every other branch is a preview: its own app deployments and resources, with zero effect on production.
-
-## Your first deploy
-
-To go from your code to a live URL, run one command from your app directory:
-
-```npm
-cd my-app
-npx @prisma/cli@latest app deploy
-```
-
-`app deploy` sets up the project, builds your app, and prints the live URL. For the full walkthrough, including signing in, frameworks, linking an existing project, and deploying to production, see [Get started with `@prisma/cli`](/compute/getting-started).
+For the full picture, see [Branching](/compute/branching).
 
 ## CLI and Console
 
@@ -47,27 +54,14 @@ Use the **CLI** for anything you want to repeat: local development, CI, and agen
 
 Use the **Console** when you want to look rather than type: inspect projects, branches, apps, and deployments, install workspace integrations, or check domain status.
 
-## Getting started
-
-<Cards>
-  <Card href="/compute/getting-started" title="Get started with @prisma/cli">
-    Your first deploy: frameworks, project linking, production, and CI.
-  </Card>
-  <Card href="/prisma-compute/deploy" title="Deploy your first app">
-    A short walkthrough from app directory to live URL.
-  </Card>
-  <Card href="/compute/environment-variables" title="Environment variables">
-    Give your app a database by setting a connection string.
-  </Card>
-</Cards>
-
 ## What to read next
 
+- [Get started with `@prisma/cli`](/compute/getting-started): the full CLI guide for frameworks, project linking, production, and CI.
 - [Branching](/compute/branching): how branches isolate work and map to Git.
 - [Deployments](/compute/deployments): build, deploy, logs, promote, roll back.
-- [CLI reference](/compute/cli-reference): every command, flag, and error code.
 - [Environment variables](/compute/environment-variables): production, preview, and per-branch overrides.
 - [GitHub integration](/compute/github): connect a repo and deploy on push.
+- [CLI reference](/compute/cli-reference): every command, flag, and error code.
 - [Domains](/compute/domains): point a custom domain at production.
 - [Known limitations](/compute/limitations): what the beta can and can't do.
 - [FAQ](/compute/faq): quick answers to common questions.

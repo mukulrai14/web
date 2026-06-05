@@ -6,7 +6,9 @@ metaTitle: 'Quickstart: Deploy your first app on Prisma Compute'
 metaDescription: Deploy a TypeScript app to Prisma Compute with the @prisma/cli beta package and verify it at a live URL.
 ---
 
-[Prisma Compute](/compute) runs your app next to your Prisma Postgres database. In this guide, you will deploy an existing app to Compute and open it at a live URL.
+[Prisma Compute](/compute) runs your app next to your Prisma Postgres database. In this guide, you will deploy an existing app to Compute, open it at a live URL, and connect it to GitHub so every push deploys on its own. Each step explains what the CLI does on your behalf, so nothing happens behind your back.
+
+If you are new to how Compute fits together, the [resource model](/compute#the-model) is worth a quick look first: a workspace holds projects, a project holds branches, and each branch owns its own app and database.
 
 ## Prerequisites
 
@@ -22,23 +24,38 @@ Next.js apps must set `output: "standalone"` in their Next.js config before depl
 
 ## 1. Sign in
 
-Deploys fail without a session, so authenticate first:
+A deploy needs an authenticated session, so sign in before anything else:
 
 ```npm
 npx @prisma/cli@latest auth login
 ```
 
-This opens a browser to sign you in and stores a session that every later command inherits. Check it any time with `auth whoami`.
+This opens your browser, signs you in to your Prisma developer platform account, and stores a session on your machine. Every later command reads that session automatically, so you sign in only once. Anything else running in the same environment inherits it too, including a coding agent working in your project directory.
+
+Confirm who you are signed in as at any time:
+
+```npm
+npx @prisma/cli@latest auth whoami
+```
+
+The browser step needs a human, so it does not work in CI or other headless environments. There, authenticate with a [service token](/compute/getting-started#automation-and-ci) instead.
 
 ## 2. Deploy
 
-From your app directory:
+From your app directory, run a single command:
 
 ```npm
 npx @prisma/cli@latest app deploy
 ```
 
-Then the CLI sets up the project, builds your app, and deploys it. After it finishes, you get a live URL. Your first deployment is promoted to production automatically.
+There is no black box here. In one pass, the CLI:
+
+1. **Detects your framework** from your project files, whether that is Next.js, Hono, TanStack Start, or a plain Bun server. To choose it yourself, pass `--framework`.
+2. **Sets up a project** the first time you deploy from this directory, then writes `.prisma/local.json` to pin the directory to that project. That file is a local, gitignored cache rather than committed config. If your team already has a project, [link it first](/compute/getting-started#link-an-existing-project).
+3. **Resolves the target branch.** Inside a Git repository, the CLI uses your current Git branch name; otherwise it falls back to `main`. Pass `--branch <name>` to choose explicitly. Because each branch is its own isolated environment, this is what decides where the deploy lands.
+4. **Builds and uploads your app**, provisions the app, and prints a live URL.
+
+Your first deploy is promoted to production automatically, so the URL you get back is your production URL. To see how projects, branches, and apps relate, see [The model](/compute#the-model).
 
 ## 3. Verify
 
@@ -48,21 +65,47 @@ Open the deployed app in your browser:
 npx @prisma/cli@latest app open
 ```
 
-If something looks off, stream the logs:
+If the app does not respond the way you expect, stream its logs to see what happened:
 
 ```npm
 npx @prisma/cli@latest app logs
 ```
 
-## 4. Keep shipping
+Logs cover both the build and the running app, so a failed build and a runtime error both surface in the same place.
 
-After your app is live, you can keep deploying with the Prisma CLI or inspect your resources in the [Prisma Console](https://console.prisma.io): projects, branches, apps, deployments, integrations, and domains.
+## 4. Deploy again
 
-Deploys from a Git feature branch create isolated [preview deployments](/compute/branching). After your first production deploy, deploying to production again needs an explicit `--prod` flag; add `--yes` to accept the confirmation up front in scripts and CI:
+Run `app deploy` whenever you want to ship a change. After your first deploy, production is protected: deploying to your production branch again needs an explicit `--prod` flag, so you never ship to production by accident.
+
+```npm
+npx @prisma/cli@latest app deploy --prod
+```
+
+Deploying from a Git feature branch behaves differently. The CLI resolves that branch name, creates a matching platform branch if one does not exist yet, and gives you an isolated [preview deployment](/compute/branching) with its own app, database, and URL. Preview deploys never ask for confirmation and never affect production, so you can run them as often as you like.
+
+In scripts and CI, add `--yes` to accept the production confirmation up front:
 
 ```npm
 npx @prisma/cli@latest app deploy --prod --yes
 ```
+
+You can also inspect everything you have deployed in the [Prisma Console](https://console.prisma.io): projects, branches, apps, deployments, integrations, and domains.
+
+## 5. Connect GitHub
+
+Connecting your repository to GitHub is the recommended way to deploy on Compute, and the workflow most teams settle on. Once it is connected, Prisma deploys on every push, so you rarely run `app deploy` by hand again. From your linked project directory, connect your Git origin:
+
+```npm
+npx @prisma/cli@latest git connect
+```
+
+If the Prisma GitHub App is not installed yet, the CLI starts the install flow in your browser. Once the connection is live, Prisma watches the repository and keeps your platform branches in sync with your Git branches:
+
+- Pushing to a branch builds that commit and updates the matching platform branch's preview.
+- Creating a Git branch creates the matching platform branch.
+- Deleting a Git branch tears its preview down, while leaving production and your default branch alone.
+
+Connecting does not deploy anything on its own; it wires up automation for future pushes, so to ship right now you still run `app deploy`. For the full setup, including monorepos and CI, see the [GitHub integration docs](/compute/github).
 
 ## Hand it to your agent
 
@@ -87,6 +130,8 @@ Notes worth giving your agent:
 
 ## What's next
 
-- [Add environment variables](/compute/environment-variables) for configuration, secrets, and your database connection string
-- [Connect a GitHub repository](/compute/github) to deploy on push
-- [Read the full CLI getting-started guide](/compute/getting-started)
+- [Branching](/compute/branching): how preview branches isolate work and map to your Git branches.
+- [Add environment variables](/compute/environment-variables) for configuration, secrets, and your database connection string.
+- [Deployments](/compute/deployments): promote, roll back, and inspect what you ship.
+- [GitHub integration](/compute/github): the full picture on deploy-on-push, monorepos, and cleanup.
+- [Read the full CLI getting-started guide](/compute/getting-started) for frameworks, project linking, and CI.

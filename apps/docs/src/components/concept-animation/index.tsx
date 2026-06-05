@@ -12,6 +12,7 @@ export function ConceptAnimation({ name }: { name: ConceptName }) {
   if (!preset) throw new Error(`Unknown concept animation: ${String(name)}`);
   const steps = preset.steps.map((step) => ({
     ...parseStepTokens(step.code),
+    title: step.title,
     caption: step.caption,
   }));
   return <ConceptPlayer label={preset.label} steps={steps} />;

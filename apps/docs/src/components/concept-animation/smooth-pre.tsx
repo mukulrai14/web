@@ -8,7 +8,7 @@ import {
 } from "codehike/utils/token-transitions";
 import React from "react";
 
-const TRANSITION_DURATION = 650;
+const TRANSITION_DURATION = 900;
 
 /**
  * The Code Hike token-transitions pre: snapshots token positions before an
