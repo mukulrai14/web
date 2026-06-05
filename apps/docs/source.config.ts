@@ -92,9 +92,6 @@ export default defineConfig({
         id: "package-manager",
       },
       packageManagers: [
-        { command: (cmd: string) => convertLine(cmd, "npm"), name: "npm" },
-        { command: (cmd: string) => convertLine(cmd, "pnpm"), name: "pnpm" },
-        { command: (cmd: string) => convertLine(cmd, "yarn"), name: "yarn" },
         {
           command: (cmd: string) => {
             const converted = convertLine(cmd, "bun");
@@ -103,6 +100,9 @@ export default defineConfig({
           },
           name: "bun",
         },
+        { command: (cmd: string) => convertLine(cmd, "pnpm"), name: "pnpm" },
+        { command: (cmd: string) => convertLine(cmd, "yarn"), name: "yarn" },
+        { command: (cmd: string) => convertLine(cmd, "npm"), name: "npm" },
       ],
     },
   },
