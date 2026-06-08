@@ -1,5 +1,6 @@
-import { Card, CardHeader, CardFooter, Button, Action } from "@prisma/eclipse";
+import { Card, CardHeader, CardFooter, Action } from "@prisma/eclipse";
 import { cn } from "@/lib/cn";
+import { CopyCommand } from "./copy-command";
 
 // ---------------------------------------------------------------------------
 // Shared types
@@ -99,21 +100,18 @@ function DrawbackItem({ text }: { text: string }) {
 const TEMPLATES = [
   {
     title: "Next.js",
-    subtitle: "A full-stack Next.js app with a database connected by default.",
-    command: "npx create-next-app",
-    href: "#",
+    subtitle: "A full-stack Next.js app paired with Prisma Postgres.",
+    command: "bunx create-prisma@latest --template next",
   },
   {
     title: "TanStack Start",
-    subtitle: "Modern full-stack TypeScript with Router & Query, wired to Prisma Postgres.",
-    command: "npx create-tanstack",
-    href: "#",
+    subtitle: "Modern full-stack TypeScript with Router & Query, paired with Prisma Postgres.",
+    command: "bunx create-prisma@latest --template tanstack-start",
   },
   {
     title: "Hono API",
-    subtitle: "Lightweight API backend. A good starting point for APIs and background jobs.",
-    command: "npx create-hono-api",
-    href: "#",
+    subtitle: "Lightweight API backend. A good starting point for TypeScript APIs.",
+    command: "bunx create-prisma@latest --template hono",
   },
 ];
 
@@ -124,13 +122,8 @@ const TEMPLATES = [
 const WORKLOAD_TYPES = [
   {
     icon: "fa-regular fa-globe",
-    title: "Rest API",
-    subtitle: "http · edge-aware",
-  },
-  {
-    icon: "fa-regular fa-reply-clock",
-    title: "CronJob",
-    subtitle: "retries · back-off",
+    title: "REST API",
+    subtitle: "http · long-lived",
   },
   {
     icon: "fa-regular fa-rocket",
@@ -138,11 +131,16 @@ const WORKLOAD_TYPES = [
     subtitle: "https · flexible",
   },
   {
-    icon: "fa-regular fa-gear",
-    title: "WebSocket",
-    subtitle: "ws · real-time",
+    icon: "fa-regular fa-stars",
+    title: "AI Agent",
+    subtitle: "sse · streaming",
   },
-  { icon: "fa-regular fa-cloud", title: "SOAP", subtitle: "http · structured" },
+  {
+    icon: "fa-regular fa-bolt",
+    title: "Streaming",
+    subtitle: "http · long-running",
+  },
+  { icon: "fa-regular fa-cloud", title: "Full-stack", subtitle: "ssr · spa" },
   { icon: "fa-regular fa-lock", title: "gRPC", subtitle: "http2 · efficient" },
 ];
 
@@ -192,16 +190,13 @@ export function TemplateCards() {
               {template.subtitle}
             </p>
           </CardHeader>
-          <CardFooter className="bg-background-default border-t-0 justify-between gap-3 pb-4">
-            <code className="font-mono text-sm text-foreground-neutral-weak flex-1 truncate">
-              <span className="text-foreground-ppg">$</span> {template.command}
+          <CardFooter className="bg-background-default border-t-0 flex-col items-stretch gap-3 pb-4">
+            <code className="font-mono text-sm text-foreground-neutral-weak w-full break-words">
+              <span className="text-foreground-ppg-strong">$</span> {template.command}
             </code>
-            <Button asChild variant="default-strong" size="lg">
-              <a href={template.href} className="px-4 font-normal">
-                Deploy
-                <i className="fa-regular fa-arrow-right text-xs" />
-              </a>
-            </Button>
+            <div className="self-end">
+              <CopyCommand command={template.command} />
+            </div>
           </CardFooter>
         </Card>
       ))}
@@ -267,23 +262,23 @@ const US_SERVICES: ServiceRow[] = [
   },
   {
     icon: "fa-regular fa-image",
-    label: "static + image optimization",
-    status: "in-process",
+    label: "static assets · in-process",
+    status: "live",
   },
   {
     icon: "fa-regular fa-layer-group",
     label: "cache headers · your rules",
-    status: "in-process",
+    status: "live",
   },
   {
     icon: "fa-regular fa-clock-rotate-left",
     label: "background workers",
-    status: "in-process",
+    status: "soon",
   },
 ];
 
 const US_BENEFITS = [
-  "No cold starts, no timeouts, no connection limits",
+  "Long-lived processes, long-running requests, persistent connections",
   "Self-hosting, without the painful parts",
 ];
 
@@ -292,13 +287,27 @@ const US_BENEFITS = [
 // ---------------------------------------------------------------------------
 
 function UnifiedServiceRow({ icon, label, status }: ServiceRow) {
+  const isSoon = status === "soon";
   return (
     <div className="flex items-center gap-2.5 px-3 py-2 rounded-md bg-background-default border border-stroke-neutral">
-      <i className={cn(icon, "text-[10px] text-foreground-success shrink-0")} />
+      <i
+        className={cn(
+          icon,
+          "text-[10px] shrink-0",
+          isSoon ? "text-foreground-neutral-weaker" : "text-foreground-success",
+        )}
+      />
       <span className="font-mono text-[11px] text-foreground-neutral flex-1 leading-none">
         {label}
       </span>
-      <span className="font-mono text-[10px] text-foreground-success shrink-0">{status}</span>
+      <span
+        className={cn(
+          "font-mono text-[10px] shrink-0",
+          isSoon ? "text-foreground-neutral-weaker" : "text-foreground-success",
+        )}
+      >
+        {status}
+      </span>
     </div>
   );
 }

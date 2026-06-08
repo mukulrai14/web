@@ -15,6 +15,8 @@ interface TwoColumnItem {
   logos: any[] | null;
   alignItems?: "items-end" | "items-start" | "items-center";
   footer?: ReactNode;
+  // Rendered inside the visual column, directly below the image/logo grid.
+  visualFooter?: ReactNode;
   color?: "orm" | "ppg";
   other?: ReactNode;
   useDefaultLogos: boolean;
@@ -175,13 +177,7 @@ const ImageVisual = ({ item, isLcpImage }: ImageVisualProps) => {
   );
 };
 
-const SectionVisual = ({
-  item,
-  isLcpImage,
-}: {
-  item: TwoColumnItem;
-  isLcpImage: boolean;
-}) => {
+const SectionVisual = ({ item, isLcpImage }: { item: TwoColumnItem; isLcpImage: boolean }) => {
   if (item.visualType === "other") {
     return item.other ? <>{item.other}</> : null;
   }
@@ -238,6 +234,9 @@ const CardSectionItem = ({
           )}
         >
           <SectionVisual item={item} isLcpImage={isLcpImage} />
+          {item.visualFooter && (
+            <div className="mt-6 flex justify-center lg:justify-start">{item.visualFooter}</div>
+          )}
         </div>
       </div>
     </div>
@@ -265,8 +264,7 @@ export const CardSection = ({ cardSection, className }: CardSectionProps) => {
         if (!containerRef.current) return;
 
         const container = containerRef.current;
-        const position =
-          container.getBoundingClientRect().y * -1 + window.innerHeight * 0.8;
+        const position = container.getBoundingClientRect().y * -1 + window.innerHeight * 0.8;
 
         setProgressHeight(position);
 

@@ -23,18 +23,18 @@ const FEATURES = [
           Deploy from your repo
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Connect a GitHub repo. Prisma Compute discovers your services and deploys them in seconds.
+          Connect a GitHub repo. Prisma Compute builds your app and brings it live with a URL.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>
-            <code className="font-mono text-foreground-ppg-reverse-weak">
+            <code className="font-mono text-foreground-ppg-strong">
               @prisma/cli@latest app deploy
             </code>{" "}
             from the CLI, or push to a connected branch
           </li>
           <li>No CI/CD pipeline to configure</li>
           <li>No deployment scripts, no dashboard workflows</li>
-          <li>What&apos;s in your repo is what runs in production</li>
+          <li>What&apos;s in your repo is what runs</li>
         </ul>
       </>
     ),
@@ -62,10 +62,10 @@ const FEATURES = [
           across requests.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
-          <li>No cold starts</li>
-          <li>No execution timeouts</li>
-          <li>No connection limits</li>
-          <li>WebSockets, streaming, long-running jobs without workarounds</li>
+          <li>Long-lived processes, not per-request functions</li>
+          <li>Long-running HTTP requests and streaming responses</li>
+          <li>Connections and in-process state persist across requests</li>
+          <li>Fair-use concurrency and runtime guardrails apply</li>
         </ul>
       </>
     ),
@@ -93,10 +93,9 @@ const FEATURES = [
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>Backend APIs and full-stack apps</li>
-          <li>Background workers and data pipelines</li>
-          <li>Scheduled and cron jobs</li>
-          <li>Real-time / WebSocket servers</li>
-          <li>AI agents, retrieval, LLM orchestration</li>
+          <li>Long-running and streaming HTTP workloads</li>
+          <li>AI agents, retrieval, and LLM orchestration</li>
+          <li>Coming soon: background workers, cron, and WebSocket servers</li>
         </ul>
       </>
     ),
@@ -120,13 +119,13 @@ const FEATURES = [
           Co-located database
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Pair with Prisma Postgres so compute and database run in the same region, connected
-          automatically.
+          Pairs with Prisma Postgres so compute and database run in the same box, with auto-wiring
+          where the app and database relationship is clear.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
-          <li>No connection strings to copy</li>
-          <li>No networking to configure</li>
+          <li>Low-latency access from the same box</li>
           <li>Built-in connection pooling for long-lived processes</li>
+          <li>Pairs with a Prisma Postgres database in one step</li>
           <li>Works with any database, no lock-in</li>
         </ul>
       </>
@@ -157,23 +156,24 @@ const DOES_IT_WORK = [
   {
     title: "Running a Hono, Express, or Fastify API?",
     description:
-      "Long-lived processes are the default, so WebSockets and streaming work without workarounds. Sockets stay open and streams run uninterrupted.",
+      "Long-lived processes are the default, so streaming and long-running requests work without workarounds. Connections stay open and streams run uninterrupted.",
     icon: "fa-regular fa-rocket",
-    badgeColor: "success" as const,
-  },
-  {
-    title: "Running background jobs or workers?",
-    description:
-      "They run as long-lived processes alongside your API. Same repo, same runtime, same bill, with no separate worker tier to pay for.",
-    icon: "fa-regular fa-clock-rotate-left",
     badgeColor: "success" as const,
   },
   {
     title: "Building an AI agent?",
     description:
-      "Per-session sandboxes, long-lived runtimes, and in-process memory, on the same runtime that serves your API.",
+      "Long-lived runtimes and in-process memory, on the same runtime that serves your API.",
     icon: "fa-regular fa-stars",
     badgeColor: "ppg" as const,
+  },
+  {
+    title: "Need background jobs or workers?",
+    description:
+      "Coming soon. Run them as long-lived processes alongside your API, in the same repo and runtime.",
+    icon: "fa-regular fa-clock-rotate-left",
+    badgeColor: "neutral" as const,
+    comingSoon: true,
   },
   {
     title: "Bringing your own database?",
@@ -185,7 +185,7 @@ const DOES_IT_WORK = [
   {
     title: "Tired of the serverless tax?",
     description:
-      "If your bill is split across compute, edge, image opt, and bandwidth, Compute collapses it into one. One service, one rate, one invoice.",
+      "If your bill is split across compute, bandwidth, and add-ons, Compute keeps it to one service. One service, one rate, one invoice.",
     icon: "fa-regular fa-receipt",
     badgeColor: "success" as const,
   },
@@ -197,18 +197,18 @@ const WHY_FEATURES = [
     title: "Push code, it runs",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        From GitHub to live in seconds. No build pipelines to configure.
+        From GitHub to a live URL. No build pipelines to configure.
       </div>
     ),
     icon: "fa-regular fa-rocket",
     row: "top" as const,
   },
   {
-    id: "no-cold-starts",
-    title: "No cold starts",
+    id: "long-lived-runtime",
+    title: "Long-lived runtime",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        No timeouts, no connection limits. Long-lived processes only.
+        Always-on Bun processes for long-running requests and streaming.
       </div>
     ),
     icon: "fa-regular fa-infinity",
@@ -216,10 +216,10 @@ const WHY_FEATURES = [
   },
   {
     id: "any-ts-workload",
-    title: "Any TS workload",
+    title: "TypeScript apps",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        APIs, background workers, scheduled jobs, WebSockets, AI agents, sandboxes.
+        APIs, full-stack apps, and AI agents. More workloads coming soon.
       </div>
     ),
     icon: "fa-regular fa-layer-group",
@@ -238,10 +238,11 @@ const WHY_FEATURES = [
   },
   {
     id: "db-connected",
-    title: "DB connected by default",
+    title: "Pairs with Prisma Postgres",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        Co-located with Prisma Postgres for low-latency access. Works with any database.
+        Runs in the same box, auto-wired when the app and database relationship is clear. Works with
+        any database.
       </div>
     ),
     icon: "fa-regular fa-database",
@@ -249,10 +250,10 @@ const WHY_FEATURES = [
   },
   {
     id: "reliable",
-    title: "Reliable by design",
+    title: "Recovers on its own",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        Automatic scaling, recovery, and OOM handling.
+        Health checks and automatic restarts keep your app running.
       </div>
     ),
     icon: "fa-regular fa-shield-check",
@@ -262,13 +263,13 @@ const WHY_FEATURES = [
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Prisma Compute: Deploy TypeScript apps to production",
+    title: "Prisma Compute: Deploy TypeScript apps on Bun",
     description:
-      "Deploy TypeScript apps from your repo. APIs, background jobs, and AI agents run as long-lived processes on Bun, with no cold starts or timeouts.",
+      "Deploy TypeScript apps from your repo. APIs and AI agents run as long-lived Bun processes next to Prisma Postgres, with long-running requests and streaming.",
     openGraph: {
-      title: "Prisma Compute: Deploy TypeScript apps to production",
+      title: "Prisma Compute: Deploy TypeScript apps on Bun",
       description:
-        "Deploy TypeScript apps from your repo. APIs, background jobs, and AI agents run as long-lived processes on Bun, with no cold starts or timeouts.",
+        "Deploy TypeScript apps from your repo. APIs and AI agents run as long-lived Bun processes next to Prisma Postgres, with long-running requests and streaming.",
       url: "https://www.prisma.io/compute",
       type: "website",
       siteName: "Prisma",
@@ -277,7 +278,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: "/og/og-compute.png",
           width: 1200,
           height: 630,
-          alt: "Prisma Compute: Deploy TypeScript apps to production",
+          alt: "Prisma Compute: Deploy TypeScript apps on Bun",
         },
       ],
     },
@@ -306,17 +307,17 @@ export default async function Page() {
               <i className="fa-solid fa-microchip" aria-hidden="true"></i>
               <span>Prisma Compute</span>
             </div>
-            <h1 className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto">
-              Deploy TypeScript
-              <br /> to production
+            <h1
+              className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto text-balance"
+              style={{ fontSize: "clamp(2.25rem, 9vw, 3.75rem)" }}
+            >
+              Deploy TypeScript apps <span className="md:block">on Prisma Compute</span>
             </h1>
           </div>
           <p className="text-center text-foreground-neutral max-w-3xl mx-auto text-xl">
-            <b>Push code, it runs.</b> APIs, background jobs, and AI agents run as long-lived
-            TypeScript on Bun, with no cold starts.
-          </p>
-          <p className="text-2xs uppercase font-medium tracking-[1.1px] text-foreground-neutral-weak text-center mx-auto! -mt-5">
-            $1 per million requests. Volume discounts apply.
+            <b>Push code, it runs.</b> Your app runs as a long-lived TypeScript process on Bun, next
+            to your database. A good fit for APIs and AI agents that hold state, stream responses,
+            and keep connections open.
           </p>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <Button asChild variant="ppg" size="2xl">
@@ -367,40 +368,58 @@ export default async function Page() {
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-296 w-full">
-          {DOES_IT_WORK.map((item) => (
-            <Card
-              key={item.title}
-              className={cn(
-                item.badgeColor === "ppg"
-                  ? "bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg-strong)_262.5%)] border-stroke-ppg/40"
-                  : "bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)]",
-              )}
-            >
-              <div className="flex items-center justify-between">
-                <Action color="neutral" size="lg">
-                  <i className={cn(item.icon, "text-sm")} />
-                </Action>
-                <Badge
-                  color={item.badgeColor}
-                  className={cn(
-                    item.badgeColor === "ppg" &&
-                      "bg-background-ppg-reverse-strong text-foreground-neutral-reverse font-bold!",
+          {DOES_IT_WORK.map((item) => {
+            const comingSoon = "comingSoon" in item && item.comingSoon;
+            return (
+              <Card
+                key={item.title}
+                className={cn(
+                  comingSoon
+                    ? "bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] border-dashed border-stroke-ppg/50"
+                    : item.badgeColor === "ppg"
+                      ? "bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg-strong)_262.5%)] border-stroke-ppg/40"
+                      : "bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)]",
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <Action color={comingSoon ? "ppg" : "neutral"} size="lg">
+                    <i className={cn(item.icon, "text-sm")} />
+                  </Action>
+                  {comingSoon ? (
+                    <Badge
+                      color="ppg"
+                      size="md"
+                      label={
+                        <span className="flex items-center gap-1.5">
+                          <i className="fa-regular fa-sparkles text-xs" />
+                          COMING SOON
+                        </span>
+                      }
+                    />
+                  ) : (
+                    <Badge
+                      color={item.badgeColor}
+                      className={cn(
+                        item.badgeColor === "ppg" &&
+                          "bg-background-ppg-reverse-strong text-foreground-neutral-reverse font-bold!",
+                      )}
+                      size={item.badgeColor === "ppg" ? "lg" : "md"}
+                      label={
+                        <span className="flex items-center gap-1">
+                          <i className="fa-regular fa-check text-xs" />
+                          YES
+                        </span>
+                      }
+                    />
                   )}
-                  size={item.badgeColor === "ppg" ? "lg" : "md"}
-                  label={
-                    <span className="flex items-center gap-1">
-                      <i className="fa-regular fa-check text-xs" />
-                      YES
-                    </span>
-                  }
-                />
-              </div>
-              <div>
-                <h3 className="text-foreground-neutral type-title-md m-0 mb-2">{item.title}</h3>
-                <p className="text-foreground-neutral-weak text-sm m-0">{item.description}</p>
-              </div>
-            </Card>
-          ))}
+                </div>
+                <div>
+                  <h3 className="text-foreground-neutral type-title-md m-0 mb-2">{item.title}</h3>
+                  <p className="text-foreground-neutral-weak text-sm m-0">{item.description}</p>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       </section>
       <section className="flex flex-col items-center gap-12 py-12 px-8">
@@ -409,7 +428,7 @@ export default async function Page() {
             04 / WHAT MAKES IT UNIQUE
           </span>
           <h2 className="type-title-4xl text-foreground-neutral m-0 text-left">
-            One service for your app, assets, and jobs.
+            One service for your app and its assets.
           </h2>
         </div>
         <div className="flex flex-col lg:flex-row items-center gap-6 max-w-296 w-full">
@@ -430,15 +449,6 @@ export default async function Page() {
         </div>
         <div className="max-w-296 w-full">
           <TemplateCards />
-          <p className="text-left text-sm mt-6 text-foreground-neutral-weak">
-            Already have a codebase?{" "}
-            <a
-              href="https://pris.ly/compute-docs?utm_source=site&utm_campaign=compute&utm_term=devrel"
-              className="underline text-foreground-ppg-strong underline-offset-2"
-            >
-              Connect your GitHub repo →
-            </a>
-          </p>
         </div>
       </section>
       <section className="flex flex-col items-center gap-12 py-12 px-8">

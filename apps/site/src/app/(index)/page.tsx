@@ -30,6 +30,14 @@ const twoCol = [
         </p>
       </>
     ),
+    visualFooter: (
+      <Button asChild variant="ppg" size="lg">
+        <a href="/orm">
+          Explore Prisma ORM
+          <i className="fa-regular fa-arrow-right ml-2" />
+        </a>
+      </Button>
+    ),
     imageUrl: null,
     imageAlt: null,
     mobileImageUrl: null,
@@ -55,6 +63,14 @@ const twoCol = [
           for a more integrated experience.
         </p>
       </>
+    ),
+    visualFooter: (
+      <Button asChild variant="ppg" size="lg">
+        <a href="/postgres">
+          Explore Prisma Postgres
+          <i className="fa-regular fa-arrow-right ml-2" />
+        </a>
+      </Button>
     ),
     imageUrl: null,
     imageAlt: null,
@@ -86,8 +102,9 @@ const twoCol = [
           Run TypeScript the way it actually works.
         </h2>
         <p className="text-foreground-neutral-weak! text-base">
-          Prisma Compute is built for APIs, background jobs, AI agents, and other long-lived
-          workloads. No cold starts, no timeouts, and no extra infrastructure to stitch together.
+          Prisma Compute deploys TypeScript apps as long-lived processes near your database. A good
+          fit for APIs and AI agents, with fewer serverless constraints and no extra infrastructure
+          to stitch together.
         </p>
       </>
     ),
@@ -105,16 +122,16 @@ const twoCol = [
           imageClassName="object-fill object-bottom-right"
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
-        <div className="relative z-10 space-y-4">
+        <div className="relative z-10 max-w-[20rem] space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-stroke-ppg/40 bg-background-ppg/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-foreground-ppg">
             <i className="fa-regular fa-microchip" aria-hidden="true" />
             Long-lived compute
           </div>
-          <ul className="mx-0 mt-4 space-y-3 pl-5 text-sm text-foreground-neutral-weak list-disc">
-            <li>No cold starts</li>
-            <li>No execution timeouts</li>
-            <li>Great for APIs, jobs, and AI agents</li>
-            <li>Co-locates with Prisma Postgres by default</li>
+          <ul className="mx-0 mt-4 space-y-3 pl-5 text-sm text-foreground-neutral-weak list-disc text-pretty">
+            <li>Container-based runtime for long-running apps</li>
+            <li>Long-running requests and streaming</li>
+            <li>Great for APIs and AI agents</li>
+            <li>Runs near Prisma Postgres, auto-wired when clear</li>
           </ul>
         </div>
         <div className="relative z-10">
@@ -217,7 +234,7 @@ const homeStructuredData = createCollectionPageStructuredData({
       name: "Prisma Compute",
       url: "/compute",
       description:
-        "Production compute for APIs, background jobs, and AI agents without cold starts or timeouts.",
+        "Compute for deploying TypeScript apps near Prisma Postgres, for APIs and AI agents that run as long-lived processes.",
     },
   ],
 });
@@ -252,15 +269,16 @@ export default function SiteHome() {
         <div className="absolute inset-0 pointer-events-none z-1 bg-[linear-gradient(180deg,var(--color-foreground-ppg)_0%,var(--color-background-default)_100%)] opacity-20" />
         <div className="content relative z-2 flex flex-col gap-8">
           <div className="flex flex-col gap-4 items-center text-center">
-            <h1 className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto">
-              One Platform for
-              <br />
-              Your TypeScript App
+            <h1
+              className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto text-balance"
+              style={{ fontSize: "clamp(2.25rem, 9vw, 3.75rem)" }}
+            >
+              One Platform for <span className="md:block">Your TypeScript App</span>
             </h1>
           </div>
           <p className="text-center text-foreground-neutral-weak max-w-4xl mx-auto text-xl">
             Most TypeScript backends are stitched together from separate database, ORM, and hosting
-            tools. Prisma brings all three into one platform, from schema to production.
+            tools. Prisma brings all three into one platform, from schema to deployed app.
           </p>
           <div className="flex flex-col gap-6 items-center justify-center">
             <Button asChild variant="ppg" size="3xl" className="font-sans-display! font-[650]">
@@ -283,6 +301,21 @@ export default function SiteHome() {
           <h2 className="m-0 text-center text-4xl md:text-[36px] font-black text-foreground-neutral font-sans-display stretch-display tracking-[-0.015em]">
             One platform for the full TypeScript path.
           </h2>
+          <p className="mx-auto mt-4 max-w-[760px] text-center text-base leading-7 text-foreground-neutral-weak md:text-lg">
+            Start with{" "}
+            <a className="text-foreground-neutral underline underline-offset-2" href="/orm">
+              Prisma ORM
+            </a>{" "}
+            for type-safe database access, add{" "}
+            <a className="text-foreground-neutral underline underline-offset-2" href="/postgres">
+              Prisma Postgres
+            </a>{" "}
+            for managed PostgreSQL, and deploy TypeScript apps for APIs and AI agents on{" "}
+            <a className="text-foreground-neutral underline underline-offset-2" href="/compute">
+              Prisma Compute
+            </a>
+            .
+          </p>
 
           <div className="mx-auto mt-10 grid max-w-[1200px] gap-4 lg:grid-cols-3">
             <div className="relative h-[300px] overflow-hidden rounded-[12px] border border-stroke bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
@@ -347,12 +380,12 @@ export default function SiteHome() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-2">
                     <h3 className="m-0 font-sans-display text-base font-extrabold text-foreground-neutral">
-                      Compute for real workloads
+                      Compute for your app
                     </h3>
                     <p className="m-0 text-sm leading-5 text-foreground-neutral-weak">
-                      APIs, jobs, and agents without the usual
+                      Deploy TypeScript apps with fewer
                       <br />
-                      runtime constraints.
+                      serverless constraints.
                     </p>
                   </div>
                   <div className="inline-flex h-6 items-center gap-2 rounded-[3px] bg-background-ppg-strong px-2 py-1 text-xs font-medium uppercase text-foreground-ppg">
@@ -370,29 +403,6 @@ export default function SiteHome() {
               />
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className={insetSectionSpacing}>
-        <div className="mx-auto flex max-w-[860px] flex-col gap-4 text-center">
-          <h2 className="m-0 text-3xl font-black! font-sans-display text-foreground-neutral stretch-display">
-            A modern platform for TypeScript applications
-          </h2>
-          <p className="mx-auto max-w-[760px] text-base leading-7 text-foreground-neutral-weak md:text-lg">
-            Start with{" "}
-            <a className="text-foreground-neutral underline underline-offset-2" href="/orm">
-              Prisma ORM
-            </a>{" "}
-            for type-safe database access, add{" "}
-            <a className="text-foreground-neutral underline underline-offset-2" href="/postgres">
-              Prisma Postgres
-            </a>{" "}
-            for managed PostgreSQL, and run APIs, background jobs, and AI agents on{" "}
-            <a className="text-foreground-neutral underline underline-offset-2" href="/compute">
-              Prisma Compute
-            </a>
-            .
-          </p>
         </div>
       </section>
 
@@ -429,12 +439,12 @@ export default function SiteHome() {
             <div className="mx-auto flex max-w-[580px] flex-col items-center gap-8 text-center">
               <div className="flex flex-col items-center gap-4">
                 <h2 className="text-3xl text-foreground-neutral font-sans-display stretch-display">
-                  Start with Prisma.
+                  Start with Prisma ORM.
                   <br /> Expand when you need more.
                 </h2>
                 <p className="text-foreground-neutral-weak">
                   Begin with Prisma ORM, add Prisma Postgres when you need managed infrastructure,
-                  and deploy on Prisma Compute when you're ready to run in production.
+                  and deploy your app on Prisma Compute.
                 </p>
               </div>
               <div className="flex flex-col gap-6 md:flex-row">

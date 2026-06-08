@@ -126,11 +126,11 @@ export function StatefulExecutionCard() {
       {/* Metrics */}
       <div className="px-6 pb-8 pt-4 mt-1">
         <Separator />
-        <MetricRow label="websocket connections" value="1,289 open" />
+        <MetricRow label="active connections" value="1,289 open" />
         <Separator />
         <MetricRow label="in-process cache" value="hot · 42 MB" />
         <Separator />
-        <MetricRow label="last cold start" value="never" />
+        <MetricRow label="process uptime" value="14d 06h" />
         <Separator />
         <MetricRow label="p95 latency" value="42ms" />
       </div>
@@ -694,10 +694,10 @@ function WbDeployReplay() {
 
 const RUNTIME_TASKS = [
   {
-    icon: "fa-regular fa-plug",
-    kind: "WebSocket",
+    icon: "fa-regular fa-bolt",
+    kind: "Stream",
     code: "chat.stream",
-    tag: "384 open",
+    tag: "384 active",
     color: "#2DD4BF",
     pulse: true,
   },
@@ -710,25 +710,25 @@ const RUNTIME_TASKS = [
     pulse: false,
   },
   {
-    icon: "fa-regular fa-bars",
-    kind: "Queue",
-    code: "email.send",
-    tag: "12 in flight",
+    icon: "fa-regular fa-arrows-left-arrow-right",
+    kind: "HTTP",
+    code: "GET /api/feed",
+    tag: "in flight",
     color: "#facc15",
     pulse: true,
   },
   {
-    icon: "fa-regular fa-clock-rotate-left",
-    kind: "Cron",
-    code: "nightly.report",
-    tag: "12h 08m",
+    icon: "fa-regular fa-stars",
+    kind: "Agent",
+    code: "llm.generate",
+    tag: "running",
     color: "#6b7280",
     pulse: false,
   },
   {
-    icon: "fa-regular fa-bolt",
-    kind: "Background",
-    code: "embed.index",
+    icon: "fa-regular fa-database",
+    kind: "Retrieval",
+    code: "vector.search",
     tag: "running",
     color: "#a78bfa",
     pulse: true,
@@ -1169,7 +1169,7 @@ function ZeroConfigBYO() {
                     <span className="text-foreground-ppg font-bold not-italic">{seated.host}</span>
                   </>
                 ) : (
-                  <span className="text-foreground-neutral-weaker">— awaiting injection —</span>
+                  <span className="text-foreground-neutral-weaker">awaiting injection</span>
                 )}
               </div>
             </div>
@@ -1230,8 +1230,7 @@ const TABS = [
       <>
         Connect a repo and run{" "}
         <code className="font-mono text-foreground-ppg">@prisma/cli@latest app deploy</code>. Prisma
-        Compute builds your application, discovers your services, and brings them live with URLs
-        attached.
+        Compute builds your application and brings it live with a URL attached.
         <br />
         <br />
         No build pipeline to configure. No deployment scripts to maintain. No dashboard state that
@@ -1247,11 +1246,12 @@ const TABS = [
     Visual: WbRuntimeMonitor,
     description: (
       <>
-        Standard TypeScript on Bun. No cold starts, no execution timeouts, no connection limits.
-        In-process caches, open sockets, and streaming responses work exactly as you&apos;d expect.
+        Standard TypeScript on Bun, running as long-lived processes. Long-running requests,
+        in-process caches, and streaming responses work exactly as you&apos;d expect, within
+        fair-use concurrency and runtime guardrails.
         <br />
         <br />
-        Because your code never stops running, neither do your connections.
+        Because your code stays running, so do your connections.
       </>
     ),
   },
@@ -1263,9 +1263,8 @@ const TABS = [
     Visual: ZeroConfigBYO,
     description: (
       <>
-        Compute and Prisma Postgres run in the same region, connected automatically. No connection
-        strings to copy, no networking to configure, built-in connection pooling for long-lived
-        processes.
+        Compute and Prisma Postgres run in the same box, with auto-wiring where the app and database
+        relationship is clear. Built-in connection pooling for long-lived processes.
         <br />
         <br />
         Works with any database, no lock-in.
