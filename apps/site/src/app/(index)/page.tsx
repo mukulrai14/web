@@ -70,14 +70,16 @@ const twoCol = [
     mobileImageAlt: null,
     logos: null,
     other: (
-      <div className="box-visible border border-stroke rounded-lg relative overflow-hidden flex h-full min-h-[320px] flex-col items-start justify-end gap-6 bg-cover bg-center bg-no-repeat p-6 md:p-8">
-        <ThemeFillIllustration
-          lightSrc="/illustrations/homepage/managed-postgres_light.svg"
-          darkSrc="/illustrations/homepage/managed-postgres.svg"
-          className="pointer-events-none absolute inset-0"
-          imageClassName="object-fill object-bottom-right"
-          sizes="(min-width: 1024px) 50vw, 100vw"
-        />
+      <div className="box-visible border border-stroke rounded-lg overflow-hidden flex h-full min-h-[320px] flex-col items-start gap-6 bg-cover bg-center bg-no-repeat p-6 md:p-8">
+        <div className="relative w-full flex-1">
+          <ThemeFillIllustration
+            lightSrc="/illustrations/homepage/managed-postgres_light.svg"
+            darkSrc="/illustrations/homepage/managed-postgres.svg"
+            className="pointer-events-none absolute inset-0"
+            imageClassName="object-contain object-center"
+            sizes="(min-width: 1024px) 50vw, 100vw"
+          />
+        </div>
         <div className="relative z-10">
           <Button asChild variant="ppg" size="lg">
             <a href="/postgres">
@@ -246,7 +248,7 @@ export default function SiteHome() {
   return (
     <main className="flex-1 w-full z-1 bg-background-default">
       <JsonLd id="home-structured-data" data={homeStructuredData} />
-      <section className="hero h-full relative -mt-24 flex items-end justify-center px-4 pt-40 pb-16 md:pb-20">
+      <section className="hero h-full relative -mt-24 flex items-end justify-center px-4 pt-40 pb-6 md:pb-8">
         <div className="w-screen h-full absolute inset-0">
           <Antigravity
             count={300}
@@ -291,7 +293,7 @@ export default function SiteHome() {
         </div>
       </section>
 
-      <section className={insetSectionSpacing}>
+      <section className="px-4 py-6 md:py-8">
         <LogoParade />
       </section>
 
