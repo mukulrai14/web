@@ -216,7 +216,7 @@ export const metadata = createPageMetadata({
 
 const homeStructuredData = createCollectionPageStructuredData({
   path: "/",
-  name: "One Platform for Your TypeScript App",
+  name: "Integrated TypeScript infrastructure for developers building with AI agents",
   description: SITE_HOME_DESCRIPTION,
   items: [
     {
@@ -270,15 +270,15 @@ export default function SiteHome() {
         <div className="content relative z-2 flex flex-col gap-8">
           <div className="flex flex-col gap-4 items-center text-center">
             <h1
-              className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto text-balance"
-              style={{ fontSize: "clamp(2.25rem, 9vw, 3.75rem)" }}
+              className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-5xl mx-auto text-balance"
+              style={{ fontSize: "clamp(2.25rem, 8vw, 3.75rem)" }}
             >
-              One Platform for <span className="md:block">Your TypeScript App</span>
+              Integrated TypeScript infrastructure for developers building with AI agents
             </h1>
           </div>
-          <p className="text-center text-foreground-neutral-weak max-w-4xl mx-auto text-xl">
-            Most TypeScript backends are stitched together from separate database, ORM, and hosting
-            tools. Prisma brings all three into one platform, from schema to deployed app.
+          <p className="text-center text-foreground-neutral-weak max-w-3xl mx-auto text-xl text-balance">
+            Build, deploy, and iterate end-to-end in one conversation, with ORM, Postgres, and
+            Compute designed to work together natively.
           </p>
           <div className="flex flex-col gap-6 items-center justify-center">
             <Button asChild variant="ppg" size="3xl" className="font-sans-display! font-[650]">
