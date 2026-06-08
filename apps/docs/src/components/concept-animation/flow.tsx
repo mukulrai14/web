@@ -73,14 +73,22 @@ const BOX: Record<FlowVariant, { rect: string; label: string; sub: string; ring:
   },
 };
 
-const CHIP: Record<"vars" | "scope", string> = {
+type ChipKind = "vars" | "scope" | "production";
+const CHIP: Record<ChipKind, string> = {
   vars: "fill-emerald-100 stroke-emerald-300 dark:fill-emerald-400/20 dark:stroke-emerald-400/40",
   scope: "fill-violet-100 stroke-violet-300 dark:fill-violet-400/20 dark:stroke-violet-400/40",
+  production: "fill-teal-100 stroke-teal-300 dark:fill-teal-400/20 dark:stroke-teal-400/40",
 };
-const CHIP_TEXT: Record<"vars" | "scope", string> = {
+const CHIP_TEXT: Record<ChipKind, string> = {
   vars: "fill-emerald-950 dark:fill-emerald-50",
   scope: "fill-violet-950 dark:fill-violet-50",
+  production: "fill-teal-950 dark:fill-teal-50",
 };
+function chipKind(variant: string): ChipKind {
+  if (variant === "vars") return "vars";
+  if (variant === "production") return "production";
+  return "scope";
+}
 
 /** Colored bar drawn beside a variable row, by where its value came from. */
 const ORIGIN_BAR: Record<RowOrigin, string> = {
@@ -225,10 +233,11 @@ function Edge({
 }
 
 function Rows({ node, rows }: { node: FlowNode; rows: FlowRow[] }) {
+  const rowTop = node.subBelow ? ROW_TOP + 12 : ROW_TOP;
   return (
     <>
       {rows.map((row, i) => {
-        const y0 = node.y + ROW_TOP + i * ROW_H;
+        const y0 = node.y + rowTop + i * ROW_H;
         const cy = y0 + ROW_H / 2;
         return (
           <g key={`${node.id}-${row.key}`}>
@@ -281,7 +290,7 @@ function Chips({ node }: { node: FlowNode }) {
     <>
       {chips.map((chip, i) => {
         const w = widths[i];
-        const kind = chip.variant === "vars" ? "vars" : "scope";
+        const kind = chipKind(chip.variant);
         const cell = (
           <g key={chip.label}>
             <rect x={x} y={y} width={w} height={chipH} rx={7} strokeWidth={1.25} className={CHIP[kind]} />
@@ -361,10 +370,11 @@ function Node({
 
       {titled ? (
         <>
-          {/* Header line: title left, scope/sub right. */}
+          {/* Header: title left; sub either on its own line below (scope
+              boxes, avoids overflow) or to the right (resolved boxes). */}
           <text
             x={node.x + 14}
-            y={node.y + 19}
+            y={node.y + (node.subBelow ? 17 : 19)}
             dominantBaseline="central"
             fontSize={12.5}
             fontWeight={600}
@@ -374,11 +384,12 @@ function Node({
           </text>
           {node.sub ? (
             <text
-              x={node.x + node.w - 12}
-              y={node.y + 19}
-              textAnchor="end"
+              x={node.subBelow ? node.x + 14 : node.x + node.w - 12}
+              y={node.y + (node.subBelow ? 33 : 19)}
+              textAnchor={node.subBelow ? "start" : "end"}
               dominantBaseline="central"
               fontSize={10}
+              fontFamily={node.subBelow ? MONO : undefined}
               className={node.subOrigin ? ORIGIN_TEXT[node.subOrigin] : style.sub}
             >
               {node.sub}
@@ -466,7 +477,7 @@ function FlowDiagram({ scene, active }: { scene: FlowScene; active: number }) {
     <div className="overflow-x-auto px-4 py-5">
       <svg
         viewBox={`0 0 ${scene.width} ${scene.height}`}
-        className="mx-auto block h-auto w-full max-w-[720px]"
+        className="mx-auto block h-auto w-full max-w-[760px]"
         role="img"
         aria-label={scene.label}
       >

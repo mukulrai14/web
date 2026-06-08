@@ -43,6 +43,8 @@ export interface FlowNode {
   label: string;
   /** Smaller secondary line under the label. */
   sub?: string;
+  /** Render the sub on its own line under the title instead of to the right. */
+  subBelow?: boolean;
   /** Tint the sub line to a scope color (used by the resolved branch boxes). */
   subOrigin?: RowOrigin;
   variant: FlowVariant;
@@ -108,7 +110,7 @@ const BOX_H = 64;
 
 const computeModel: FlowScene = {
   label: "How Compute organizes resources and isolates branches",
-  width: 656,
+  width: 712,
   height: 286,
   groupLabels: [
     { text: "Branch", x: 200, y: 18 },
@@ -127,10 +129,11 @@ const computeModel: FlowScene = {
       variant: "infra",
       x: 404,
       y: ROW[0],
-      w: 236,
+      w: 292,
       h: BOX_H,
+      // Variables follow a scope (production here); App and DB are isolated per branch.
       chips: [
-        { label: "Variables", variant: "vars" },
+        { label: "Variables · production", variant: "production" },
         { label: "App", variant: "scope" },
         { label: "DB", variant: "scope" },
       ],
@@ -141,10 +144,10 @@ const computeModel: FlowScene = {
       variant: "infra",
       x: 404,
       y: ROW[1],
-      w: 236,
+      w: 292,
       h: BOX_H,
       chips: [
-        { label: "Variables", variant: "vars" },
+        { label: "Variables · preview", variant: "vars" },
         { label: "App", variant: "scope" },
         { label: "DB", variant: "scope" },
       ],
@@ -155,10 +158,10 @@ const computeModel: FlowScene = {
       variant: "infra",
       x: 404,
       y: ROW[2],
-      w: 236,
+      w: 292,
       h: BOX_H,
       chips: [
-        { label: "Variables", variant: "vars" },
+        { label: "Variables · preview", variant: "vars" },
         { label: "App", variant: "scope" },
         { label: "DB", variant: "scope" },
       ],
@@ -176,7 +179,7 @@ const computeModel: FlowScene = {
     {
       title: "1. First deploy",
       caption:
-        "Your first deploy creates the project, its default production branch, and the infrastructure that runs it: environment variables, an app, and a database.",
+        "Your first deploy creates the project, its default production branch, and the infrastructure that runs it: an app, a database, and its production-scoped variables.",
       nodes: ["project", "b-main", "i-main"],
       edges: ["e-main", "c-main"],
       emphasize: ["b-main", "i-main"],
@@ -184,7 +187,7 @@ const computeModel: FlowScene = {
     {
       title: "2. Branch off",
       caption:
-        "Deploy a new branch name and Compute provisions a full, isolated copy of that infrastructure. The new preview branch gets its own app, database, and variables, and production keeps running untouched.",
+        "Deploy a new branch name and Compute provisions a full, isolated copy: its own app and database. Variables are the exception, they resolve from a shared scope, so a preview branch inherits the preview set automatically instead of getting a private copy.",
       nodes: ["project", "b-main", "i-main", "b-feature", "i-feature"],
       edges: ["e-main", "c-main", "e-feature", "c-feature"],
       emphasize: ["b-feature", "i-feature"],
@@ -192,7 +195,7 @@ const computeModel: FlowScene = {
     {
       title: "3. Many branches",
       caption:
-        "Every branch is its own environment under one project, so you and your agents can run features and fixes in parallel without them colliding.",
+        "Every branch is its own environment under one project. App and database are isolated per branch; variables follow their scope (production for the default branch, preview for the rest), so a new branch is configured the moment it deploys. Run features and fixes in parallel without collisions.",
       nodes: ["project", "b-main", "i-main", "b-feature", "i-feature", "b-bug", "i-bug"],
       edges: ["e-main", "c-main", "e-feature", "c-feature", "e-bug", "c-bug"],
       emphasize: ["b-bug", "i-bug"],
@@ -210,11 +213,11 @@ const OVERRIDE_FLAG: FlowRow = { key: "FEATURE_FLAG", value: "on", origin: "over
 
 const envLayers: FlowScene = {
   label: "How a deploy composes its environment variables",
-  width: 720,
-  height: 388,
+  width: 730,
+  height: 404,
   groupLabels: [
     { text: "What you set, by scope", x: 16, y: 26 },
-    { text: "What a deploy resolves to", x: 430, y: 26 },
+    { text: "What each branch resolves to", x: 448, y: 26 },
   ],
   legend: [
     { origin: "production", label: "from production" },
@@ -222,38 +225,41 @@ const envLayers: FlowScene = {
     { origin: "override", label: "from branch override" },
   ],
   nodes: [
-    // Left: the scopes you write to.
+    // Left: the scopes you write to. Sub on its own line so long flags fit.
     {
       id: "s-prod",
       label: "Production",
       sub: "--role production",
+      subBelow: true,
       variant: "production",
       x: 16,
-      y: 46,
-      w: 212,
-      h: 64,
+      y: 50,
+      w: 224,
+      h: 78,
       rows: [PROD_DB],
     },
     {
       id: "s-preview",
       label: "Preview",
       sub: "--role preview",
+      subBelow: true,
       variant: "source",
       x: 16,
-      y: 140,
-      w: 212,
-      h: 88,
+      y: 150,
+      w: 224,
+      h: 102,
       rows: [PREVIEW_DB, PREVIEW_STRIPE],
     },
     {
       id: "s-override",
       label: "Branch override",
       sub: "--branch feature/search",
+      subBelow: true,
       variant: "branch",
       x: 16,
-      y: 258,
-      w: 212,
-      h: 88,
+      y: 274,
+      w: 224,
+      h: 102,
       rows: [OVERRIDE_DB, OVERRIDE_FLAG],
     },
 
@@ -264,9 +270,9 @@ const envLayers: FlowScene = {
       sub: "production deploy",
       subOrigin: "production",
       variant: "resolved",
-      x: 430,
-      y: 46,
-      w: 274,
+      x: 448,
+      y: 50,
+      w: 266,
       h: 64,
       rows: [PROD_DB],
       maxRows: 1,
@@ -277,18 +283,32 @@ const envLayers: FlowScene = {
       sub: "preview deploy",
       subOrigin: "preview",
       variant: "resolved",
-      x: 430,
-      y: 176,
-      w: 274,
-      h: 116,
+      x: 448,
+      y: 140,
+      w: 266,
+      h: 112,
       rows: [OVERRIDE_DB, PREVIEW_STRIPE, OVERRIDE_FLAG],
       maxRows: 3,
+    },
+    {
+      id: "r-bug",
+      label: "bug/fix-issue",
+      sub: "preview deploy",
+      subOrigin: "preview",
+      variant: "resolved",
+      x: 448,
+      y: 274,
+      w: 266,
+      h: 90,
+      rows: [PREVIEW_DB, PREVIEW_STRIPE],
+      maxRows: 2,
     },
   ],
   edges: [
     { id: "d-prod", from: "s-prod", fromSide: "r", to: "r-main", toSide: "l", dashed: true },
-    { id: "d-preview", from: "s-preview", fromSide: "r", to: "r-feature", toSide: "l", dashed: true, toDy: -24 },
-    { id: "d-override", from: "s-override", fromSide: "r", to: "r-feature", toSide: "l", dashed: true, toDy: 24 },
+    { id: "d-preview-f", from: "s-preview", fromSide: "r", to: "r-feature", toSide: "l", dashed: true, toDy: -22 },
+    { id: "d-preview-b", from: "s-preview", fromSide: "r", to: "r-bug", toSide: "l", dashed: true },
+    { id: "d-override", from: "s-override", fromSide: "r", to: "r-feature", toSide: "l", dashed: true, toDy: 22 },
   ],
   steps: [
     {
@@ -300,20 +320,20 @@ const envLayers: FlowScene = {
       emphasize: ["s-prod", "r-main"],
     },
     {
-      title: "2. Preview inherits",
+      title: "2. Preview is the default",
       caption:
-        "Here's the part that looks like magic: every preview branch automatically inherits the shared preview set. You don't configure feature/search, it just resolves to preview. Production variables are never included.",
-      nodes: ["s-prod", "r-main", "s-preview", "r-feature"],
-      edges: ["d-prod", "d-preview"],
-      emphasize: ["s-preview", "r-feature"],
+        "Here's the default that surprises people: every preview branch automatically inherits the shared preview set. You don't configure feature/search or bug/fix-issue, they both just resolve to preview. Production variables are never included.",
+      nodes: ["s-prod", "r-main", "s-preview", "r-feature", "r-bug"],
+      edges: ["d-prod", "d-preview-f", "d-preview-b"],
+      emphasize: ["s-preview", "r-feature", "r-bug"],
       rowOverrides: { "r-feature": [PREVIEW_DB, PREVIEW_STRIPE] },
     },
     {
       title: "3. Override layers on top",
       caption:
-        "A branch override composes key by key on top of the inherited set: it replaces DATABASE_URL and adds FEATURE_FLAG for this one branch, while STRIPE_KEY still flows through from preview.",
-      nodes: ["s-prod", "r-main", "s-preview", "r-feature", "s-override"],
-      edges: ["d-prod", "d-preview", "d-override"],
+        "A branch override composes key by key on top of that default, for one branch only: feature/search replaces DATABASE_URL and adds FEATURE_FLAG, while STRIPE_KEY still flows through from preview. bug/fix-issue has no override, so it stays on the plain preview defaults.",
+      nodes: ["s-prod", "r-main", "s-preview", "r-feature", "r-bug", "s-override"],
+      edges: ["d-prod", "d-preview-f", "d-preview-b", "d-override"],
       emphasize: ["s-override", "r-feature"],
     },
   ],
