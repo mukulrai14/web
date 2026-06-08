@@ -187,7 +187,7 @@ const computeModel: FlowScene = {
     {
       title: "2. Branch off",
       caption:
-        "Deploy a new branch name and Compute provisions a full, isolated copy: its own app and database. Variables are the exception, they resolve from a shared scope, so a preview branch inherits the preview set automatically instead of getting a private copy.",
+        "Deploy a new branch name and Compute provisions a full, isolated copy: its own app and database. Its variables resolve from the shared preview scope, so a new preview branch picks up the preview set automatically.",
       nodes: ["project", "b-main", "i-main", "b-feature", "i-feature"],
       edges: ["e-main", "c-main", "e-feature", "c-feature"],
       emphasize: ["b-feature", "i-feature"],
@@ -341,43 +341,49 @@ const envLayers: FlowScene = {
 
 const githubConnection: FlowScene = {
   label: "How a GitHub connection deploys on push",
-  width: 648,
-  height: 220,
+  width: 668,
+  height: 256,
+  groupLabels: [
+    { text: "Workspace level", x: 24, y: 22 },
+    { text: "Project level", x: 24, y: 132 },
+  ],
   nodes: [
-    { id: "repo", label: "GitHub", sub: "acme/shop", variant: "neutral", x: 20, y: 78, w: 150, h: 64 },
-    { id: "project", label: "Project", sub: "my-app", variant: "project", x: 245, y: 78, w: 150, h: 64 },
-    { id: "d-feature", label: "Preview deploy", sub: "feature/login", variant: "scope", x: 468, y: 24, w: 160, h: 56 },
-    { id: "d-main", label: "Production deploy", sub: "main", variant: "scope", x: 468, y: 140, w: 160, h: 56 },
+    { id: "workspace", label: "Workspace", sub: "your org", variant: "neutral", x: 24, y: 40, w: 160, h: 62 },
+    { id: "ghapp", label: "Prisma GitHub App", sub: "installed", variant: "source", x: 250, y: 40, w: 178, h: 62 },
+
+    { id: "project", label: "Project", sub: "my-app", variant: "project", x: 24, y: 150, w: 160, h: 62 },
+    { id: "repo", label: "Repository", sub: "acme/shop", variant: "neutral", x: 250, y: 150, w: 178, h: 62 },
+    { id: "deploy", label: "Preview deploy", sub: "feature/login", variant: "scope", x: 494, y: 150, w: 150, h: 62 },
   ],
   edges: [
-    { id: "connect", from: "repo", fromSide: "r", to: "project", toSide: "l", label: "git connect" },
-    { id: "push-f", from: "project", fromSide: "r", to: "d-feature", toSide: "l", dashed: true, label: "push" },
-    { id: "push-m", from: "project", fromSide: "r", to: "d-main", toSide: "l", dashed: true, label: "merge" },
+    { id: "e-install", from: "workspace", fromSide: "r", to: "ghapp", toSide: "l", label: "installs" },
+    { id: "e-connect", from: "project", fromSide: "r", to: "repo", toSide: "l", label: "git connect" },
+    { id: "e-push", from: "repo", fromSide: "r", to: "deploy", toSide: "l", dashed: true, label: "push" },
   ],
   steps: [
     {
-      title: "1. Connect the repo",
+      title: "1. Install the app",
       caption:
-        "Run git connect once to link a project to a GitHub repository. After that you stop deploying by hand.",
-      nodes: ["repo", "project"],
-      edges: ["connect"],
-      emphasize: ["repo", "project"],
+        "The connection has two levels. First, your workspace installs the Prisma GitHub App once. That installation is what lets Prisma see your repositories.",
+      nodes: ["workspace", "ghapp"],
+      edges: ["e-install"],
+      emphasize: ["workspace", "ghapp"],
     },
     {
-      title: "2. Push a branch",
+      title: "2. Connect a repo",
       caption:
-        "Push any branch and Compute builds that commit and deploys a matching preview, so feature/login gets its own URL automatically.",
-      nodes: ["repo", "project", "d-feature"],
-      edges: ["connect", "push-f"],
-      emphasize: ["d-feature"],
+        "Then each project connects to a single repository with git connect. Connecting wires up automation for future events; it doesn't deploy anything on its own.",
+      nodes: ["workspace", "ghapp", "project", "repo"],
+      edges: ["e-install", "e-connect"],
+      emphasize: ["project", "repo"],
     },
     {
-      title: "3. Merge to main",
+      title: "3. Push to deploy",
       caption:
-        "Merge to your default branch and the same flow deploys to production. Nothing about the process changes.",
-      nodes: ["repo", "project", "d-feature", "d-main"],
-      edges: ["connect", "push-f", "push-m"],
-      emphasize: ["d-main"],
+        "After that, a push builds the pushed commit and deploys the matching branch, so a push to feature/login deploys that preview. Production stays deliberate: you promote a deployment when you're ready.",
+      nodes: ["workspace", "ghapp", "project", "repo", "deploy"],
+      edges: ["e-install", "e-connect", "e-push"],
+      emphasize: ["deploy"],
     },
   ],
 };
