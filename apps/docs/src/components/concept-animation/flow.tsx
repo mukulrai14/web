@@ -124,11 +124,11 @@ function anchor(n: FlowNode, side: Side, dy = 0): Point {
 }
 
 /** Orthogonal waypoints between two anchors, based on which side each exits. */
-function routePoints(a: Point, fromSide: Side, b: Point, toSide: Side): Point[] {
+function routePoints(a: Point, fromSide: Side, b: Point, toSide: Side, bendX?: number): Point[] {
   const horizFrom = fromSide === "l" || fromSide === "r";
   const horizTo = toSide === "l" || toSide === "r";
   if (horizFrom && horizTo) {
-    const midX = (a.x + b.x) / 2;
+    const midX = bendX ?? (a.x + b.x) / 2;
     return [a, { x: midX, y: a.y }, { x: midX, y: b.y }, b];
   }
   if (horizFrom && !horizTo) return [a, { x: b.x, y: a.y }, b];
@@ -174,6 +174,7 @@ function Edge({
     edge.fromSide,
     anchor(to, edge.toSide, edge.toDy ?? 0),
     edge.toSide,
+    edge.bendX,
   );
   const d = roundedPath(pts);
 
@@ -293,7 +294,15 @@ function Chips({ node }: { node: FlowNode }) {
         const kind = chipKind(chip.variant);
         const cell = (
           <g key={chip.label}>
-            <rect x={x} y={y} width={w} height={chipH} rx={7} strokeWidth={1.25} className={CHIP[kind]} />
+            <rect
+              x={x}
+              y={y}
+              width={w}
+              height={chipH}
+              rx={7}
+              strokeWidth={1.25}
+              className={CHIP[kind]}
+            />
             <text
               x={x + w / 2}
               y={y + chipH / 2}

@@ -71,6 +71,8 @@ export interface FlowEdge {
   /** Nudge the start/end anchor along the box edge, to fan out parallel edges. */
   fromDy?: number;
   toDy?: number;
+  /** Override the x of the vertical bend, so parallel edges don't share a lane. */
+  bendX?: number;
   /** Dashed lines read as "applies to" / "wires into" rather than "contains". */
   dashed?: boolean;
   /** Optional label drawn on the edge. */
@@ -117,11 +119,47 @@ const computeModel: FlowScene = {
     { text: "Infrastructure", x: 404, y: 18 },
   ],
   nodes: [
-    { id: "project", label: "Project", sub: "my-app", variant: "project", x: 16, y: 116, w: 92, h: 64 },
+    {
+      id: "project",
+      label: "Project",
+      sub: "my-app",
+      variant: "project",
+      x: 16,
+      y: 116,
+      w: 92,
+      h: 64,
+    },
 
-    { id: "b-main", label: "main", sub: "default · production", variant: "branch", x: 200, y: ROW[0], w: 160, h: BOX_H },
-    { id: "b-feature", label: "feature/new-feature", sub: "preview", variant: "branch", x: 200, y: ROW[1], w: 160, h: BOX_H },
-    { id: "b-bug", label: "bug/fix-issue", sub: "preview", variant: "branch", x: 200, y: ROW[2], w: 160, h: BOX_H },
+    {
+      id: "b-main",
+      label: "main",
+      sub: "default · production",
+      variant: "branch",
+      x: 200,
+      y: ROW[0],
+      w: 160,
+      h: BOX_H,
+    },
+    {
+      id: "b-feature",
+      label: "feature/new-feature",
+      sub: "preview",
+      variant: "branch",
+      x: 200,
+      y: ROW[1],
+      w: 160,
+      h: BOX_H,
+    },
+    {
+      id: "b-bug",
+      label: "bug/fix-issue",
+      sub: "preview",
+      variant: "branch",
+      x: 200,
+      y: ROW[2],
+      w: 160,
+      h: BOX_H,
+    },
 
     {
       id: "i-main",
@@ -306,9 +344,36 @@ const envLayers: FlowScene = {
   ],
   edges: [
     { id: "d-prod", from: "s-prod", fromSide: "r", to: "r-main", toSide: "l", dashed: true },
-    { id: "d-preview-f", from: "s-preview", fromSide: "r", to: "r-feature", toSide: "l", dashed: true, toDy: -22 },
-    { id: "d-preview-b", from: "s-preview", fromSide: "r", to: "r-bug", toSide: "l", dashed: true },
-    { id: "d-override", from: "s-override", fromSide: "r", to: "r-feature", toSide: "l", dashed: true, toDy: 22 },
+    {
+      id: "d-preview-f",
+      from: "s-preview",
+      fromSide: "r",
+      to: "r-feature",
+      toSide: "l",
+      dashed: true,
+      fromDy: -16,
+      toDy: -22,
+      bendX: 384,
+    },
+    {
+      id: "d-preview-b",
+      from: "s-preview",
+      fromSide: "r",
+      to: "r-bug",
+      toSide: "l",
+      dashed: true,
+      fromDy: 16,
+      bendX: 304,
+    },
+    {
+      id: "d-override",
+      from: "s-override",
+      fromSide: "r",
+      to: "r-feature",
+      toSide: "l",
+      dashed: true,
+      toDy: 22,
+    },
   ],
   steps: [
     {
@@ -348,17 +413,84 @@ const githubConnection: FlowScene = {
     { text: "Project level", x: 24, y: 132 },
   ],
   nodes: [
-    { id: "workspace", label: "Workspace", sub: "your org", variant: "neutral", x: 24, y: 40, w: 160, h: 62 },
-    { id: "ghapp", label: "Prisma GitHub App", sub: "installed", variant: "source", x: 250, y: 40, w: 178, h: 62 },
+    {
+      id: "workspace",
+      label: "Workspace",
+      sub: "your org",
+      variant: "neutral",
+      x: 24,
+      y: 40,
+      w: 160,
+      h: 62,
+    },
+    {
+      id: "ghapp",
+      label: "Prisma GitHub App",
+      sub: "installed",
+      variant: "source",
+      x: 250,
+      y: 40,
+      w: 178,
+      h: 62,
+    },
 
-    { id: "project", label: "Project", sub: "my-app", variant: "project", x: 24, y: 150, w: 160, h: 62 },
-    { id: "repo", label: "Repository", sub: "acme/shop", variant: "neutral", x: 250, y: 150, w: 178, h: 62 },
-    { id: "deploy", label: "Preview deploy", sub: "feature/login", variant: "scope", x: 494, y: 150, w: 150, h: 62 },
+    {
+      id: "project",
+      label: "Project",
+      sub: "my-app",
+      variant: "project",
+      x: 24,
+      y: 150,
+      w: 160,
+      h: 62,
+    },
+    {
+      id: "repo",
+      label: "Repository",
+      sub: "acme/shop",
+      variant: "neutral",
+      x: 250,
+      y: 150,
+      w: 178,
+      h: 62,
+    },
+    {
+      id: "deploy",
+      label: "Preview deploy",
+      sub: "feature/login",
+      variant: "scope",
+      x: 494,
+      y: 150,
+      w: 150,
+      h: 62,
+    },
   ],
   edges: [
-    { id: "e-install", from: "workspace", fromSide: "r", to: "ghapp", toSide: "l", label: "installs" },
-    { id: "e-connect", from: "project", fromSide: "r", to: "repo", toSide: "l", label: "git connect" },
-    { id: "e-push", from: "repo", fromSide: "r", to: "deploy", toSide: "l", dashed: true, label: "push" },
+    {
+      id: "e-install",
+      from: "workspace",
+      fromSide: "r",
+      to: "ghapp",
+      toSide: "l",
+      label: "installs",
+    },
+    {
+      id: "e-connect",
+      from: "project",
+      fromSide: "r",
+      to: "repo",
+      toSide: "l",
+      label: "git connect",
+    },
+    {
+      id: "e-push",
+      from: "repo",
+      fromSide: "r",
+      to: "deploy",
+      toSide: "l",
+      dashed: true,
+      label: "push",
+    },
   ],
   steps: [
     {
