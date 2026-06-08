@@ -191,7 +191,7 @@ export function TemplateCards() {
             </p>
           </CardHeader>
           <CardFooter className="bg-background-default border-t-0 flex-col items-stretch gap-3 pb-4">
-            <code className="font-mono text-sm text-foreground-neutral-weak w-full break-words">
+            <code className="block w-full overflow-x-auto whitespace-nowrap rounded-md border border-stroke-neutral bg-background-neutral-weak px-3 py-2 font-mono text-xs text-foreground-neutral-weak">
               <span className="text-foreground-ppg-strong">$</span> {template.command}
             </code>
             <div className="self-end">
