@@ -11,7 +11,26 @@ import type { ConceptName } from "./presets";
  */
 
 /** Color role for a box. Mapped to theme-aware classes in flow.tsx. */
-export type FlowVariant = "project" | "branch" | "vars" | "infra" | "source" | "scope" | "neutral";
+export type FlowVariant =
+  | "project"
+  | "branch"
+  | "vars"
+  | "infra"
+  | "source"
+  | "scope"
+  | "neutral"
+  | "production"
+  | "resolved";
+
+/** Where a resolved variable came from. Drives the colored bar on each row. */
+export type RowOrigin = "production" | "preview" | "override";
+
+/** One key=value line inside a node, color-coded by where the value came from. */
+export interface FlowRow {
+  key: string;
+  value: string;
+  origin: RowOrigin;
+}
 
 /** A small labelled pill rendered inside an `infra` node. */
 export interface FlowChip {
@@ -24,6 +43,8 @@ export interface FlowNode {
   label: string;
   /** Smaller secondary line under the label. */
   sub?: string;
+  /** Tint the sub line to a scope color (used by the resolved branch boxes). */
+  subOrigin?: RowOrigin;
   variant: FlowVariant;
   x: number;
   y: number;
@@ -31,6 +52,10 @@ export interface FlowNode {
   h: number;
   /** Chips laid out in a row inside the box (used for the infrastructure box). */
   chips?: FlowChip[];
+  /** Variable rows rendered inside the box. */
+  rows?: FlowRow[];
+  /** Row slots to reserve, so per-step row changes never resize the box. */
+  maxRows?: number;
 }
 
 export type Side = "l" | "r" | "t" | "b";
@@ -41,6 +66,9 @@ export interface FlowEdge {
   fromSide: Side;
   to: string;
   toSide: Side;
+  /** Nudge the start/end anchor along the box edge, to fan out parallel edges. */
+  fromDy?: number;
+  toDy?: number;
   /** Dashed lines read as "applies to" / "wires into" rather than "contains". */
   dashed?: boolean;
   /** Optional label drawn on the edge. */
@@ -56,6 +84,8 @@ export interface FlowStep {
   edges: string[];
   /** Node ids drawn brighter, to pull the eye to what changed. */
   emphasize?: string[];
+  /** Replace a node's rows for this step (used to compose the resolved set). */
+  rowOverrides?: Record<string, FlowRow[]>;
 }
 
 export interface FlowScene {
@@ -65,15 +95,16 @@ export interface FlowScene {
   height: number;
   /** Column captions, e.g. "Branch", "Infrastructure". */
   groupLabels?: { text: string; x: number; y: number }[];
+  /** Color key for row origins, drawn along the bottom. */
+  legend?: { origin: RowOrigin; label: string }[];
   nodes: FlowNode[];
   edges: FlowEdge[];
   steps: FlowStep[];
 }
 
-// Shared three-row band used by the model and env scenes.
+// Shared three-row band used by the model scene.
 const ROW = [30, 116, 202];
 const BOX_H = 64;
-const center = (y: number) => y + BOX_H / 2;
 
 const computeModel: FlowScene = {
   label: "How Compute organizes resources and isolates branches",
@@ -169,72 +200,121 @@ const computeModel: FlowScene = {
   ],
 };
 
+// Resolved-set rows reused across env steps, so the composition is explicit:
+// each row carries the scope it resolved from.
+const PROD_DB: FlowRow = { key: "DATABASE_URL", value: "…/prod", origin: "production" };
+const PREVIEW_DB: FlowRow = { key: "DATABASE_URL", value: "…/preview", origin: "preview" };
+const PREVIEW_STRIPE: FlowRow = { key: "STRIPE_KEY", value: "sk_test_…", origin: "preview" };
+const OVERRIDE_DB: FlowRow = { key: "DATABASE_URL", value: "…/branch-db", origin: "override" };
+const OVERRIDE_FLAG: FlowRow = { key: "FEATURE_FLAG", value: "on", origin: "override" };
+
 const envLayers: FlowScene = {
-  label: "How environment variables resolve per branch",
-  width: 648,
-  height: 286,
+  label: "How a deploy composes its environment variables",
+  width: 720,
+  height: 388,
   groupLabels: [
-    { text: "Branch", x: 16, y: 18 },
-    { text: "Variables", x: 210, y: 18 },
-    { text: "Scope", x: 470, y: 18 },
+    { text: "What you set, by scope", x: 16, y: 26 },
+    { text: "What a deploy resolves to", x: 430, y: 26 },
+  ],
+  legend: [
+    { origin: "production", label: "from production" },
+    { origin: "preview", label: "from preview" },
+    { origin: "override", label: "from branch override" },
   ],
   nodes: [
-    { id: "b-main", label: "main", sub: "production", variant: "branch", x: 16, y: ROW[0], w: 150, h: BOX_H },
-    { id: "b-feature", label: "feature/search", sub: "preview", variant: "branch", x: 16, y: ROW[1], w: 150, h: BOX_H },
-    { id: "b-bug", label: "bug/fix-issue", sub: "preview", variant: "branch", x: 16, y: ROW[2], w: 150, h: BOX_H },
+    // Left: the scopes you write to.
+    {
+      id: "s-prod",
+      label: "Production",
+      sub: "--role production",
+      variant: "production",
+      x: 16,
+      y: 46,
+      w: 212,
+      h: 64,
+      rows: [PROD_DB],
+    },
+    {
+      id: "s-preview",
+      label: "Preview",
+      sub: "--role preview",
+      variant: "source",
+      x: 16,
+      y: 140,
+      w: 212,
+      h: 88,
+      rows: [PREVIEW_DB, PREVIEW_STRIPE],
+    },
+    {
+      id: "s-override",
+      label: "Branch override",
+      sub: "--branch feature/search",
+      variant: "branch",
+      x: 16,
+      y: 258,
+      w: 212,
+      h: 88,
+      rows: [OVERRIDE_DB, OVERRIDE_FLAG],
+    },
 
-    { id: "v-main", label: "Variables", sub: "DATABASE_URL", variant: "vars", x: 210, y: ROW[0], w: 150, h: BOX_H },
-    { id: "v-feature", label: "Variables", sub: "DATABASE_URL", variant: "vars", x: 210, y: ROW[1], w: 150, h: BOX_H },
-    { id: "v-bug", label: "Variables", sub: "DATABASE_URL", variant: "vars", x: 210, y: ROW[2], w: 150, h: BOX_H },
-
-    { id: "s-prod", label: "Production", sub: "--role production", variant: "source", x: 470, y: ROW[0], w: 162, h: BOX_H },
-    { id: "s-preview", label: "Preview", sub: "--role preview", variant: "source", x: 470, y: ROW[1], w: 162, h: BOX_H },
-    { id: "s-override", label: "Branch override", sub: "--branch feature/search", variant: "branch", x: 470, y: ROW[2], w: 162, h: BOX_H },
+    // Right: the set each branch actually deploys with.
+    {
+      id: "r-main",
+      label: "main",
+      sub: "production deploy",
+      subOrigin: "production",
+      variant: "resolved",
+      x: 430,
+      y: 46,
+      w: 274,
+      h: 64,
+      rows: [PROD_DB],
+      maxRows: 1,
+    },
+    {
+      id: "r-feature",
+      label: "feature/search",
+      sub: "preview deploy",
+      subOrigin: "preview",
+      variant: "resolved",
+      x: 430,
+      y: 176,
+      w: 274,
+      h: 116,
+      rows: [OVERRIDE_DB, PREVIEW_STRIPE, OVERRIDE_FLAG],
+      maxRows: 3,
+    },
   ],
   edges: [
-    { id: "c-main", from: "b-main", fromSide: "r", to: "v-main", toSide: "l" },
-    { id: "c-feature", from: "b-feature", fromSide: "r", to: "v-feature", toSide: "l" },
-    { id: "c-bug", from: "b-bug", fromSide: "r", to: "v-bug", toSide: "l" },
-
-    { id: "d-prod", from: "s-prod", fromSide: "l", to: "v-main", toSide: "r", dashed: true },
-    { id: "d-preview-f", from: "s-preview", fromSide: "l", to: "v-feature", toSide: "r", dashed: true },
-    { id: "d-preview-b", from: "s-preview", fromSide: "l", to: "v-bug", toSide: "r", dashed: true },
-    { id: "d-override", from: "s-override", fromSide: "l", to: "v-feature", toSide: "r", dashed: true },
+    { id: "d-prod", from: "s-prod", fromSide: "r", to: "r-main", toSide: "l", dashed: true },
+    { id: "d-preview", from: "s-preview", fromSide: "r", to: "r-feature", toSide: "l", dashed: true, toDy: -24 },
+    { id: "d-override", from: "s-override", fromSide: "r", to: "r-feature", toSide: "l", dashed: true, toDy: 24 },
   ],
   steps: [
     {
       title: "1. Production",
       caption:
-        "Variables set with --role production resolve on your default branch, so main always deploys with exactly the production values.",
-      nodes: ["b-main", "b-feature", "b-bug", "v-main", "v-feature", "v-bug", "s-prod"],
-      edges: ["c-main", "c-feature", "c-bug", "d-prod"],
-      emphasize: ["s-prod", "v-main"],
+        "Your default branch deploys as production, and resolves to the production variables only. Nothing else is mixed in.",
+      nodes: ["s-prod", "r-main"],
+      edges: ["d-prod"],
+      emphasize: ["s-prod", "r-main"],
     },
     {
-      title: "2. Preview",
+      title: "2. Preview inherits",
       caption:
-        "Preview-scoped variables apply to every preview branch at once, so test traffic stays off your production data without configuring each branch.",
-      nodes: ["b-main", "b-feature", "b-bug", "v-main", "v-feature", "v-bug", "s-prod", "s-preview"],
-      edges: ["c-main", "c-feature", "c-bug", "d-prod", "d-preview-f", "d-preview-b"],
-      emphasize: ["s-preview", "v-feature", "v-bug"],
+        "Here's the part that looks like magic: every preview branch automatically inherits the shared preview set. You don't configure feature/search, it just resolves to preview. Production variables are never included.",
+      nodes: ["s-prod", "r-main", "s-preview", "r-feature"],
+      edges: ["d-prod", "d-preview"],
+      emphasize: ["s-preview", "r-feature"],
+      rowOverrides: { "r-feature": [PREVIEW_DB, PREVIEW_STRIPE] },
     },
     {
-      title: "3. Branch override",
+      title: "3. Override layers on top",
       caption:
-        "A branch override adds or replaces a single value for one branch. feature/search keeps the shared preview variables and layers its override on top; no other branch sees it.",
-      nodes: [
-        "b-main",
-        "b-feature",
-        "b-bug",
-        "v-main",
-        "v-feature",
-        "v-bug",
-        "s-prod",
-        "s-preview",
-        "s-override",
-      ],
-      edges: ["c-main", "c-feature", "c-bug", "d-prod", "d-preview-f", "d-preview-b", "d-override"],
-      emphasize: ["s-override", "v-feature"],
+        "A branch override composes key by key on top of the inherited set: it replaces DATABASE_URL and adds FEATURE_FLAG for this one branch, while STRIPE_KEY still flows through from preview.",
+      nodes: ["s-prod", "r-main", "s-preview", "r-feature", "s-override"],
+      edges: ["d-prod", "d-preview", "d-override"],
+      emphasize: ["s-override", "r-feature"],
     },
   ],
 };

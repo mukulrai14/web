@@ -1,10 +1,19 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import type { FlowEdge, FlowNode, FlowScene, FlowVariant, Side } from "./flow-presets";
+import type {
+  FlowEdge,
+  FlowNode,
+  FlowRow,
+  FlowScene,
+  FlowVariant,
+  RowOrigin,
+  Side,
+} from "./flow-presets";
 import { PlayerShell } from "./shell";
 
 const EDGE_COLOR = "var(--color-fd-muted-foreground)";
+const MONO = "ui-monospace, SFMono-Regular, Menlo, monospace";
 
 /** Box styling per role. Tailwind `fill-*`/`stroke-*` utilities, theme-aware. */
 const BOX: Record<FlowVariant, { rect: string; label: string; sub: string; ring: string }> = {
@@ -32,11 +41,23 @@ const BOX: Record<FlowVariant, { rect: string; label: string; sub: string; ring:
     sub: "fill-emerald-700 dark:fill-emerald-200/70",
     ring: "stroke-emerald-400 dark:stroke-emerald-300",
   },
+  production: {
+    rect: "fill-teal-100 stroke-teal-300 dark:fill-teal-400/15 dark:stroke-teal-400/40",
+    label: "fill-teal-950 dark:fill-teal-50",
+    sub: "fill-teal-700 dark:fill-teal-200/70",
+    ring: "stroke-teal-400 dark:stroke-teal-300",
+  },
   scope: {
     rect: "fill-violet-100 stroke-violet-300 dark:fill-violet-400/15 dark:stroke-violet-400/40",
     label: "fill-violet-950 dark:fill-violet-50",
     sub: "fill-violet-700 dark:fill-violet-200/70",
     ring: "stroke-violet-400 dark:stroke-violet-300",
+  },
+  resolved: {
+    rect: "fill-fd-card stroke-stroke-neutral-strong",
+    label: "fill-fd-foreground",
+    sub: "fill-fd-muted-foreground",
+    ring: "stroke-teal-400 dark:stroke-teal-300",
   },
   infra: {
     rect: "fill-transparent stroke-stroke-neutral-strong",
@@ -61,17 +82,32 @@ const CHIP_TEXT: Record<"vars" | "scope", string> = {
   scope: "fill-violet-950 dark:fill-violet-50",
 };
 
+/** Colored bar drawn beside a variable row, by where its value came from. */
+const ORIGIN_BAR: Record<RowOrigin, string> = {
+  production: "fill-teal-500 dark:fill-teal-400",
+  preview: "fill-emerald-500 dark:fill-emerald-400",
+  override: "fill-amber-500 dark:fill-amber-400",
+};
+const ORIGIN_TEXT: Record<RowOrigin, string> = {
+  production: "fill-teal-700 dark:fill-teal-300",
+  preview: "fill-emerald-700 dark:fill-emerald-300",
+  override: "fill-amber-700 dark:fill-amber-300",
+};
+
+const ROW_H = 23;
+const ROW_TOP = 34;
+
 interface Point {
   x: number;
   y: number;
 }
 
-function anchor(n: FlowNode, side: Side): Point {
+function anchor(n: FlowNode, side: Side, dy = 0): Point {
   switch (side) {
     case "l":
-      return { x: n.x, y: n.y + n.h / 2 };
+      return { x: n.x, y: n.y + n.h / 2 + dy };
     case "r":
-      return { x: n.x + n.w, y: n.y + n.h / 2 };
+      return { x: n.x + n.w, y: n.y + n.h / 2 + dy };
     case "t":
       return { x: n.x + n.w / 2, y: n.y };
     case "b":
@@ -125,10 +161,14 @@ function Edge({
   const from = byId.get(edge.from);
   const to = byId.get(edge.to);
   if (!from || !to) return null;
-  const pts = routePoints(anchor(from, edge.fromSide), edge.fromSide, anchor(to, edge.toSide), edge.toSide);
+  const pts = routePoints(
+    anchor(from, edge.fromSide, edge.fromDy ?? 0),
+    edge.fromSide,
+    anchor(to, edge.toSide, edge.toDy ?? 0),
+    edge.toSide,
+  );
   const d = roundedPath(pts);
 
-  // Label sits on the middle segment of the route.
   const mid = Math.floor((pts.length - 1) / 2);
   const lx = (pts[mid].x + pts[mid + 1].x) / 2;
   const ly = (pts[mid].y + pts[mid + 1].y) / 2;
@@ -184,83 +224,47 @@ function Edge({
   );
 }
 
-function Node({
-  node,
-  visible,
-  emphasized,
-}: {
-  node: FlowNode;
-  visible: boolean;
-  emphasized: boolean;
-}) {
-  const style = BOX[node.variant];
-  const cx = node.x + node.w / 2;
-  const cy = node.y + node.h / 2;
-  const groupStyle: CSSProperties = {
-    opacity: visible ? 1 : 0,
-    transform: visible ? "scale(1)" : "scale(0.96)",
-    transformBox: "fill-box",
-    transformOrigin: "center",
-  };
-
+function Rows({ node, rows }: { node: FlowNode; rows: FlowRow[] }) {
   return (
-    <g
-      className="transition duration-[450ms] ease-out motion-reduce:transition-none"
-      style={groupStyle}
-    >
-      {/* Emphasis ring: brightens the box that changed this step. */}
-      <rect
-        x={node.x - 3}
-        y={node.y - 3}
-        width={node.w + 6}
-        height={node.h + 6}
-        rx={13}
-        fill="none"
-        strokeWidth={2}
-        className={`${style.ring} transition-opacity duration-[450ms] motion-reduce:transition-none`}
-        style={{ opacity: emphasized ? 1 : 0 }}
-      />
-      <rect
-        x={node.x}
-        y={node.y}
-        width={node.w}
-        height={node.h}
-        rx={10}
-        strokeWidth={1.5}
-        strokeDasharray={node.variant === "infra" ? "4 4" : undefined}
-        className={style.rect}
-      />
-
-      {node.chips ? (
-        <Chips node={node} />
-      ) : (
-        <>
-          <text
-            x={cx}
-            y={node.sub ? cy - 7 : cy}
-            textAnchor="middle"
-            dominantBaseline="central"
-            fontSize={14}
-            fontWeight={600}
-            className={style.label}
-          >
-            {node.label}
-          </text>
-          {node.sub ? (
+    <>
+      {rows.map((row, i) => {
+        const y0 = node.y + ROW_TOP + i * ROW_H;
+        const cy = y0 + ROW_H / 2;
+        return (
+          <g key={`${node.id}-${row.key}`}>
+            <rect
+              x={node.x + 12}
+              y={y0 + 3}
+              width={3}
+              height={ROW_H - 6}
+              rx={1.5}
+              className={ORIGIN_BAR[row.origin]}
+            />
             <text
-              x={cx}
-              y={cy + 12}
-              textAnchor="middle"
+              x={node.x + 22}
+              y={cy}
               dominantBaseline="central"
-              fontSize={10.5}
-              className={style.sub}
+              fontSize={11}
+              fontFamily={MONO}
+              className="fill-fd-foreground"
             >
-              {node.sub}
+              {row.key}
             </text>
-          ) : null}
-        </>
-      )}
-    </g>
+            <text
+              x={node.x + node.w - 12}
+              y={cy}
+              textAnchor="end"
+              dominantBaseline="central"
+              fontSize={11}
+              fontFamily={MONO}
+              className="fill-fd-muted-foreground"
+            >
+              {row.value}
+            </text>
+          </g>
+        );
+      })}
+    </>
   );
 }
 
@@ -301,6 +305,156 @@ function Chips({ node }: { node: FlowNode }) {
   );
 }
 
+function Node({
+  node,
+  rows,
+  visible,
+  emphasized,
+}: {
+  node: FlowNode;
+  rows?: FlowRow[];
+  visible: boolean;
+  emphasized: boolean;
+}) {
+  const style = BOX[node.variant];
+  const cx = node.x + node.w / 2;
+  const cy = node.y + node.h / 2;
+  const hasRows = rows != null && rows.length > 0;
+  // Row boxes get a left-aligned header; chip and plain boxes don't.
+  const titled = hasRows;
+  const groupStyle: CSSProperties = {
+    opacity: visible ? 1 : 0,
+    transform: visible ? "scale(1)" : "scale(0.96)",
+    transformBox: "fill-box",
+    transformOrigin: "center",
+  };
+
+  return (
+    <g
+      className="transition duration-[450ms] ease-out motion-reduce:transition-none"
+      style={groupStyle}
+    >
+      {/* Emphasis ring: brightens the box that changed this step. */}
+      <rect
+        x={node.x - 3}
+        y={node.y - 3}
+        width={node.w + 6}
+        height={node.h + 6}
+        rx={13}
+        fill="none"
+        strokeWidth={2}
+        className={`${style.ring} transition-opacity duration-[450ms] motion-reduce:transition-none`}
+        style={{ opacity: emphasized ? 1 : 0 }}
+      />
+      <rect
+        x={node.x}
+        y={node.y}
+        width={node.w}
+        height={node.h}
+        rx={10}
+        strokeWidth={1.5}
+        strokeDasharray={node.variant === "infra" ? "4 4" : undefined}
+        className={style.rect}
+      />
+
+      {node.chips ? <Chips node={node} /> : null}
+
+      {titled ? (
+        <>
+          {/* Header line: title left, scope/sub right. */}
+          <text
+            x={node.x + 14}
+            y={node.y + 19}
+            dominantBaseline="central"
+            fontSize={12.5}
+            fontWeight={600}
+            className={style.label}
+          >
+            {node.label}
+          </text>
+          {node.sub ? (
+            <text
+              x={node.x + node.w - 12}
+              y={node.y + 19}
+              textAnchor="end"
+              dominantBaseline="central"
+              fontSize={10}
+              className={node.subOrigin ? ORIGIN_TEXT[node.subOrigin] : style.sub}
+            >
+              {node.sub}
+            </text>
+          ) : null}
+          {hasRows ? <Rows node={node} rows={rows} /> : null}
+        </>
+      ) : node.chips ? null : (
+        <>
+          <text
+            x={cx}
+            y={node.sub ? cy - 7 : cy}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={14}
+            fontWeight={600}
+            className={style.label}
+          >
+            {node.label}
+          </text>
+          {node.sub ? (
+            <text
+              x={cx}
+              y={cy + 12}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize={10.5}
+              className={style.sub}
+            >
+              {node.sub}
+            </text>
+          ) : null}
+        </>
+      )}
+    </g>
+  );
+}
+
+function Legend({ scene }: { scene: FlowScene }) {
+  const items = scene.legend ?? [];
+  if (items.length === 0) return null;
+  const widths = items.map((it) => 16 + it.label.length * 5.6 + 22);
+  const total = widths.reduce((a, b) => a + b, 0);
+  let x = (scene.width - total) / 2;
+  const y = scene.height - 16;
+  return (
+    <>
+      {items.map((it, i) => {
+        const startX = x;
+        x += widths[i];
+        return (
+          <g key={it.origin}>
+            <rect
+              x={startX}
+              y={y - 5}
+              width={10}
+              height={10}
+              rx={2.5}
+              className={ORIGIN_BAR[it.origin]}
+            />
+            <text
+              x={startX + 16}
+              y={y}
+              dominantBaseline="central"
+              fontSize={10.5}
+              className="fill-fd-muted-foreground"
+            >
+              {it.label}
+            </text>
+          </g>
+        );
+      })}
+    </>
+  );
+}
+
 function FlowDiagram({ scene, active }: { scene: FlowScene; active: number }) {
   const step = scene.steps[active];
   const byId = new Map(scene.nodes.map((n) => [n.id, n]));
@@ -312,7 +466,7 @@ function FlowDiagram({ scene, active }: { scene: FlowScene; active: number }) {
     <div className="overflow-x-auto px-4 py-5">
       <svg
         viewBox={`0 0 ${scene.width} ${scene.height}`}
-        className="mx-auto block h-auto w-full max-w-[680px]"
+        className="mx-auto block h-auto w-full max-w-[720px]"
         role="img"
         aria-label={scene.label}
       >
@@ -351,10 +505,13 @@ function FlowDiagram({ scene, active }: { scene: FlowScene; active: number }) {
           <Node
             key={node.id}
             node={node}
+            rows={step.rowOverrides?.[node.id] ?? node.rows}
             visible={visibleNodes.has(node.id)}
             emphasized={emphasized.has(node.id)}
           />
         ))}
+
+        <Legend scene={scene} />
       </svg>
     </div>
   );
