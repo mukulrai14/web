@@ -64,28 +64,28 @@ const twoCol = [
         </p>
       </>
     ),
-    visualFooter: (
-      <Button asChild variant="ppg" size="lg">
-        <a href="/postgres">
-          Explore Prisma Postgres
-          <i className="fa-regular fa-arrow-right ml-2" />
-        </a>
-      </Button>
-    ),
     imageUrl: null,
     imageAlt: null,
     mobileImageUrl: null,
     mobileImageAlt: null,
     logos: null,
     other: (
-      <div className=" box-visible border border-stroke rounded-lg flex h-full min-h-[320px] flex-col justify-between gap-6 bg-cover bg-center bg-no-repeat p-6 md:p-8">
+      <div className="box-visible border border-stroke rounded-lg relative overflow-hidden flex h-full min-h-[320px] flex-col justify-end gap-6 bg-cover bg-center bg-no-repeat p-6 md:p-8">
         <ThemeFillIllustration
           lightSrc="/illustrations/homepage/managed-postgres_light.svg"
           darkSrc="/illustrations/homepage/managed-postgres.svg"
-          className="inset-0"
+          className="pointer-events-none absolute inset-0"
           imageClassName="object-fill object-bottom-right"
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
+        <div className="relative z-10">
+          <Button asChild variant="ppg" size="lg">
+            <a href="/postgres">
+              Explore Prisma Postgres
+              <i className="fa-regular fa-arrow-right ml-2" />
+            </a>
+          </Button>
+        </div>
       </div>
     ),
     useDefaultLogos: false,
@@ -267,16 +267,16 @@ export default function SiteHome() {
           />
         </div>
         <div className="absolute inset-0 pointer-events-none z-1 bg-[linear-gradient(180deg,var(--color-foreground-ppg)_0%,var(--color-background-default)_100%)] opacity-20" />
-        <div className="content relative z-2 flex flex-col gap-8">
+        <div className="content relative z-2 flex flex-col gap-10">
           <div className="flex flex-col gap-4 items-center text-center">
             <h1
-              className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-5xl mx-auto text-balance"
-              style={{ fontSize: "clamp(2.25rem, 8vw, 3.75rem)" }}
+              className="mb-0 text-center mt-0 type-title-6xl text-foreground-neutral max-w-4xl mx-auto text-balance"
+              style={{ fontSize: "clamp(2rem, 6vw, 3.25rem)", lineHeight: 1.12 }}
             >
               Integrated TypeScript infrastructure for developers building with AI agents
             </h1>
           </div>
-          <p className="text-center text-foreground-neutral-weak max-w-3xl mx-auto text-xl text-balance">
+          <p className="text-center text-foreground-neutral-weak max-w-2xl mx-auto text-lg leading-relaxed text-balance">
             Build, deploy, and iterate end-to-end in one conversation, with ORM, Postgres, and
             Compute designed to work together natively.
           </p>
