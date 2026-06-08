@@ -8,7 +8,7 @@ metaDescription: Answers to common questions about Prisma Compute, the @prisma/c
 
 ## Which package do I install?
 
-[`@prisma/cli`](/compute/getting-started). The executable is `prisma-cli`. The quickest way to run it without installing is:
+You install [`@prisma/cli`](/compute/getting-started), which provides an executable called `prisma-cli`. The quickest way to run it without installing anything is:
 
 ```npm
 npx @prisma/cli@latest app deploy
@@ -26,19 +26,19 @@ A project groups the resources for one product or codebase. An app is a single H
 
 ## What's a branch?
 
-An isolated environment for one line of work. It usually matches a Git branch name, but in Prisma it is a real resource that owns its own apps and databases. To learn more, see the [Branching docs](/compute/branching).
+A branch is an isolated environment for one line of work. It usually matches a Git branch name, but in Prisma it is a real resource that owns its own apps and databases. To learn more, see the [Branching docs](/compute/branching).
 
 ## Does `git connect` deploy my app?
 
-No. It links a project to a GitHub repo and enables automation for future branch and push events. To deploy now, run `app deploy`. To set up the connection, see the [GitHub integration docs](/compute/github).
+No, it links a project to a GitHub repository and turns on automation for future branch and push events. It does not deploy anything by itself, so if you want to ship right now, run `app deploy`. To set the connection up, see the [GitHub integration docs](/compute/github).
 
 ## What does a GitHub push do?
 
-For a connected project, it creates or resolves the matching branch and builds the pushed commit.
+When a project is connected to GitHub, each push creates or resolves the matching branch and builds the pushed commit.
 
 ## Why can't I read my environment variable values back?
 
-They're encrypted and never returned, by any surface, in beta. `project env list` shows keys and metadata only. Keep your own copy in a secret manager. To learn more, see [Values are write-only](/compute/environment-variables#values-are-write-only).
+In beta, variable values are encrypted and never returned by any surface. `project env list` shows only the keys and their metadata, so keep your own copy of each value in a secret manager. To learn more, see [Values are write-only](/compute/environment-variables#values-are-write-only).
 
 ## How do I rotate a secret?
 
@@ -53,7 +53,7 @@ npx @prisma/cli@latest app deploy --prod --yes
 
 ## Does changing a variable redeploy my app?
 
-No. Variables resolve at deploy time. Redeploy to pick up a new value.
+No. Variables resolve at deploy time, so you need to redeploy for the app to pick up a new value.
 
 ## How do I deploy from CI?
 
@@ -80,11 +80,11 @@ A `--prod` deploy asks you to confirm before replacing the live deployment, and 
 
 ## Why `PROJECT_SETUP_REQUIRED`?
 
-The CLI couldn't resolve a project. Run `project create` or `project link`, or pass `--project` / `--create-project`.
+This means the CLI couldn't work out which project to deploy to, because the current directory isn't linked to one yet. Create or link a project first with `project create` or `project link`, or name one directly on the command with `--project` or `--create-project`.
 
 ## Why `APP_AMBIGUOUS`?
 
-More than one app matched. Pass `--app <name>`.
+This means your project holds more than one app, so the CLI can't tell which one you meant. Tell it explicitly by passing `--app <name>` with the name of the app you want to deploy.
 
 ## How do I add a custom domain?
 
@@ -99,11 +99,11 @@ Add the CNAME record the command returns at your DNS provider. To learn more, se
 
 ## Can preview branches have custom domains?
 
-Not in beta; custom domains are production-only.
+No. In beta, custom domains are production-only, so they cannot be attached to preview branches.
 
 ## Does Prisma clone my production database for previews?
 
-Don't assume so. These docs cover app deployment and runtime config only. Pass database URLs through [environment variables](/compute/environment-variables) and manage data and migrations yourself.
+You should not assume it does. These docs cover app deployment and runtime configuration only, so pass database URLs through [environment variables](/compute/environment-variables) and manage data and migrations yourself.
 
 ## Do I need Prisma Postgres to use Compute?
 
