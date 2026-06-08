@@ -1,13 +1,13 @@
 ---
 title: Prisma Compute
-description: "Deploy and run your TypeScript app on the same platform as Prisma Postgres, with your schema, database, hosting, and previews managed together."
+description: "Deploy TypeScript apps alongside Prisma Postgres, with hosting, database branches, and previews managed together."
 url: /compute
 badge: beta
-metaTitle: Overview | Prisma Compute
-metaDescription: Learn what Prisma Compute is, how it runs your app alongside Prisma Postgres, and how to deploy your first app.
+metaTitle: Prisma Compute | TypeScript app hosting for Prisma Postgres
+metaDescription: Learn how Prisma Compute deploys TypeScript apps alongside Prisma Postgres, with isolated branch previews, database branches, and CLI-first workflows.
 ---
 
-Prisma Compute deploys and runs your TypeScript app on the same platform as [Prisma Postgres](/postgres). You model your data with [Prisma ORM](/orm), store it in Prisma Postgres, and deploy your app to Prisma Compute, so your schema, database, and hosting are managed together in one sandbox.
+Prisma Compute is TypeScript app hosting built to run alongside [Prisma Postgres](/postgres). You model your data with [Prisma ORM](/orm), store it in Prisma Postgres, and deploy your app with Prisma Compute, so your schema, database, hosting, and branch previews work together in one Prisma project.
 
 :::info[Public Beta]
 
@@ -17,7 +17,7 @@ Prisma Compute is in [Public Beta](/console/more/feature-maturity#public-beta) a
 
 ## Get started
 
-The best way to understand Compute is to deploy an app. The quickstart gets a TypeScript app to a live URL in a few minutes, then connects GitHub so every push deploys automatically.
+The best way to understand Compute is to deploy an app. The quickstart takes a TypeScript app to a live URL in a few minutes, then connects GitHub so every push can deploy automatically.
 
 <Cards>
   <Card href="/prisma-compute/deploy" title="Deploy your first app">
@@ -25,17 +25,17 @@ The best way to understand Compute is to deploy an app. The quickstart gets a Ty
   </Card>
 </Cards>
 
-To learn how Compute works, [the model](#the-model) below shows how each branch gets an isolated copy of your app and database, so previews never touch production.
+To learn how Compute works, [the model](#the-model) below shows how each branch gets isolated app and database resources, so preview work never touches production.
 
 ## The model
 
 Compute organizes everything into a few resources:
 
 - A **project** groups one product or codebase.
-- A **branch** maps to a Git branch in the linked repository, and gets its own isolated app and deployments.
+- A **branch** maps to a Git branch in the linked repository, and gets its own isolated app, environment variables, and deployments.
 - An **app** is an HTTP service, such as a frontend or backend, and can have multiple **deployments**.
 
-The branch is the idea that ties Compute together, because each branch owns its own app, database, and URL. When you create a branch, Compute provisions a full copy of that infrastructure, so preview work runs in complete isolation and never touches production.
+The branch is the concept that ties Compute together. Each branch owns its own app, database, URL, and environment variables. When you create a branch, Compute provisions isolated resources for that branch, so you can test changes in preview without affecting production.
 
 - **Production**: the default Git branch (e.g., `main`) is your production branch, with its own resources and environment variables.
 - **Preview**: every other branch is a preview branch, with its own isolated resources and environment variables scoped to **preview**.
