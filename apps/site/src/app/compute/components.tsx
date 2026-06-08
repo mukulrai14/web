@@ -210,7 +210,7 @@ export function TemplateCards() {
 
 export function ThemFragmentedCard() {
   return (
-    <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-neutral bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] shadow-box-low">
+    <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-neutral bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg)_262.5%)] shadow-box-low h-full">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <span className="type-title-xl text-foreground-neutral">Most TypeScript platforms</span>
@@ -220,7 +220,7 @@ export function ThemFragmentedCard() {
       </div>
 
       {/* Services panel */}
-      <div className="flex flex-col gap-6 border border-stroke-neutral rounded-md p-4">
+      <div className="flex flex-1 flex-col justify-between gap-6 border border-stroke-neutral rounded-md p-4">
         {/* 3×3 chip grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
           {THEM_CHIPS.map((chip) => (
@@ -336,7 +336,7 @@ function BenefitItem({ text }: { text: string }) {
 
 export function UsUnifiedCard() {
   return (
-    <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-ppg bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg-strong)_262.5%)] shadow-box-low">
+    <div className="flex flex-col gap-4 p-6 rounded-xl border border-stroke-ppg bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-ppg-strong)_262.5%)] shadow-box-low h-full">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <span className="type-title-xl text-foreground-neutral">Prisma Compute</span>
@@ -346,7 +346,7 @@ export function UsUnifiedCard() {
       </div>
 
       {/* Services panel */}
-      <div className="flex flex-col gap-4 border border-stroke-ppg-weak rounded-md bg-background-default p-4">
+      <div className="flex flex-1 flex-col justify-between gap-4 border border-stroke-ppg-weak rounded-md bg-background-default p-4">
         {/* Service rows */}
         <div className="flex flex-col gap-2">
           {US_SERVICES.map((row) => (

@@ -431,11 +431,11 @@ export default async function Page() {
             One service for your app and its assets.
           </h2>
         </div>
-        <div className="flex flex-col lg:flex-row items-center gap-6 max-w-296 w-full">
-          <div className="w-full lg:flex-1 h-auto">
+        <div className="flex flex-col lg:flex-row items-stretch gap-6 max-w-296 w-full">
+          <div className="w-full lg:flex-1">
             <ThemFragmentedCard />
           </div>
-          <div className="w-full lg:flex-1 h-auto">
+          <div className="w-full lg:flex-1">
             <UsUnifiedCard />
           </div>
         </div>
