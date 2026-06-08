@@ -70,7 +70,7 @@ const twoCol = [
     mobileImageAlt: null,
     logos: null,
     other: (
-      <div className="box-visible border border-stroke rounded-lg relative overflow-hidden flex h-full min-h-[320px] flex-col justify-end gap-6 bg-cover bg-center bg-no-repeat p-6 md:p-8">
+      <div className="box-visible border border-stroke rounded-lg relative overflow-hidden flex h-full min-h-[320px] flex-col items-start justify-end gap-6 bg-cover bg-center bg-no-repeat p-6 md:p-8">
         <ThemeFillIllustration
           lightSrc="/illustrations/homepage/managed-postgres_light.svg"
           darkSrc="/illustrations/homepage/managed-postgres.svg"
@@ -239,7 +239,7 @@ const homeStructuredData = createCollectionPageStructuredData({
   ],
 });
 
-const sectionSpacing = "py-16 md:py-20";
+const sectionSpacing = "py-10 md:py-14";
 const insetSectionSpacing = `px-4 ${sectionSpacing}`;
 
 export default function SiteHome() {
@@ -408,7 +408,7 @@ export default function SiteHome() {
 
       {/* Card Sections */}
       <section className={`w-screen ${sectionSpacing}`}>
-        <CardSection cardSection={twoCol} />
+        <CardSection cardSection={twoCol} itemSpacing="py-4 md:py-6 my-0" />
       </section>
 
       {/* Testimonials Section */}

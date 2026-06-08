@@ -30,11 +30,13 @@ interface TwoColumnItem {
 interface CardSectionProps {
   cardSection: TwoColumnItem[];
   className?: string;
+  /** Override the vertical spacing applied to each card row. */
+  itemSpacing?: string;
 }
 
 const imageShadowClass = "shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)]";
-const sectionClass =
-  "py-8 md:py-10 lg:py-14 my-8 md:my-10 lg:my-14 w-full overflow-visible px-4 sm:px-0";
+const sectionBaseClass = "w-full overflow-visible px-4 sm:px-0";
+const defaultItemSpacing = "py-8 md:py-10 lg:py-14 my-8 md:my-10 lg:my-14";
 
 const getCardSectionItemKey = (item: TwoColumnItem) =>
   [
@@ -198,13 +200,15 @@ const CardSectionItem = ({
   isLcpImage,
   isActive,
   onRef,
+  spacing,
 }: {
   item: TwoColumnItem;
   isLcpImage: boolean;
   isActive: boolean;
   onRef: (element: HTMLElement | null) => void;
+  spacing: string;
 }) => (
-  <section ref={onRef} className={sectionClass}>
+  <section ref={onRef} className={cn(sectionBaseClass, spacing)}>
     <div
       className={cn(
         "[&_h2]:mt-0 flex gap-6 md:gap-8 lg:gap-12 sm:gap-6 items-center overflow-visible",
@@ -234,9 +238,7 @@ const CardSectionItem = ({
           )}
         >
           <SectionVisual item={item} isLcpImage={isLcpImage} />
-          {item.visualFooter && (
-            <div className="mt-6 flex justify-center lg:justify-start">{item.visualFooter}</div>
-          )}
+          {item.visualFooter && <div className="mt-6 flex justify-center">{item.visualFooter}</div>}
         </div>
       </div>
     </div>
@@ -244,7 +246,7 @@ const CardSectionItem = ({
   </section>
 );
 
-export const CardSection = ({ cardSection, className }: CardSectionProps) => {
+export const CardSection = ({ cardSection, className, itemSpacing }: CardSectionProps) => {
   const [active, setActive] = useState(0);
   const [progressHeight, setProgressHeight] = useState(0);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
@@ -317,6 +319,7 @@ export const CardSection = ({ cardSection, className }: CardSectionProps) => {
           item={item}
           isLcpImage={index === firstImageIndex}
           isActive={active === index}
+          spacing={itemSpacing ?? defaultItemSpacing}
           onRef={(element) => {
             sectionRefs.current[index] = element;
           }}
