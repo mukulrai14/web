@@ -297,7 +297,7 @@ export function NetworkGlobe() {
   return (
     <div className="w-full overflow-hidden rounded-xl border border-stroke-neutral bg-background-default">
       <div className="header uppercase font-mono text-foreground-neutral-weaker text-xs p-4 flex justify-between border-b border-stroke-neutral">
-        <span>Compute + Prisma Postgres · same box</span>
+        <span>Compute + Prisma Postgres · co-located</span>
         <div className="flex gap-2 text-foreground-ppg items-center">
           <span
             className={cn(

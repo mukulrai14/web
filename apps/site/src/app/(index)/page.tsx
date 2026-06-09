@@ -133,7 +133,7 @@ const twoCol = [
             <li>Container-based runtime for long-running apps</li>
             <li>Long-running requests and streaming</li>
             <li>Great for APIs and AI agents</li>
-            <li>Runs near Prisma Postgres, auto-wired when clear</li>
+            <li>Auto-wires Prisma Postgres and runs in the same environment</li>
           </ul>
         </div>
         <div className="relative z-10">

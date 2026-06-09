@@ -23,14 +23,14 @@ const FEATURES = [
           Deploy from your repo
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Connect a GitHub repo. Prisma Compute builds your app and brings it live with a URL.
+          Run one command and Prisma Compute builds your app and brings it live with a URL.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
           <li>
             <code className="font-mono text-foreground-ppg-strong">
               @prisma/cli@latest app deploy
             </code>{" "}
-            from the CLI, or push to a connected branch
+            from the CLI, then connect a GitHub branch for push-to-deploy
           </li>
           <li>No CI/CD pipeline to configure</li>
           <li>No deployment scripts, no dashboard workflows</li>
@@ -65,7 +65,6 @@ const FEATURES = [
           <li>Long-lived processes, not per-request functions</li>
           <li>Long-running HTTP requests and streaming responses</li>
           <li>Connections and in-process state persist across requests</li>
-          <li>Fair-use concurrency and runtime guardrails apply</li>
         </ul>
       </>
     ),
@@ -119,11 +118,10 @@ const FEATURES = [
           Co-located database
         </h2>
         <p className="text-foreground-neutral-weak text-base mb-4 text-pretty">
-          Pairs with Prisma Postgres so compute and database run in the same box, with auto-wiring
-          where the app and database relationship is clear.
+          Auto-wires Prisma Postgres and runs in the same environment.
         </p>
         <ul className="text-foreground-neutral text-sm space-y-2 m-0 pl-4 list-disc">
-          <li>Low-latency access from the same box</li>
+          <li>Low-latency access to the co-located database</li>
           <li>Built-in connection pooling for long-lived processes</li>
           <li>Pairs with a Prisma Postgres database in one step</li>
           <li>Works with any database, no lock-in</li>
@@ -149,7 +147,7 @@ const DOES_IT_WORK = [
   {
     title: "Deploying Next.js today?",
     description:
-      "Connect your repo and deploy. Your assets are served by your app the way they are when self-hosting Next, with cache headers under control.",
+      "Deploy with one command. Your assets are served by your app the way they are when self-hosting Next, with cache headers under control.",
     icon: "fa-regular fa-n",
     badgeColor: "ppg" as const,
   },
@@ -185,7 +183,7 @@ const DOES_IT_WORK = [
   {
     title: "Tired of the serverless tax?",
     description:
-      "If your bill is split across compute, bandwidth, and add-ons, Compute keeps it to one service. One service, one rate, one invoice.",
+      "Tired of paying extra for expensive egress, image transformations, and third-party realtime services? With Prisma Compute, it all comes standard on a powerful Bun runtime.",
     icon: "fa-regular fa-receipt",
     badgeColor: "success" as const,
   },
@@ -197,7 +195,7 @@ const WHY_FEATURES = [
     title: "Push code, it runs",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        From GitHub to a live URL. No build pipelines to configure.
+        Deploy from the CLI, then connect a GitHub branch to ship on every push. No build pipelines to configure.
       </div>
     ),
     icon: "fa-regular fa-rocket",
@@ -241,7 +239,7 @@ const WHY_FEATURES = [
     title: "Pairs with Prisma Postgres",
     children: (
       <div className="px-4 pb-4 text-sm text-foreground-neutral-weak">
-        Runs in the same box, auto-wired when the app and database relationship is clear. Works with
+        Auto-wires Prisma Postgres and runs in the same environment. Also works with
         any database.
       </div>
     ),
@@ -401,7 +399,7 @@ export default async function Page() {
                       color={item.badgeColor}
                       className={cn(
                         item.badgeColor === "ppg" &&
-                          "bg-background-ppg-reverse-strong text-foreground-neutral-reverse font-bold!",
+                        "bg-background-ppg-reverse-strong text-foreground-neutral-reverse font-bold!",
                       )}
                       size={item.badgeColor === "ppg" ? "lg" : "md"}
                       label={

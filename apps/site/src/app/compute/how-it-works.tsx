@@ -130,8 +130,6 @@ export function StatefulExecutionCard() {
         <Separator />
         <MetricRow label="in-process cache" value="hot · 42 MB" />
         <Separator />
-        <MetricRow label="process uptime" value="14d 06h" />
-        <Separator />
         <MetricRow label="p95 latency" value="42ms" />
       </div>
     </div>
@@ -367,46 +365,46 @@ const DEPLOY_STEPS: Array<{
   delay: number;
   stage?: string;
 }> = [
-  { type: "cmd", text: "@prisma/cli@latest app deploy", delay: 250, stage: "frame" },
-  {
-    type: "dim",
-    text: "→ detected prisma.config.ts · commit a7f3c11",
-    delay: 650,
-  },
-  {
-    type: "dim",
-    text: "→ bundling ./src · 48 modules",
-    delay: 700,
-    stage: "shell",
-  },
-  { type: "ok", text: "compiled layout.tsx", delay: 550, stage: "header" },
-  { type: "ok", text: "compiled nav.tsx", delay: 500, stage: "nav" },
-  {
-    type: "ok",
-    text: "compiled dashboard/kpis.tsx",
-    delay: 600,
-    stage: "kpis",
-  },
-  {
-    type: "ok",
-    text: "compiled dashboard/chart.tsx",
-    delay: 650,
-    stage: "chart",
-  },
-  {
-    type: "ok",
-    text: "compiled dashboard/orders.tsx",
-    delay: 600,
-    stage: "table",
-  },
-  { type: "url", text: "api → https://your-app.iad1.prisma.build", delay: 600 },
-  {
-    type: "done",
-    text: "deployed in 4.8s · app is live",
-    delay: 500,
-    stage: "live",
-  },
-];
+    { type: "cmd", text: "@prisma/cli@latest app deploy", delay: 250, stage: "frame" },
+    {
+      type: "dim",
+      text: "→ detected prisma.config.ts · commit a7f3c11",
+      delay: 650,
+    },
+    {
+      type: "dim",
+      text: "→ bundling ./src · 48 modules",
+      delay: 700,
+      stage: "shell",
+    },
+    { type: "ok", text: "compiled layout.tsx", delay: 550, stage: "header" },
+    { type: "ok", text: "compiled nav.tsx", delay: 500, stage: "nav" },
+    {
+      type: "ok",
+      text: "compiled dashboard/kpis.tsx",
+      delay: 600,
+      stage: "kpis",
+    },
+    {
+      type: "ok",
+      text: "compiled dashboard/chart.tsx",
+      delay: 650,
+      stage: "chart",
+    },
+    {
+      type: "ok",
+      text: "compiled dashboard/orders.tsx",
+      delay: 600,
+      stage: "table",
+    },
+    { type: "url", text: "api → https://your-app.iad1.prisma.build", delay: 600 },
+    {
+      type: "done",
+      text: "deployed in 4.8s · app is live",
+      delay: 500,
+      stage: "live",
+    },
+  ];
 
 const DEPLOY_STAGES = [
   "frame",
@@ -1079,7 +1077,7 @@ function ZeroConfigBYO() {
                     className={cn(
                       "flex items-start gap-2 leading-5",
                       line.tone === "hero" &&
-                        "bg-foreground-ppg/10 border-l-2 border-foreground-ppg -mx-3 px-3 py-1",
+                      "bg-foreground-ppg/10 border-l-2 border-foreground-ppg -mx-3 px-3 py-1",
                     )}
                   >
                     <span className="text-foreground-neutral-weaker shrink-0 text-right tabular-nums">
@@ -1228,12 +1226,12 @@ const TABS = [
     Visual: WbDeployReplay,
     description: (
       <>
-        Connect a repo and run{" "}
-        <code className="font-mono text-foreground-ppg">@prisma/cli@latest app deploy</code>. Prisma
+        Run{" "}
+        <code className="font-mono text-foreground-ppg">@prisma/cli@latest app deploy</code>, then connect a GitHub branch for push-to-deploy. Prisma
         Compute builds your application and brings it live with a URL attached.
         <br />
         <br />
-        No build pipeline to configure. No deployment scripts to maintain. No dashboard state that
+        No build pipeline to configure, deployment scripts to maintain and dashboard state that
         drifts from what&apos;s in your repo.
       </>
     ),
@@ -1247,8 +1245,7 @@ const TABS = [
     description: (
       <>
         Standard TypeScript on Bun, running as long-lived processes. Long-running requests,
-        in-process caches, and streaming responses work exactly as you&apos;d expect, within
-        fair-use concurrency and runtime guardrails.
+        in-process caches, and streaming responses work exactly as you&apos;d expect.
         <br />
         <br />
         Because your code stays running, so do your connections.
@@ -1263,8 +1260,7 @@ const TABS = [
     Visual: ZeroConfigBYO,
     description: (
       <>
-        Compute and Prisma Postgres run in the same box, with auto-wiring where the app and database
-        relationship is clear. Built-in connection pooling for long-lived processes.
+        Auto-wires Prisma Postgres and runs in the same environment. Built-in connection pooling for long-lived processes.
         <br />
         <br />
         Works with any database, no lock-in.
@@ -1304,7 +1300,7 @@ export function HowItWorks() {
               value={tab.value}
               className={cn(
                 // Reset Eclipse defaults & build panel style
-                "group flex items-center justify-left",
+                "group flex items-center justify-left cursor-pointer",
                 "sm:flex-1 flex-row gap-2",
                 "px-5 py-3 sm:px-5 sm:py-5 h-auto rounded-none",
                 // Backgrounds
