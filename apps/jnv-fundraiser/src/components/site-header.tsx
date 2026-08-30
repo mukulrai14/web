@@ -36,7 +36,7 @@ export async function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex w-full items-center gap-3 sm:w-auto">
           <div className="hidden text-right text-xs leading-tight sm:block">
             {member ? (
               <>

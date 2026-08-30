@@ -13,7 +13,7 @@ export function PersonaSwitcher({ current }: { current: string }) {
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
-    <form ref={formRef} action={switchPersona} className="flex items-center gap-2">
+    <form ref={formRef} action={switchPersona} className="flex w-full items-center gap-2 sm:w-auto">
       <label className="sr-only" htmlFor="persona">
         Demo identity
       </label>
@@ -22,7 +22,7 @@ export function PersonaSwitcher({ current }: { current: string }) {
         name="memberId"
         defaultValue={current}
         onChange={() => formRef.current?.requestSubmit()}
-        className="max-w-[15rem] rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink-muted outline-none focus:border-brand"
+        className="w-full rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink-muted outline-none focus:border-brand sm:max-w-[15rem]"
       >
         {PERSONAS.map((persona) => (
           <option key={persona.id} value={persona.id}>
